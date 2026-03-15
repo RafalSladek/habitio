@@ -25,7 +25,10 @@ module.exports = defineConfig({
     },
     {
       name: 'Tablet',
-      use: { ...devices['iPad (gen 7)'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 768, height: 1024 },
+      },
     },
   ],
 });
