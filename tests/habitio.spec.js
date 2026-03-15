@@ -1,11 +1,9 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
 
-const URL = 'https://rafalsladek.github.io/habitio/';
-
-test.describe('habit.io production', () => {
+test.describe('habit.io', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(URL);
+    await page.goto('/');
     await page.evaluate(() => localStorage.clear());
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
