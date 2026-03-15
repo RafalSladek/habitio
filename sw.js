@@ -1,4 +1,4 @@
-const CACHE = 'habitio-v2';
+const CACHE = 'habitio-v3';
 
 const PRECACHE = [
   './',
@@ -11,6 +11,8 @@ const PRECACHE = [
   './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/hero-onboarding.webp',
+  './icons/hero-onboarding.png',
 ];
 
 // Install: pre-cache all app shell assets

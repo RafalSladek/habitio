@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="habit.io — offline-first PWA habit tracker. Build habits with science-backed formation arcs, personalised suggestions, and a daily journal. No account, no tracking." />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no"
+      content="width=device-width, initial-scale=1.0"
     />
     <!-- PWA / install meta -->
     <meta name="mobile-web-app-capable" content="yes" />
@@ -26,10 +26,11 @@
     <!-- Windows / Android tile -->
     <meta name="msapplication-TileImage" content="icons/icon-192.png" />
     <meta name="msapplication-TileColor" content="#6c5ce7" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+    <link rel="preload" as="image" href="icons/hero-onboarding.webp" type="image/webp" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -122,6 +123,7 @@
           type="text"
           maxlength="40"
           autocomplete="off"
+          aria-label="Habit name"
         />
         <div class="section-label" data-t="lbl_icon">Icon</div>
         <div class="emoji-picker" id="emoji-picker"></div>
@@ -153,10 +155,13 @@
     <div class="modal-overlay" id="welcome-modal">
       <div class="modal" style="text-align: center; padding-top: 0; overflow: hidden">
         <div style="margin: 0 -24px 16px; border-radius: 14px 14px 0 0; overflow: hidden; line-height: 0">
-          <img src="icons/hero-onboarding.png" alt="" style="width: 100%; height: 140px; object-fit: cover; object-position: center 30%"/>
+          <picture>
+            <source srcset="icons/hero-onboarding.webp" type="image/webp" />
+            <img src="icons/hero-onboarding.png" alt="" width="400" height="140" fetchpriority="high" style="width: 100%; height: 140px; object-fit: cover; object-position: center 30%" />
+          </picture>
         </div>
         <div style="font-size: 36px; margin: 0 0 12px">🌱</div>
-        <h3 id="welcome-title">Welcome to Habitio</h3>
+        <h2 id="welcome-title">Welcome to Habitio</h2>
         <p
           style="
             font-size: 14px;
@@ -167,7 +172,7 @@
           id="welcome-sub"
         ></p>
         <div class="welcome-field">
-          <label id="wl-name-label">Your first name</label
+          <label id="wl-name-label" for="welcome-name">Your first name</label
           ><input
             class="modal-input"
             id="welcome-name"

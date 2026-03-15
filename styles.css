@@ -6,7 +6,7 @@
         --border: #2a2a45;
         --text: #e8e8f0;
         --text-dim: #8888a8;
-        --text-muted: #55556a;
+        --text-muted: #7878a0;
         --accent: #6c5ce7;
         --accent-glow: #7c6cf7;
         --accent-dim: rgba(108, 92, 231, 0.15);
@@ -370,7 +370,7 @@
         font-family: var(--font);
       }
       .nav-tab.active {
-        color: var(--accent);
+        color: var(--accent-glow);
       }
       .nav-tab:active {
         background: var(--surface);
