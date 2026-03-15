@@ -64,3 +64,10 @@ GitHub Actions (`.github/workflows/playwright.yml`):
 - Do not use `git push --force` on main
 - To run tests locally: `yarn test` (starts local server via `npx serve`)
 - To convert images to WebP: `ffmpeg -i input.png -c:v libwebp -quality 82 output.webp`
+
+## Pre-Commit Checklist
+
+**Always do both before committing:**
+
+1. **Run tests**: `yarn test` — all projects (Desktop, Mobile, Tablet) must pass
+2. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
