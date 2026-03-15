@@ -38,6 +38,11 @@
           sex_female: "Female",
           language: "Language",
           lets_go: "Let's go!",
+          age_teen:   "Teen (13–17)",
+          age_young:  "Young Adult (18–29)",
+          age_adult:  "Adult (30–49)",
+          age_mid:    "Midlife (50–64)",
+          age_senior: "Senior (65+)",
           onb_title: "Start small. Start now.",
           onb_add: "Add Your First Habit",
           onb_import: "Import from Backup",
@@ -178,6 +183,11 @@
           sex_female: "Weiblich",
           language: "Sprache",
           lets_go: "Los geht's!",
+          age_teen:   "Teenager (13–17)",
+          age_young:  "Junger Erwachsener (18–29)",
+          age_adult:  "Erwachsener (30–49)",
+          age_mid:    "Mittleres Alter (50–64)",
+          age_senior: "Senior (65+)",
           onb_title: "Fang klein an. Fang jetzt an.",
           onb_add: "Erste Gewohnheit hinzufügen",
           onb_import: "Aus Backup importieren",
@@ -319,6 +329,11 @@
           sex_female: "Kobieta",
           language: "Język",
           lets_go: "Zaczynajmy!",
+          age_teen:   "Nastolatek (13–17)",
+          age_young:  "Młody dorosły (18–29)",
+          age_adult:  "Dorosły (30–49)",
+          age_mid:    "Dojrzały (50–64)",
+          age_senior: "Senior (65+)",
           onb_title: "Zacznij od małych kroków. Zacznij teraz.",
           onb_add: "Dodaj pierwszy nawyk",
           onb_import: "Importuj z kopii",
@@ -621,8 +636,34 @@
         if (chip) chip.classList.toggle("selected", modalMorning);
       }
       let importOpts = { habits: true, tracking: true };
+      let welcomeAgeGroup = "";
+
+      const AGE_GROUPS = [
+        { key: "teen",   age: 15 },
+        { key: "young",  age: 25 },
+        { key: "adult",  age: 40 },
+        { key: "mid",    age: 55 },
+        { key: "senior", age: 70 },
+      ];
+      function renderAgeChips() {
+        const cur = welcomeAgeGroup || state.profile.ageGroup || "";
+        document.getElementById("welcome-age-chips").innerHTML =
+          AGE_GROUPS.map(g =>
+            '<div class="age-chip' + (cur === g.key ? " selected" : "") +
+            '" onclick="setAgeGroup(\'' + g.key + '\')">' + t("age_" + g.key) + '</div>'
+          ).join("");
+      }
+      function setAgeGroup(k) {
+        welcomeAgeGroup = k;
+        renderAgeChips();
+      }
       let diaryTimers = {};
 
+      function uid() {
+        return typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
+      }
       function save() {
         localStorage.setItem("habitio_v2", JSON.stringify(state));
       }
@@ -943,6 +984,18 @@
           html += '<div class="' + cls + '" onclick="toggleHabit(\'' + h.id + '\')"><div class="habit-emoji">' + h.emoji + '</div><div class="habit-info"><div class="habit-name">' + esc(h.name) + '</div><div class="habit-meta">' + meta + '</div></div><div class="habit-check"><span class="check-icon">✓</span></div></div>';
         });
         c.innerHTML = html;
+        if (state.habits.length === 1) {
+          const k = fmt(selectedDate), ch = state.checks[k] || {};
+          const allUnchecked = state.habits.every(h => !ch[h.id]);
+          if (allUnchecked) {
+            c.insertAdjacentHTML("beforeend",
+              '<div class="first-habit-cta">' +
+              '<div class="fhc-icon">👆</div>' +
+              '<div class="fhc-text">Tap the habit above to log your first check-in!</div>' +
+              '</div>'
+            );
+          }
+        }
       }
       function toggleHabit(id) {
         const k = fmt(selectedDate);
@@ -988,19 +1041,15 @@
         setSex(state.profile.sex || "male");
         document.getElementById("wl-lang-label").textContent = t("language");
         document.getElementById("welcome-go-btn").textContent = t("lets_go");
+        welcomeAgeGroup = state.profile.ageGroup || "";
+        renderAgeChips();
         const lc = document.getElementById("welcome-lang-chips");
+        const LANGS = { en: "🇬🇧 English", de: "🇩🇪 Deutsch", pl: "🇵🇱 Polski" };
         lc.innerHTML = ["en", "de", "pl"]
-          .map(
-            (l) =>
-              '<div class="lang-chip' +
-              (state.lang === l ? " selected" : "") +
-              '" onclick="setWelcomeLang(\'' +
-              l +
-              "')\">" +
-              { en: "English", de: "Deutsch", pl: "Polski" }[l] +
-              "</div>",
-          )
-          .join("");
+          .map(l =>
+            '<div class="lang-chip' + (state.lang === l ? " selected" : "") +
+            '" onclick="setWelcomeLang(\'' + l + '\')">' + LANGS[l] + '</div>'
+          ).join("");
         wl.classList.add("show");
         setTimeout(() => document.getElementById("welcome-name").focus(), 300);
       }
@@ -1017,9 +1066,10 @@
       }
       function finishWelcome() {
         const n = document.getElementById("welcome-name").value.trim();
-        const a = document.getElementById("welcome-age").value.trim();
+        const g = welcomeAgeGroup;
         state.profile.name = n;
-        state.profile.age = a;
+        state.profile.ageGroup = g;
+        state.profile.age = g ? String((AGE_GROUPS.find(x => x.key === g) || {}).age || "") : "";
         save();
         document.getElementById("welcome-modal").classList.remove("show");
         render();
@@ -1113,7 +1163,7 @@
           emoji = el.dataset.emoji,
           cadence = JSON.parse(el.dataset.cadence);
         state.habits.push({
-          id: "h_" + Date.now(),
+          id: uid(),
           name,
           emoji,
           cadence,
@@ -1249,7 +1299,7 @@
           showToast(t("habit_updated"));
         } else {
           state.habits.push({
-            id: "h_" + Date.now(),
+            id: uid(),
             name,
             emoji: modalEmoji,
             cadence,
@@ -1392,11 +1442,7 @@
                   .filter((h) => !existing.has(h.name.toLowerCase()))
                   .map((h) => ({
                     ...h,
-                    id:
-                      "h_" +
-                      Date.now() +
-                      "_" +
-                      Math.random().toString(36).slice(2, 6),
+                    id: uid(),
                     cadence: h.cadence || { type: "daily" },
                   }));
                 state.habits = [...state.habits, ...nw];
@@ -1594,25 +1640,18 @@
           (state.profile.name || "—") +
           (state.profile.age ? ", " + state.profile.age : "") +
           (state.profile.sex ? " · " + t("sex_" + state.profile.sex) : "") +
-          '</span></div><div style="width:100%;padding-left:32px"><div class="lang-chips">' +
+          '</span></div><div style="width:100%;padding-left:32px"><div class="lang-chips" style="justify-content:center">' +
           ["en", "de", "pl"]
-            .map(
-              (l) =>
-                '<div class="lang-chip' +
-                (state.lang === l ? " selected" : "") +
-                '" onclick="changeLang(\'' +
-                l +
-                "')\">" +
-                { en: "EN", de: "DE", pl: "PL" }[l] +
-                "</div>",
-            )
-            .join("") +
+            .map(l =>
+              '<div class="lang-chip' + (state.lang === l ? " selected" : "") +
+              '" onclick="changeLang(\'' + l + '\')">' +
+              { en: "🇬🇧 EN", de: "🇩🇪 DE", pl: "🇵🇱 PL" }[l] + "</div>"
+            ).join("") +
           "</div></div></div></div></div>" +
-          '<div class="settings-section"><div class="settings-title">' +
-          t("settings_habits") +
-          " (" +
-          state.habits.length +
-          ')</div><div class="settings-list">' +
+          '<div class="settings-section"><div class="settings-title" style="display:flex;align-items:center;justify-content:space-between">' +
+          '<span>' + t("settings_habits") + ' (' + state.habits.length + ')</span>' +
+          '<button class="icon-btn" onclick="openAddModal()" style="font-size:18px;padding:2px 8px">+</button>' +
+          '</div><div class="settings-list">' +
           (!state.habits.length
             ? '<div style="padding:14px 16px;color:var(--text-muted);font-size:13px">—</div>'
             : state.habits
@@ -1665,9 +1704,7 @@
           lang: state.lang,
         };
         save();
-        render();
-        renderSettings();
-        showToast(t("all_cleared"));
+        location.reload();
       }
       function changeLang(l) {
         state.lang = l;
@@ -1713,7 +1750,7 @@
       });
       document
         .getElementById("welcome-modal")
-        .addEventListener("click", (e) => {});
+        .addEventListener("click", () => {});
       document
         .getElementById("habit-name-input")
         .addEventListener("keydown", (e) => {

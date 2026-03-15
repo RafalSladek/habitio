@@ -664,6 +664,8 @@
         display: flex;
         gap: 6px;
         margin-top: 4px;
+        justify-content: center;
+        flex-wrap: wrap;
       }
       .lang-chip {
         padding: 6px 14px;
@@ -677,6 +679,40 @@
         transition: all 0.15s;
       }
       .lang-chip.selected {
+        background: var(--accent-dim);
+        border-color: var(--accent);
+        color: var(--accent-glow);
+      }
+      .first-habit-cta {
+        margin: 16px 0 8px;
+        padding: 16px;
+        background: var(--accent-dim);
+        border: 1px solid var(--accent);
+        border-radius: var(--radius);
+        text-align: center;
+        animation: fadeIn 0.4s ease;
+      }
+      .fhc-icon { font-size: 24px; margin-bottom: 6px; }
+      .fhc-text { font-size: 13px; color: var(--accent-glow); font-weight: 500; line-height: 1.4; }
+      .age-chips {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-top: 4px;
+      }
+      .age-chip {
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        cursor: pointer;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .age-chip.selected {
         background: var(--accent-dim);
         border-color: var(--accent);
         color: var(--accent-glow);
