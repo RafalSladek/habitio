@@ -1,215 +1,3 @@
-Habitio - habit tracker / I need you to implement and web app for mobile phone,
-as my habit tracker. Here are some screenshots I have a server where I can host
-it. 16:46 Looking at these screenshots, I can see the concept — a habit tracker
-with daily checkboxes, weekly progress, and analysis. Let me read the frontend
-design skill first, then build you something polished. Read frontend design
-skill for best practices Read frontend design skill for best practices Now let
-me build this. Since you want a mobile-first habit tracker you can self-host,
-I'll create a single-file web app with persistent storage via localStorage,
-clean mobile UX, and the key features from the screenshots: daily habit
-checkboxes, weekly views, progress tracking, and analysis. 3 Dateien erstellt,
-hat einen Befehl ausgeführt, datei lesen 3 Dateien erstellt, hat einen Befehl
-ausgeführt, datei lesen Here's your self-hosted habit tracker — three files to
-drop on your server: What it does: Weekly calendar view with day navigation,
-matching the spreadsheet layout from the video Tap-to-check habits with streak
-tracking and a progress ring Analysis tab with weekly completion %, best streak,
-28-day heatmap, and per-habit performance bars Settings tab to delete habits,
-export/import JSON backups, or reset All data in localStorage — no backend
-needed PWA-ready — installable on your phone's home screen for an app-like
-experience (service worker + manifest included) To deploy: put all 3 files
-(index.html, sw.js, manifest.json) in the same directory on your server. Then
-open it in Chrome on your phone and use "Add to Home Screen" for the full
-experience. Want me to add anything — like habit reordering, weekly goals per
-habit, or notifications? Index Code · HTML Sw JS Manifest Code · JSON add habits
-from the screenshot as default 16:57 Let me check what habits were in the
-screenshots. From image 3 I can see the habit list clearly: Wake Up Early (10am)
-Morning Cardio No PornHub No clubbing Sober days only Offline hours Project Work
-No cassino Cold Shower Deep Work Session And from image 1 (the task/planner
-view), there were items like "Organize personal finances", "Hire a personal
-trainer", etc. — but those look more like weekly tasks than daily habits. Let me
-update the app with those 10 habits as defaults: 2 Dateien angesehen, 2 Befehle
-ausgeführt, hat eine Datei bearbeitet 2 Dateien angesehen, 2 Befehle ausgeführt,
-hat eine Datei bearbeitet Done — all 10 habits from the screenshot are now
-pre-loaded on first launch: Wake Up Early, Morning Cardio, No PornHub, No
-Clubbing, Sober Days Only, Offline Hours, Project Work, No Casino, Cold Shower,
-and Deep Work Session. If you already opened it before, it won't overwrite your
-existing localStorage — the defaults only seed on a fresh install. To see them,
-either open in an incognito tab or hit "Reset All Data" in Settings first. Index
-Code · HTML Wake up early 6AM No coffee within 2h from wake up No porn No
-alkohol, water No sweets, fruits instead No scrolling 1h for find new job 1h
-playing with kids, offline Cold shower 3 hugs a day Call someone Gym 2x in a
-week replace the current list Mehr anzeigen 17:02 Hat eine Datei bearbeitet, hat
-einen Befehl ausgeführt, datei lesen Hat eine Datei bearbeitet, hat einen Befehl
-ausgeführt, datei lesen Updated with your 12 habits. Remember to reset via
-Settings > "Reset All Data" if you already had the old version loaded, since
-localStorage will keep the previous list otherwise. Index Code · HTML add more
-emoji icons while adding new habbits allow to define cadence of the habit, not
-every habit is daily routine default cadence is daily, but it can be specific
-day of week. 1/2/x time a week/month 17:10 4 Dateien angesehen 4 Dateien
-angesehen This is a big change touching most parts of the app. Let me rebuild
-the whole file cleanly with the cadence system and expanded emoji picker. 3
-Dateien erstellt, 2 Befehle ausgeführt, datei lesen 3 Dateien erstellt, 2
-Befehle ausgeführt, datei lesen Here's what changed: 60 emoji icons now
-available in a scrollable picker — covering fitness, food, productivity, social,
-creative, and more. Cadence system with three modes when adding/editing a habit:
-Daily (default) — shows every day Specific Days — pick Mon/Tue/Wed etc. with tap
-chips. Off-days are dimmed and non-interactive on the tracker. X times per
-week/month — set a number and period (e.g. "2x / week"). These always show but
-display a progress counter like 1/2 so you can track toward your target
-flexibly. Gym is pre-set to 2x / week with the counter. All other defaults
-remain daily. Editing — tap any habit in Settings to edit its name, icon, and
-cadence. Note: this uses a new storage key (ht_v3) so it won't conflict with the
-old version — you'll get the fresh defaults automatically. Index Code · HTML if
-i would like to keep my progress and list of habitts in my cloud like google
-drive, or similar. propose me architecture design to do so, what has to be
-change in the app can it be stand alone html file ? 17:39 Good question. Let me
-think through the options properly before proposing anything. The core challenge
-is: you have a single HTML file with localStorage, and you want to sync that
-data to the cloud so it survives across devices and browser resets. Here are the
-realistic approaches, from simplest to most complex: Option 1: Manual JSON
-export/import via Google Drive (what you already have) You already have
-export/import in Settings. You could just save the JSON to Drive manually. Zero
-architecture changes, but obviously not automatic. Option 2: Google Drive as a
-database (app-only, no backend) This is the most interesting option for your
-case. The Google Drive API allows a web app to read/write a small JSON file in
-the user's own Drive — using a special "appDataFolder" that's invisible to the
-user but tied to your app. What changes: you add the Google Identity Services
-SDK (a single script tag), configure a Google Cloud project with Drive API
-enabled, and add ~100 lines of sync logic. The HTML file calls gapi to
-authenticate with OAuth, then reads/writes a habits.json file in your Drive's
-hidden app folder. Tradeoff: requires a Google Cloud project (free), an OAuth
-consent screen, and a client ID hardcoded in the HTML. Still a standalone HTML
-file. Works across devices. User signs in once per session. Option 3:
-Firebase/Supabase backend A small cloud database (Firestore or Supabase) where
-data syncs in real-time. You'd add the Firebase JS SDK (single script import),
-authenticate with Google Sign-In, and read/write to a Firestore document. What
-changes: ~80 lines of sync code, a Firebase project (free tier), and a
-firebaseConfig object in the HTML. Still a standalone HTML file. Gives you
-real-time sync across multiple devices simultaneously. Tradeoff: you're now
-dependent on a third-party service. But Firebase free tier is more than enough
-for personal use. Option 4: Your own server + a JSON file Since you mentioned
-you have a server — the simplest backend would be a tiny API (3 endpoints: GET
-/data, PUT /data, GET /health) that reads/writes a single JSON file on disk.
-Could be 30 lines of Node or Python. What changes: add fetch calls in the HTML
-to sync on load and on every save. Add basic auth (even just a hardcoded token
-since it's personal). Tradeoff: you maintain a server process, but you fully own
-the data with no third-party dependency. My recommendation for you: I'd go with
-Option 2 (Google Drive appDataFolder) or Option 4 (your server), depending on
-your preference: Pick Google Drive if you want zero server maintenance —
-everything lives in your Google account, the HTML file is fully standalone, and
-it works from any device with your Google login. Pick your own server if you
-want full control and simplicity — it's the least code, no OAuth complexity, and
-you already have the infra. Both can remain a standalone HTML file. Want me to
-implement one of these? where i can host this app 17:41 You already have a
-server you mentioned, but here are all the practical options from simplest to
-most capable: Free static hosting (just drop the HTML file): GitHub Pages — push
-to a repo, enable Pages. Free, HTTPS, custom domain support. You already use
-GitHub likely as an EM. Cloudflare Pages — same idea, very fast CDN, free tier
-is generous. Netlify — drag and drop a folder, done. Free tier, HTTPS, custom
-domain. Vercel — similar to Netlify, one-click deploy. All of these work
-perfectly for a standalone HTML file with no backend. Zero cost, zero
-maintenance. If you go with Option 4 (your own API for sync): Your existing
-server — if you have a VPS or home server, just run a tiny Node/Python process
-behind nginx. Fly.io / Railway — free tier, deploy a small container with the
-API + serve the HTML. Closest to "your own server" without managing infra. A
-Raspberry Pi at home — if you have one, it's a fun option with Tailscale for
-access from anywhere. If you go with Option 2 (Google Drive sync): Any of the
-free static hosts above work — the app talks directly to Google's API from the
-browser. No backend needed at all. My take for your situation: GitHub Pages +
-Google Drive sync is probably the sweet spot — free, no server to maintain, data
-in your own Google account, works from your phone and any browser. And if you
-ever want to move, the data is just a JSON file in your Drive. Want me to
-implement the Google Drive sync version? is this working only if user has google
-login, what about other social login solutions? 17:43 The Google Drive approach
-ties you to Google, yes. But the real question is: what do you actually need
-from the login? You need two things — identity (who is this user) and storage
-(where to put their data). These don't have to come from the same provider. Auth
-providers (who are you): Google — most universal, everyone has a Gmail Apple
-Sign-In — good for iOS users, but requires Apple Developer account (€99/year)
-GitHub — great for devs, not for Natalia or friends Email magic link — no
-password, works for everyone, but needs a backend to send emails
-Passkeys/WebAuthn — modern, passwordless, but still early adoption Services that
-bundle auth + storage together (zero backend): Firebase (Google) — Auth with
-Google/Apple/GitHub/email + Firestore database. Free tier is huge for personal
-use. Standalone HTML file works. Supabase (open source Firebase alternative) —
-same idea, Auth + Postgres database. Free tier, can self-host later if you want.
-The practical answer for your case: Firebase is probably the most pragmatic
-choice. Here's why: It supports Google, Apple, and email login out of the box —
-so you could use it, Natalia could use it, friends could use it if you ever
-share the app. The data lives in Firestore (a simple JSON-like database), the
-free tier covers thousands of users let alone your family, and the whole thing
-still works as a standalone HTML file with just two script imports. The
-architecture would be: your HTML file loads Firebase SDK → user signs in with
-whatever method → app reads/writes their habits to Firestore under their user ID
-→ localStorage stays as offline cache. If you want to avoid any vendor lock-in
-entirely, Supabase is the open-source alternative with the same capabilities —
-and you could self-host it on your server later. Want me to build the Firebase
-version with Google login (and easy to add Apple/email later)? it looks like the
-habits are shared between everyone who is going to my page
-https://rafalsladek.github.io/habitio/ i thought my habits are private to me and
-stored in localstorage 17:58 You're right, and they are private! The current
-version uses only localStorage, which is completely isolated per browser —
-nobody visiting your page can see anyone else's data. Your habits on your phone
-are yours, Natalia's browser would have her own separate data, a stranger
-visiting the URL sees only the defaults. There's no server, no shared database,
-nothing leaves your device. It's already working exactly as you want. The
-confusion might come from the fact that everyone sees the same default habits on
-first load — but the moment anyone checks a habit, adds, or deletes one, that
-change is stored only in their browser's localStorage. So the current setup is
-actually fine for personal use. The limitation is: If you clear browser data or
-switch phones, your progress is gone (that's where the export/import JSON helps)
-Your data on your phone and your laptop are separate copies If that's
-acceptable, you don't need Firebase or any cloud sync at all. The app is already
-working as intended on your GitHub Pages. Do you want me to focus on improving
-the app itself instead — or do you still want cloud sync so your data follows
-you across devices? RafalSladek/habitio main GITHUB instead of having default
-habits, please create suggesiton while adding . when user first time visits the
-page get some inspirational quotes from Atomic habits books, 1% while adding
-habits allow to import list of habits and its cadence. in settings there has to
-be export function for that the tracking data should be part of the same export
-and import function. how ever please ask if user wants to import only habits and
-its settings or all data with tracking data to 18:02 Let me build this properly
-— empty start with onboarding, habit suggestions, smart import/export, and an
-inspirational first-time experience. 2 Befehle ausgeführt, datei angesehen,
-datei erstellt 2 Befehle ausgeführt, datei angesehen, datei erstellt Here's what
-changed: No more default habits. First visit shows an onboarding screen with a
-random Atomic Habits quote, a "Add Your First Habit" button, and an "Import from
-Backup" option. Habit suggestions when adding — categorized into Health & Body,
-Mind & Focus, Relationships, and Productivity. Each suggestion shows its emoji,
-name, and cadence. Tap the + to instantly add it (already-added habits are
-filtered out). You can still type your own below. Smart import/export: Export in
-Settings saves everything (habits + cadence + tracking data) as one JSON file
-Import opens a modal asking what to import: Habits & Settings — just the habit
-list, icons, cadence (merges, skips duplicates) Tracking Data — your daily
-check-ins (maps by habit name, so it works even with new IDs) Both selected by
-default, user can toggle either off Tracking data import maps old habit IDs to
-new ones by matching names, so it works across fresh installs New storage key
-(habitio_v1) — clean slate, no conflict with previous versions. The sw.js and
-manifest.json stay the same. Index Code · HTML pls ask for user firstname, age
-add more habit suggestions * reading (book) * No porn * Offline day - detox
-provide tranlations for DE, PL to build habits it is important to keep dairy
-writing down observations and self reflextions 1. what i am grateful for 2.
-afirmations - I am ... 3. 3 good things today 4. what could make this day even
-better 18:12 This is a significant expansion — diary/journal feature, user
-profile, translations, and more suggestions. Let me rebuild properly. 2 Befehle
-ausgeführt, datei erstellt, datei lesen 2 Befehle ausgeführt, datei erstellt,
-datei lesen Here's what's new in v2.0: Welcome screen — asks for first name,
-age, and language on first visit. Name shows in the header. Can be changed in
-Settings. 3 languages — full translations for English, Deutsch, and Polski.
-Day/month names, all UI labels, buttons, toasts, everything. Switchable in
-Settings or during welcome. Journal tab (new bottom nav item) with 4 daily
-reflection prompts: 🙏 What I am grateful for today 💪 Affirmations — I am… ⭐ 3
-good things today 🚀 What could make this day even better Each auto-saves as you
-type with a "Saved ✓" indicator. Navigate between days with arrows. All diary
-entries are included in export/import. Expanded suggestions with new categories:
-Digital Detox — No Scrolling, Offline Day (1x/week), No Social Media,
-Screen-Free Evening, Phone in Another Room Plus: Read 30min, No Porn, Walk 10k
-Steps, Healthy Meal Prep, Cook for Family, Practice Gratitude, and more Import
-now handles diary entries too — the "Tracking & Journal" option imports both
-check-ins and diary data. New storage key habitio_v2 — clean start. The sw.js
-and manifest.json are unchanged. Index Code · HTML Claude ist eine KI und kann
-Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -224,7 +12,7 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
       content="black-translucent"
     />
     <meta name="theme-color" content="#0a0a0f" />
-    <title>Habitio</title>
+    <title>habit.io</title>
     <link rel="manifest" href="manifest.json" />
     <link
       href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
@@ -294,6 +82,16 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
         font-size: 22px;
         font-weight: 700;
         letter-spacing: -0.5px;
+      }
+      .header-greeting {
+        font-size: 12px;
+        color: var(--text-dim);
+        margin-top: 1px;
+        min-height: 16px;
+      }
+      .header-left {
+        display: flex;
+        flex-direction: column;
       }
       .header-sub {
         font-size: 13px;
@@ -478,6 +276,9 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
       }
       .habit-card.checked {
         border-color: rgba(0, 206, 201, 0.2);
+      }
+      .habit-card.just-checked .habit-emoji {
+        animation: checkPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       }
       .habit-card.checked::before {
         content: "";
@@ -899,6 +700,82 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
       .lang-chip.selected {
         background: var(--accent-dim);
         border-color: var(--accent);
+        color: var(--accent-glow);
+      }
+
+      /* Motivational banner */
+      #motiv-banner {
+        position: fixed;
+        left: 0; right: 0;
+        bottom: calc(72px + var(--safe-bottom));
+        z-index: 200;
+        pointer-events: none;
+        display: flex;
+        justify-content: center;
+        padding: 0 16px;
+      }
+      .motiv-card {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 12px 16px;
+        max-width: 420px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        animation: motivSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      }
+      .motiv-card.hide {
+        animation: motivSlideDown 0.3s ease forwards;
+      }
+      .motiv-emoji { font-size: 24px; flex-shrink: 0; }
+      .motiv-text  { font-size: 13px; line-height: 1.4; color: var(--text); }
+      @keyframes motivSlideUp {
+        from { transform: translateY(120%); opacity: 0; }
+        to   { transform: translateY(0);   opacity: 1; }
+      }
+      @keyframes motivSlideDown {
+        from { transform: translateY(0);   opacity: 1; }
+        to   { transform: translateY(120%); opacity: 0; }
+      }
+      @keyframes celebrate {
+        0%   { transform: scale(1); }
+        30%  { transform: scale(1.25) rotate(-5deg); }
+        60%  { transform: scale(1.15) rotate(5deg); }
+        100% { transform: scale(1); }
+      }
+      .ring-celebrate #ring-fill {
+        stroke: var(--success);
+        animation: celebratePulse 0.6s ease;
+      }
+      @keyframes celebratePulse {
+        0%,100% { filter: drop-shadow(0 0 0px var(--success)); }
+        50%      { filter: drop-shadow(0 0 10px var(--success)); }
+      }
+
+      .sex-toggle {
+        display: flex;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+      .sex-btn {
+        flex: 1;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 600;
+        font-family: var(--font);
+        background: var(--surface-2);
+        color: var(--text-dim);
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .sex-btn:first-child { border-right: 1px solid var(--border); }
+      .sex-btn.active {
+        background: var(--accent-dim);
         color: var(--accent-glow);
       }
 
@@ -1344,7 +1221,10 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
     <div id="app">
       <div class="page active" id="page-tracker">
         <div class="header">
-          <h1 id="h-title">Habitio</h1>
+          <div class="header-left">
+            <h1 id="h-title">habit.io</h1>
+            <div id="h-greeting" class="header-greeting"></div>
+          </div>
           <div class="header-actions">
             <button class="icon-btn" onclick="openAddModal()">+</button>
           </div>
@@ -1412,6 +1292,9 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
       </nav>
     </div>
 
+    <!-- MOTIVATIONAL BANNER -->
+    <div id="motiv-banner"></div>
+
     <!-- ADD HABIT MODAL -->
     <div class="modal-overlay" id="add-modal">
       <div class="modal">
@@ -1471,16 +1354,25 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
             autocomplete="given-name"
           />
         </div>
-        <div class="welcome-field">
-          <label id="wl-age-label">Your age</label
-          ><input
-            class="modal-input"
-            id="welcome-age"
-            type="number"
-            min="10"
-            max="120"
-            style="width: 100px"
-          />
+        <div class="welcome-field" style="gap:12px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label id="wl-age-label">Your age</label
+            ><input
+              class="modal-input"
+              id="welcome-age"
+              type="number"
+              min="10"
+              max="120"
+              style="width: 100px"
+            />
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <label id="wl-sex-label">Sex</label>
+            <div class="sex-toggle" id="welcome-sex">
+              <button class="sex-btn active" id="sex-male" onclick="setSex('male')" type="button">♂ <span id="sex-male-lbl">Male</span></button>
+              <button class="sex-btn" id="sex-female" onclick="setSex('female')" type="button">♀ <span id="sex-female-lbl">Female</span></button>
+            </div>
+          </div>
         </div>
         <div class="welcome-field">
           <label id="wl-lang-label">Language</label>
@@ -1523,6 +1415,7 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
 
     <div class="toast" id="toast"></div>
 
+    <script src="suggestions.js"></script>
     <script>
       // ═══ i18n ═══
       const T = {
@@ -1554,11 +1447,14 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           habit_added: "Habit added!",
           habit_updated: "Habit updated!",
           habit_deleted: "Habit deleted",
-          welcome: "Welcome to Habitio",
+          welcome: "Welcome to habit.io",
           welcome_sub:
             "Build better habits, one day at a time. Let's personalize your experience.",
           your_name: "Your first name",
           your_age: "Your age",
+          your_sex: "Sex",
+          sex_male: "Male",
+          sex_female: "Female",
           language: "Language",
           lets_go: "Let's go!",
           onb_title: "Start small. Start now.",
@@ -1599,11 +1495,60 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           settings_data: "Data",
           settings_profile: "Profile",
           settings_about: "About",
+          greet_morning: "Good morning",
+          greet_afternoon: "Good afternoon",
+          greet_evening: "Good evening",
+          greet_night: "Good night",
+          motiv_perfect: ["You crushed it today! 🏆", "100%! Nothing can stop you.", "A perfect day. Own it."],
+          motiv_great:   ["Almost there — great effort!", "Strong day. Keep the streak!", "So close to perfect!"],
+          motiv_good:    ["Good progress. One habit at a time.", "You're building momentum 💪", "Every check-in counts."],
+          motiv_low:     ["A small step is still a step.", "Be kind to yourself — you showed up.", "Tomorrow is a fresh start 🌱"],
           cat_health: "Health & Body",
           cat_mind: "Mind & Focus",
           cat_social: "Relationships",
           cat_prod: "Productivity",
           cat_detox: "Digital Detox",
+          sug_wake_up: "Wake Up Early",
+          sug_morning_workout: "Morning Workout",
+          sug_cold_shower: "Cold Shower",
+          sug_drink_water: "Drink 2L Water",
+          sug_gym: "Gym",
+          sug_yoga: "Yoga / Stretch",
+          sug_no_alcohol: "No Alcohol",
+          sug_no_sweets: "No Sweets",
+          sug_vitamins: "Take Vitamins",
+          sug_sleep_11: "Sleep by 11pm",
+          sug_walk_10k: "Walk 10k Steps",
+          sug_walk_30: "Walk 30 min",
+          sug_meal_prep: "Healthy Meal Prep",
+          sug_read: "Read 30 min",
+          sug_meditate: "Meditate",
+          sug_journal: "Journal / Reflect",
+          sug_deep_work: "Deep Work Session",
+          sug_learn: "Learn Something New",
+          sug_no_coffee: "No Coffee before 10am",
+          sug_gratitude: "Practice Gratitude",
+          sug_no_porn: "No Porn",
+          sug_no_scrolling: "No Scrolling",
+          sug_offline_day: "Offline Day",
+          sug_no_social: "No Social Media",
+          sug_screen_free: "Screen-Free Evening",
+          sug_phone_room: "Phone in Another Room",
+          sug_call_friend: "Call a Friend / Family",
+          sug_play_kids: "Play with Kids",
+          sug_hug: "Hug Someone",
+          sug_date_night: "Date Night",
+          sug_thank_you: "Write a Thank You",
+          sug_cook: "Cook for Family",
+          sug_plan_tomorrow: "Plan Tomorrow Tonight",
+          sug_job_search: "Job Search (1h)",
+          sug_side_project: "Side Project",
+          sug_finances: "Review Finances",
+          sug_clean: "Clean / Organize",
+          sug_inbox: "Inbox Zero",
+          sug_lang_practice: "Practice Foreign Language",
+          sug_driving: "Practice Driving",
+          sug_movie_lang: "Watch Movie in Foreign Language",
         },
         de: {
           nav_today: "Heute",
@@ -1633,11 +1578,14 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           habit_added: "Hinzugefügt!",
           habit_updated: "Aktualisiert!",
           habit_deleted: "Gelöscht",
-          welcome: "Willkommen bei Habitio",
+          welcome: "Willkommen bei habit.io",
           welcome_sub:
             "Bessere Gewohnheiten aufbauen, Tag für Tag. Lass uns dein Erlebnis personalisieren.",
           your_name: "Dein Vorname",
           your_age: "Dein Alter",
+          your_sex: "Geschlecht",
+          sex_male: "Männlich",
+          sex_female: "Weiblich",
           language: "Sprache",
           lets_go: "Los geht's!",
           onb_title: "Fang klein an. Fang jetzt an.",
@@ -1679,11 +1627,60 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           settings_data: "Daten",
           settings_profile: "Profil",
           settings_about: "Über",
+          greet_morning: "Guten Morgen",
+          greet_afternoon: "Guten Tag",
+          greet_evening: "Guten Abend",
+          greet_night: "Gute Nacht",
+          motiv_perfect: ["Heute perfekt! 🏆", "100%! Du hast alles geschafft.", "Ein makelloser Tag — gut gemacht."],
+          motiv_great:   ["Fast perfekt — starke Leistung!", "Toller Tag. Bleib dran!", "So nah an 100%!"],
+          motiv_good:    ["Guter Fortschritt. Weiter so!", "Du baust Schwung auf 💪", "Jeder Haken zählt."],
+          motiv_low:     ["Ein kleiner Schritt ist immer noch ein Schritt.", "Sei nett zu dir — du bist dabei.", "Morgen ist ein neuer Anfang 🌱"],
           cat_health: "Gesundheit & Körper",
           cat_mind: "Geist & Fokus",
           cat_social: "Beziehungen",
           cat_prod: "Produktivität",
           cat_detox: "Digital Detox",
+          sug_wake_up: "Früh aufstehen",
+          sug_morning_workout: "Morgentraining",
+          sug_cold_shower: "Kalte Dusche",
+          sug_drink_water: "2L Wasser trinken",
+          sug_gym: "Fitnessstudio",
+          sug_yoga: "Yoga / Dehnen",
+          sug_no_alcohol: "Kein Alkohol",
+          sug_no_sweets: "Keine Süßigkeiten",
+          sug_vitamins: "Vitamine nehmen",
+          sug_sleep_11: "Bis 23 Uhr schlafen",
+          sug_walk_10k: "10.000 Schritte gehen",
+          sug_walk_30: "30 Min. spazieren",
+          sug_meal_prep: "Gesundes Meal Prep",
+          sug_read: "30 Min. lesen",
+          sug_meditate: "Meditieren",
+          sug_journal: "Tagebuch schreiben",
+          sug_deep_work: "Fokus-Arbeitssession",
+          sug_learn: "Etwas Neues lernen",
+          sug_no_coffee: "Kein Kaffee vor 10 Uhr",
+          sug_gratitude: "Dankbarkeit üben",
+          sug_no_porn: "Kein Pornos",
+          sug_no_scrolling: "Kein Scrollen",
+          sug_offline_day: "Offline-Tag",
+          sug_no_social: "Kein Social Media",
+          sug_screen_free: "Abend ohne Bildschirm",
+          sug_phone_room: "Handy im anderen Zimmer",
+          sug_call_friend: "Freund / Familie anrufen",
+          sug_play_kids: "Mit Kindern spielen",
+          sug_hug: "Jemanden umarmen",
+          sug_date_night: "Romantischer Abend",
+          sug_thank_you: "Danke schreiben",
+          sug_cook: "Für Familie kochen",
+          sug_plan_tomorrow: "Morgen heute planen",
+          sug_job_search: "Jobsuche (1 Std.)",
+          sug_side_project: "Nebenprojekt",
+          sug_finances: "Finanzen prüfen",
+          sug_clean: "Aufräumen / Organisieren",
+          sug_inbox: "Postfach leeren",
+          sug_lang_practice: "Fremdsprache üben",
+          sug_driving: "Fahrstunde",
+          sug_movie_lang: "Film in Fremdsprache schauen",
         },
         pl: {
           nav_today: "Dziś",
@@ -1713,11 +1710,14 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           habit_added: "Nawyk dodany!",
           habit_updated: "Nawyk zaktualizowany!",
           habit_deleted: "Nawyk usunięty",
-          welcome: "Witaj w Habitio",
+          welcome: "Witaj w habit.io",
           welcome_sub:
             "Buduj lepsze nawyki, dzień po dniu. Spersonalizujmy Twoje doświadczenie.",
           your_name: "Twoje imię",
           your_age: "Twój wiek",
+          your_sex: "Płeć",
+          sex_male: "Mężczyzna",
+          sex_female: "Kobieta",
           language: "Język",
           lets_go: "Zaczynajmy!",
           onb_title: "Zacznij od małych kroków. Zacznij teraz.",
@@ -1758,11 +1758,60 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           settings_data: "Dane",
           settings_profile: "Profil",
           settings_about: "O aplikacji",
+          greet_morning: "Dzień dobry",
+          greet_afternoon: "Dzień dobry",
+          greet_evening: "Dobry wieczór",
+          greet_night: "Dobranoc",
+          motiv_perfect: ["Dziś perfekcyjnie! 🏆", "100%! Nic Cię nie powstrzyma.", "Idealny dzień — tak trzymaj."],
+          motiv_great:   ["Prawie idealnie — świetna robota!", "Mocny dzień. Utrzymaj passę!", "Tak blisko 100%!"],
+          motiv_good:    ["Dobry postęp. Krok po kroku.", "Budujesz pęd 💪", "Każde zaznaczenie ma znaczenie."],
+          motiv_low:     ["Mały krok to wciąż krok.", "Bądź dla siebie łagodny/a — jesteś tu.", "Jutro nowy start 🌱"],
           cat_health: "Zdrowie i ciało",
           cat_mind: "Umysł i skupienie",
           cat_social: "Relacje",
           cat_prod: "Produktywność",
           cat_detox: "Cyfrowy detoks",
+          sug_wake_up: "Wstać wcześnie",
+          sug_morning_workout: "Poranny trening",
+          sug_cold_shower: "Zimny prysznic",
+          sug_drink_water: "Pić 2L wody",
+          sug_gym: "Siłownia",
+          sug_yoga: "Joga / Rozciąganie",
+          sug_no_alcohol: "Bez alkoholu",
+          sug_no_sweets: "Bez słodyczy",
+          sug_vitamins: "Brać witaminy",
+          sug_sleep_11: "Spać przed 23:00",
+          sug_walk_10k: "10 tys. kroków",
+          sug_walk_30: "Spacer 30 min",
+          sug_meal_prep: "Zdrowe gotowanie",
+          sug_read: "Czytać 30 min",
+          sug_meditate: "Medytować",
+          sug_journal: "Pisać dziennik",
+          sug_deep_work: "Praca głęboka",
+          sug_learn: "Uczyć się czegoś nowego",
+          sug_no_coffee: "Brak kawy przed 10:00",
+          sug_gratitude: "Praktykować wdzięczność",
+          sug_no_porn: "Bez pornografii",
+          sug_no_scrolling: "Bez scrollowania",
+          sug_offline_day: "Dzień offline",
+          sug_no_social: "Bez mediów społecznościowych",
+          sug_screen_free: "Wieczór bez ekranu",
+          sug_phone_room: "Telefon w innym pokoju",
+          sug_call_friend: "Zadzwonić do kogoś",
+          sug_play_kids: "Bawić się z dziećmi",
+          sug_hug: "Przytulić kogoś",
+          sug_date_night: "Wieczór we dwoje",
+          sug_thank_you: "Napisać podziękowanie",
+          sug_cook: "Gotować dla rodziny",
+          sug_plan_tomorrow: "Planować jutro wieczorem",
+          sug_job_search: "Szukanie pracy (1h)",
+          sug_side_project: "Projekt poboczny",
+          sug_finances: "Przegląd finansów",
+          sug_clean: "Sprzątanie",
+          sug_inbox: "Opróżnić skrzynkę",
+          sug_lang_practice: "Ćwiczyć język obcy",
+          sug_driving: "Ćwiczyć jazdę samochodem",
+          sug_movie_lang: "Obejrzeć film w obcym języku",
         },
       };
       function t(k) {
@@ -1923,182 +1972,12 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
       ];
 
       function getSuggestions() {
-        return [
-          {
-            cat: t("cat_health"),
-            items: [
-              {
-                name: "Wake Up Early",
-                emoji: "⏰",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Morning Workout",
-                emoji: "🏃",
-                cadence: { type: "daily" },
-              },
-              { name: "Cold Shower", emoji: "🥶", cadence: { type: "daily" } },
-              {
-                name: "Drink 2L Water",
-                emoji: "💧",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Gym",
-                emoji: "🏋️",
-                cadence: { type: "x_per", count: 3, period: "week" },
-              },
-              {
-                name: "Yoga / Stretch",
-                emoji: "🧘",
-                cadence: { type: "x_per", count: 2, period: "week" },
-              },
-              { name: "No Alcohol", emoji: "🚫", cadence: { type: "daily" } },
-              { name: "No Sweets", emoji: "🍎", cadence: { type: "daily" } },
-              {
-                name: "Take Vitamins",
-                emoji: "💊",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Sleep by 11pm",
-                emoji: "🛏️",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Walk 10k Steps",
-                emoji: "🚶",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Healthy Meal Prep",
-                emoji: "🥗",
-                cadence: { type: "x_per", count: 2, period: "week" },
-              },
-            ],
-          },
-          {
-            cat: t("cat_mind"),
-            items: [
-              { name: "Read 30 min", emoji: "📖", cadence: { type: "daily" } },
-              { name: "Meditate", emoji: "🧘", cadence: { type: "daily" } },
-              {
-                name: "Journal / Reflect",
-                emoji: "✍️",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Deep Work Session",
-                emoji: "🧠",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Learn Something New",
-                emoji: "🎓",
-                cadence: { type: "x_per", count: 3, period: "week" },
-              },
-              {
-                name: "No Coffee before 10am",
-                emoji: "☕",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Practice Gratitude",
-                emoji: "🙏",
-                cadence: { type: "daily" },
-              },
-              { name: "No Porn", emoji: "🚫", cadence: { type: "daily" } },
-            ],
-          },
-          {
-            cat: t("cat_detox"),
-            items: [
-              { name: "No Scrolling", emoji: "📵", cadence: { type: "daily" } },
-              {
-                name: "Offline Day",
-                emoji: "🔇",
-                cadence: { type: "x_per", count: 1, period: "week" },
-              },
-              {
-                name: "No Social Media",
-                emoji: "📵",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Screen-Free Evening",
-                emoji: "🌙",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Phone in Another Room",
-                emoji: "🏠",
-                cadence: { type: "daily" },
-              },
-            ],
-          },
-          {
-            cat: t("cat_social"),
-            items: [
-              {
-                name: "Call a Friend / Family",
-                emoji: "📞",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Play with Kids",
-                emoji: "👨‍👧‍👦",
-                cadence: { type: "daily" },
-              },
-              { name: "Hug Someone", emoji: "🤗", cadence: { type: "daily" } },
-              {
-                name: "Date Night",
-                emoji: "❤️",
-                cadence: { type: "x_per", count: 1, period: "week" },
-              },
-              {
-                name: "Write a Thank You",
-                emoji: "✍️",
-                cadence: { type: "x_per", count: 1, period: "week" },
-              },
-              {
-                name: "Cook for Family",
-                emoji: "🧑‍🍳",
-                cadence: { type: "x_per", count: 2, period: "week" },
-              },
-            ],
-          },
-          {
-            cat: t("cat_prod"),
-            items: [
-              {
-                name: "Plan Tomorrow Tonight",
-                emoji: "📝",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Job Search (1h)",
-                emoji: "💼",
-                cadence: { type: "daily" },
-              },
-              {
-                name: "Side Project",
-                emoji: "💻",
-                cadence: { type: "x_per", count: 3, period: "week" },
-              },
-              {
-                name: "Review Finances",
-                emoji: "💰",
-                cadence: { type: "x_per", count: 1, period: "month" },
-              },
-              {
-                name: "Clean / Organize",
-                emoji: "🧹",
-                cadence: { type: "x_per", count: 2, period: "week" },
-              },
-              { name: "Inbox Zero", emoji: "📊", cadence: { type: "daily" } },
-            ],
-          },
-        ];
+        return SUGGESTION_DATA.map((group) => ({
+          cat: t(group.catKey),
+          items: group.items
+            .map((item) => ({ ...item, name: t(item.nameKey), _p: sugPriority(item.nameKey, state.profile) }))
+            .sort((a, b) => b._p - a._p),
+        }));
       }
 
       // ═══ STATE ═══
@@ -2106,7 +1985,7 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
         habits: [],
         checks: {},
         diary: {},
-        profile: { name: "", age: "" },
+        profile: { name: "", age: "", sex: "male" },
         lang: "en",
       };
       let selectedDate = new Date(),
@@ -2133,7 +2012,8 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
               ...h,
             }));
             if (!d.diary) d.diary = {};
-            if (!d.profile) d.profile = { name: "", age: "" };
+            if (!d.profile) d.profile = { name: "", age: "", sex: "male" };
+            if (!d.profile.sex) d.profile.sex = "male";
             if (!d.lang) d.lang = "en";
             state = d;
             return;
@@ -2143,7 +2023,7 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           habits: [],
           checks: {},
           diary: {},
-          profile: { name: "", age: "" },
+          profile: { name: "", age: "", sex: "male" },
           lang: "en",
         };
       }
@@ -2237,16 +2117,82 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
         });
       }
 
+      function getGreeting() {
+        const h = new Date().getHours();
+        const key = h >= 5 && h < 12 ? "greet_morning"
+                  : h >= 12 && h < 17 ? "greet_afternoon"
+                  : h >= 17 && h < 21 ? "greet_evening"
+                  : "greet_night";
+        const name = state.profile.name;
+        return t(key) + (name ? ", " + name + " 👋" : " 👋");
+      }
+
+      let motivTimer = null;
+      function showMotivation(pct) {
+        if (!isToday(selectedDate)) return;
+        const level = pct === 100 ? "perfect" : pct >= 75 ? "great" : pct >= 40 ? "good" : "low";
+        const emoji = pct === 100 ? "🏆" : pct >= 75 ? "💪" : pct >= 40 ? "✨" : "🌱";
+        const pool = t("motiv_" + level);
+        const msg = Array.isArray(pool) ? pool[Math.floor(Math.random() * pool.length)] : pool;
+        const banner = document.getElementById("motiv-banner");
+        banner.innerHTML = '<div class="motiv-card"><span class="motiv-emoji">' + emoji + '</span><span class="motiv-text">' + msg + '</span></div>';
+        if (pct === 100) document.querySelector(".ring-container").classList.add("ring-celebrate");
+        clearTimeout(motivTimer);
+        motivTimer = setTimeout(() => {
+          const card = banner.querySelector(".motiv-card");
+          if (card) {
+            card.classList.add("hide");
+            setTimeout(() => { banner.innerHTML = ""; }, 350);
+          }
+          document.querySelector(".ring-container")?.classList.remove("ring-celebrate");
+        }, 3500);
+      }
+
+      function sugPriority(nameKey, profile) {
+        const age = parseInt(profile.age) || 30;
+        const sex = profile.sex || "male";
+        const isTeen = age < 20, isYoung = age >= 20 && age < 30;
+        const isMid = age >= 30 && age < 60, isSenior = age >= 60;
+        const isM = sex === "male", isF = sex === "female";
+        const P = {
+          sug_no_alcohol:    { M:3, young:3, mid:2 },
+          sug_no_porn:       { M:3, teen:2 },
+          sug_read:          { M:2, teen:2 },
+          sug_journal:       { M:2, F:1 },
+          sug_gratitude:     { M:2, F:1 },
+          sug_no_scrolling:  { teen:3, F:2 },
+          sug_offline_day:   { teen:3, F:2 },
+          sug_no_social:     { teen:3, F:3 },
+          sug_screen_free:   { teen:2, F:2 },
+          sug_sleep_11:      { teen:3, F:1 },
+          sug_morning_workout:{ F:2, teen:2 },
+          sug_gym:           { F:2 },
+          sug_walk_10k:      { senior:3, mid:2 },
+          sug_walk_30:       { senior:3, mid:2, F:1 },
+          sug_meal_prep:     { M:3, young:2 },
+          sug_no_sweets:     { M:2, young:2 },
+          sug_drink_water:   { M:2 },
+          sug_meditate:      { F:2, mid:1 },
+          sug_call_friend:   { senior:3, mid:1 },
+          sug_play_kids:     { mid:2 },
+          sug_deep_work:     { young:2, mid:1 },
+          sug_vitamins:      { F:2, senior:2 },
+          sug_yoga:          { F:2, senior:2 },
+        };
+        const p = P[nameKey] || {};
+        return (p.M&&isM?p.M:0)+(p.F&&isF?p.F:0)+
+               (p.teen&&isTeen?p.teen:0)+(p.young&&isYoung?p.young:0)+
+               (p.mid&&isMid?p.mid:0)+(p.senior&&isSenior?p.senior:0);
+      }
+
       function render() {
         applyLang();
         renderWeekNav();
         renderDays();
         renderProgress();
         renderHabits();
-        const n = state.profile.name;
-        document.getElementById("h-title").innerHTML = n
-          ? 'Habitio <span class="header-sub">' + esc(n) + "</span>"
-          : "Habitio";
+        document.getElementById("h-title").textContent = "habit.io";
+        document.getElementById("h-greeting").textContent = getGreeting();
       }
       function renderWeekNav() {
         const m = getMon(addD(new Date(), weekOffset * 7)),
@@ -2391,6 +2337,19 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
         if (!state.checks[k][id]) delete state.checks[k][id];
         save();
         render();
+        // animate the tapped card
+        const card = document.querySelector('[onclick="toggleHabit(\'' + id + '\')"]');
+        if (card && state.checks[k]?.[id]) {
+          card.classList.add("just-checked");
+          setTimeout(() => card.classList.remove("just-checked"), 400);
+        }
+        // motivational banner on today
+        if (isToday(selectedDate) && state.habits.length) {
+          const ch = state.checks[k] || {};
+          const sched = state.habits.filter(h => isScheduled(h, selectedDate));
+          const pct = sched.length ? Math.round(sched.filter(h => ch[h.id]).length / sched.length * 100) : 0;
+          showMotivation(pct);
+        }
       }
       function changeWeek(dir) {
         weekOffset += dir;
@@ -2409,6 +2368,10 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
         document.getElementById("welcome-sub").textContent = t("welcome_sub");
         document.getElementById("wl-name-label").textContent = t("your_name");
         document.getElementById("wl-age-label").textContent = t("your_age");
+        document.getElementById("wl-sex-label").textContent = t("your_sex");
+        document.getElementById("sex-male-lbl").textContent = t("sex_male");
+        document.getElementById("sex-female-lbl").textContent = t("sex_female");
+        setSex(state.profile.sex || "male");
         document.getElementById("wl-lang-label").textContent = t("language");
         document.getElementById("welcome-go-btn").textContent = t("lets_go");
         const lc = document.getElementById("welcome-lang-chips");
@@ -2432,6 +2395,11 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
         save();
         showWelcome();
         render();
+      }
+      function setSex(val) {
+        state.profile.sex = val;
+        document.getElementById("sex-male").classList.toggle("active", val === "male");
+        document.getElementById("sex-female").classList.toggle("active", val === "female");
       }
       function finishWelcome() {
         const n = document.getElementById("welcome-name").value.trim();
@@ -2981,8 +2949,8 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           t("settings_profile") +
           '</div><div class="settings-list"><div class="setting-item" style="cursor:default;flex-wrap:wrap;gap:8px"><div class="setting-left" style="width:100%"><span class="setting-emoji">👤</span><span class="setting-label">' +
           (state.profile.name || "—") +
-          "" +
           (state.profile.age ? ", " + state.profile.age : "") +
+          (state.profile.sex ? " · " + t("sex_" + state.profile.sex) : "") +
           '</span></div><div style="width:100%;padding-left:32px"><div class="lang-chips">' +
           ["en", "de", "pl"]
             .map(
@@ -3032,7 +3000,7 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           '</span></div><span class="setting-action">›</span></div></div></div>' +
           '<div class="settings-section"><div class="settings-title">' +
           t("settings_about") +
-          '</div><div class="settings-list"><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🌱</span><span class="setting-label">Habitio v2.0</span></div><span class="setting-action" style="font-size:11px;font-family:var(--mono)">localStorage</span></div></div></div>';
+          '</div><div class="settings-list"><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🌱</span><span class="setting-label">habit.io v2.0</span></div><span class="setting-action" style="font-size:11px;font-family:var(--mono)">localStorage</span></div></div></div>';
       }
       function delHabit(id) {
         if (!confirm(t("confirm_delete"))) return;
@@ -3050,7 +3018,7 @@ Fehler machen. Bitte überprüfe die Antworten. Index · HTML Kopieren
           habits: [],
           checks: {},
           diary: {},
-          profile: { name: "", age: "" },
+          profile: { name: "", age: "", sex: "male" },
           lang: state.lang,
         };
         save();
