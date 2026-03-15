@@ -8,6 +8,49 @@ async function completeOnboarding(page, name = 'Test') {
   await page.getByRole('button', { name: "Let's go!" }).click();
 }
 
+/**
+ * Seed localStorage with a single habit whose createdAt is `daysOld` days ago,
+ * optionally with `checkedDaysBack` consecutive daily checks ending today.
+ */
+async function seedHabit(page, daysOld, checkedDaysBack = 0) {
+  await page.evaluate(({ daysOld, checkedDaysBack }) => {
+    const id = 'test-habit-001';
+
+    // createdAt as YYYY-MM-DD string (same format as fmt() in app.js)
+    const created = new Date();
+    created.setDate(created.getDate() - daysOld);
+    const createdAt = created.toISOString().slice(0, 10);
+
+    // Build checks object: consecutive days from today going back
+    const checks = {};
+    for (let i = 0; i < checkedDaysBack; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      checks[key] = { [id]: true };
+    }
+
+    localStorage.setItem('habitio_v2', JSON.stringify({
+      profile: { name: 'Test', age: 30, ageGroup: 'adult', sex: 'm' },
+      lang: 'en',
+      habits: [{
+        id,
+        name: 'Drink 2L Water',
+        emoji: '💧',
+        cadence: { type: 'daily' },
+        morning: false,
+        source: 'suggested',
+        createdAt,
+      }],
+      checks,
+      diary: {},
+    }));
+  }, { daysOld, checkedDaysBack });
+
+  await page.reload();
+  await page.waitForLoadState('domcontentloaded');
+}
+
 test.describe('habit.io', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
@@ -136,6 +179,87 @@ test.describe('habit.io', () => {
       await page.getByRole('button', { name: '⚙ Settings' }).click();
       await page.locator('.settings-title').filter({ hasText: 'Habits' }).getByRole('button', { name: '+' }).click();
       await expect(page.getByRole('heading', { name: 'New Habit' })).toBeVisible();
+    });
+  });
+
+  test.describe('formation arc', () => {
+    // Phase thresholds (from app.js getFormationPhase):
+    //   0–19 days  → 🌱 Learning
+    //  20–49 days  → 🔨 Building
+    //  50–65 days  → ⚡ Forming
+    //  66+  days   → ✨ Formed
+
+    test('shows Learning phase for a habit created 5 days ago', async ({ page }) => {
+      await seedHabit(page, 5);
+      const tag = page.locator('.phase-tag.phase-learning');
+      await expect(tag).toBeVisible();
+      await expect(tag).toContainText('Learning');
+      await expect(tag).toContainText('5d');
+    });
+
+    test('shows Building phase for a habit created 25 days ago', async ({ page }) => {
+      await seedHabit(page, 25);
+      const tag = page.locator('.phase-tag.phase-building');
+      await expect(tag).toBeVisible();
+      await expect(tag).toContainText('Building');
+      await expect(tag).toContainText('25d');
+    });
+
+    test('shows Forming phase for a habit created 55 days ago', async ({ page }) => {
+      await seedHabit(page, 55);
+      const tag = page.locator('.phase-tag.phase-forming');
+      await expect(tag).toBeVisible();
+      await expect(tag).toContainText('Forming');
+      await expect(tag).toContainText('55d');
+    });
+
+    test('shows Formed phase for a habit created 70 days ago', async ({ page }) => {
+      await seedHabit(page, 70);
+      const tag = page.locator('.phase-tag.phase-formed');
+      await expect(tag).toBeVisible();
+      await expect(tag).toContainText('Formed');
+      await expect(tag).toContainText('70d');
+    });
+
+    test('formation progress bar reaches 100% at 66+ days in Stats', async ({ page }) => {
+      await seedHabit(page, 70);
+      await page.getByRole('button', { name: '◔ Stats' }).click();
+      await expect(page.locator('.stat-bar-fill[style*="width:100%"]')).toBeVisible();
+    });
+
+    test('formation progress bar is partial before 66 days in Stats', async ({ page }) => {
+      await seedHabit(page, 33); // 33/66 = 50%
+      await page.getByRole('button', { name: '◔ Stats' }).click();
+      const bar = page.locator('.stat-card', { hasText: 'Formation Progress' }).locator('.stat-bar-fill');
+      await expect(bar).toBeVisible();
+      const style = await bar.getAttribute('style');
+      expect(style).toContain('width:50%');
+    });
+
+    test('streak counter shows 65 consecutive days checked', async ({ page }) => {
+      await seedHabit(page, 70, 65); // habit is 70d old, checked last 65 days
+      const streakTag = page.locator('.habit-meta').getByText(/65d 🔥/);
+      await expect(streakTag).toBeVisible();
+    });
+
+    test('streak resets to 0 when yesterday was not checked', async ({ page }) => {
+      // Seed with only today checked (gap yesterday)
+      await seedHabit(page, 70, 1);
+      // Streak should be 1 (only today)
+      const streakTag = page.locator('.habit-meta').getByText(/1d 🔥/);
+      await expect(streakTag).toBeVisible();
+    });
+
+    test('phase transitions correctly at boundary day 20', async ({ page }) => {
+      await seedHabit(page, 20);
+      await expect(page.locator('.phase-tag.phase-building')).toBeVisible();
+      await expect(page.locator('.phase-tag.phase-learning')).not.toBeVisible();
+    });
+
+    test('phase transitions correctly at boundary day 66', async ({ page }) => {
+      await seedHabit(page, 66);
+      await expect(page.locator('.phase-tag.phase-formed')).toBeVisible();
+      await expect(page.locator('.phase-tag.phase-forming')).not.toBeVisible();
     });
   });
 });
