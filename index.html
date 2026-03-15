@@ -1080,6 +1080,68 @@
         font-weight: 700;
         flex-shrink: 0;
       }
+      .phase-tag {
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        font-family: var(--mono);
+      }
+      .phase-learning { background: rgba(253,203,110,0.15); color: var(--warn); }
+      .phase-building { background: rgba(108,92,231,0.15);  color: var(--accent-glow); }
+      .phase-forming  { background: rgba(0,206,201,0.15);   color: var(--success); }
+      .phase-formed   { background: rgba(0,206,201,0.25);   color: var(--success); }
+      .morning-tag {
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 10px;
+        background: rgba(253,203,110,0.12);
+        color: var(--warn);
+        font-family: var(--mono);
+      }
+      .own-badge {
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 9px;
+        background: var(--accent-dim);
+        color: var(--accent-glow);
+        font-family: var(--mono);
+      }
+      .s-for-you {
+        font-size: 9px;
+        color: var(--accent-glow);
+        font-weight: 700;
+        background: var(--accent-dim);
+        padding: 1px 5px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+      .morning-chip {
+        padding: 8px 14px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: var(--font);
+        display: inline-block;
+      }
+      .morning-chip.selected {
+        background: rgba(253,203,110,0.12);
+        border-color: var(--warn);
+        color: var(--warn);
+      }
+      .habit-section-label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        padding: 6px 4px 2px;
+        color: var(--warn);
+      }
       .onboarding {
         display: flex;
         flex-direction: column;
@@ -1315,6 +1377,10 @@
           <div class="cadence-chips" id="cadence-chips"></div>
           <div id="cadence-detail"></div>
         </div>
+        <div style="margin-top:12px;margin-bottom:14px">
+          <div class="section-label" id="lbl-morning">Options</div>
+          <div class="morning-chip" id="morning-chip" onclick="toggleModalMorning()">☀️ <span id="morning-chip-lbl">Morning routine</span></div>
+        </div>
         <button
           class="modal-btn primary"
           id="modal-save-btn"
@@ -1503,6 +1569,15 @@
           motiv_great:   ["Almost there — great effort!", "Strong day. Keep the streak!", "So close to perfect!"],
           motiv_good:    ["Good progress. One habit at a time.", "You're building momentum 💪", "Every check-in counts."],
           motiv_low:     ["A small step is still a step.", "Be kind to yourself — you showed up.", "Tomorrow is a fresh start 🌱"],
+          phase_learning: "🌱 Learning",
+          phase_building: "🔨 Building",
+          phase_forming:  "⚡ Forming",
+          phase_formed:   "✨ Formed",
+          morning_routine: "Morning routine",
+          for_you: "for you",
+          own_badge: "mine",
+          stat_formation: "Formation Progress · 66 days",
+          options_label: "Options",
           cat_health: "Health & Body",
           cat_mind: "Mind & Focus",
           cat_social: "Relationships",
@@ -1635,6 +1710,15 @@
           motiv_great:   ["Fast perfekt — starke Leistung!", "Toller Tag. Bleib dran!", "So nah an 100%!"],
           motiv_good:    ["Guter Fortschritt. Weiter so!", "Du baust Schwung auf 💪", "Jeder Haken zählt."],
           motiv_low:     ["Ein kleiner Schritt ist immer noch ein Schritt.", "Sei nett zu dir — du bist dabei.", "Morgen ist ein neuer Anfang 🌱"],
+          phase_learning: "🌱 Lernphase",
+          phase_building: "🔨 Aufbau",
+          phase_forming:  "⚡ Festigung",
+          phase_formed:   "✨ Geformt",
+          morning_routine: "Morgenroutine",
+          for_you: "für dich",
+          own_badge: "eigene",
+          stat_formation: "Formierungs-Fortschritt · 66 Tage",
+          options_label: "Optionen",
           cat_health: "Gesundheit & Körper",
           cat_mind: "Geist & Fokus",
           cat_social: "Beziehungen",
@@ -1766,6 +1850,15 @@
           motiv_great:   ["Prawie idealnie — świetna robota!", "Mocny dzień. Utrzymaj passę!", "Tak blisko 100%!"],
           motiv_good:    ["Dobry postęp. Krok po kroku.", "Budujesz pęd 💪", "Każde zaznaczenie ma znaczenie."],
           motiv_low:     ["Mały krok to wciąż krok.", "Bądź dla siebie łagodny/a — jesteś tu.", "Jutro nowy start 🌱"],
+          phase_learning: "🌱 Nauka",
+          phase_building: "🔨 Budowanie",
+          phase_forming:  "⚡ Utrwalanie",
+          phase_formed:   "✨ Nawyk",
+          morning_routine: "Poranny rytuał",
+          for_you: "dla Ciebie",
+          own_badge: "mój",
+          stat_formation: "Postęp formowania · 66 dni",
+          options_label: "Opcje",
           cat_health: "Zdrowie i ciało",
           cat_mind: "Umysł i skupienie",
           cat_social: "Relacje",
@@ -1996,7 +2089,22 @@
         modalDays = [],
         modalFreqCount = 2,
         modalFreqPeriod = "week",
+        modalMorning = false,
         editId = null;
+
+      function getFormationPhase(h) {
+        if (!h.createdAt) return null;
+        const days = Math.floor((new Date() - new Date(h.createdAt)) / 86400000);
+        if (days >= 66) return { key: "phase_formed",   cls: "phase-formed",   days };
+        if (days >= 50) return { key: "phase_forming",  cls: "phase-forming",  days };
+        if (days >= 20) return { key: "phase_building", cls: "phase-building", days };
+        return              { key: "phase_learning", cls: "phase-learning", days };
+      }
+      function toggleModalMorning() {
+        modalMorning = !modalMorning;
+        const chip = document.getElementById("morning-chip");
+        if (chip) chip.classList.toggle("selected", modalMorning);
+      }
       let importOpts = { habits: true, tracking: true };
       let diaryTimers = {};
 
@@ -2290,45 +2398,36 @@
             "</div></div>";
           return;
         }
-        const k = fmt(selectedDate),
-          ch = state.checks[k] || {};
-        c.innerHTML = state.habits
-          .map((h) => {
-            const sched = isScheduled(h, selectedDate),
-              checked = !!ch[h.id],
-              streak = getStreak(h.id),
-              cL = cadenceLabel(h.cadence),
-              pp = periodProg(h, selectedDate);
-            let meta = "";
-            if (streak > 0) meta += "<span>" + streak + "d 🔥</span>";
-            if (cL) meta += '<span class="cadence-tag">' + cL + "</span>";
-            if (pp)
-              meta +=
-                '<span class="cadence-tag">' +
-                pp.done +
-                "/" +
-                pp.target +
-                "</span>";
-            if (!meta) meta = '<span style="opacity:.4">—</span>';
-            const cls =
-              "habit-card" +
-              (checked ? " checked" : "") +
-              (!sched && h.cadence?.type === "specific_days" ? " off-day" : "");
-            return (
-              '<div class="' +
-              cls +
-              '" onclick="toggleHabit(\'' +
-              h.id +
-              '\')"><div class="habit-emoji">' +
-              h.emoji +
-              '</div><div class="habit-info"><div class="habit-name">' +
-              esc(h.name) +
-              '</div><div class="habit-meta">' +
-              meta +
-              '</div></div><div class="habit-check"><span class="check-icon">✓</span></div></div>'
-            );
-          })
-          .join("");
+        const k = fmt(selectedDate), ch = state.checks[k] || {};
+        const sorted = [...state.habits].sort((a, b) => (b.morning ? 1 : 0) - (a.morning ? 1 : 0));
+        const hasMorning = sorted.some(h => h.morning);
+        let html = "", morningHeaderShown = false, restHeaderShown = false;
+        sorted.forEach(h => {
+          if (h.morning && !morningHeaderShown) {
+            html += '<div class="habit-section-label">☀️ ' + t("morning_routine") + '</div>';
+            morningHeaderShown = true;
+          }
+          if (!h.morning && hasMorning && !restHeaderShown) {
+            html += '<div class="habit-section-label" style="color:var(--text-muted)">· ' + t("habits") + '</div>';
+            restHeaderShown = true;
+          }
+          const sched = isScheduled(h, selectedDate),
+            checked = !!ch[h.id],
+            streak = getStreak(h.id),
+            cL = cadenceLabel(h.cadence),
+            pp = periodProg(h, selectedDate),
+            phase = getFormationPhase(h);
+          let meta = "";
+          if (streak > 0) meta += "<span>" + streak + "d 🔥</span>";
+          if (cL) meta += '<span class="cadence-tag">' + cL + "</span>";
+          if (pp) meta += '<span class="cadence-tag">' + pp.done + "/" + pp.target + "</span>";
+          if (phase) meta += '<span class="phase-tag ' + phase.cls + '">' + t(phase.key) + ' ' + phase.days + 'd</span>';
+          if (h.source === "custom") meta += '<span class="own-badge">' + t("own_badge") + '</span>';
+          if (!meta) meta = '<span style="opacity:.4">—</span>';
+          const cls = "habit-card" + (checked ? " checked" : "") + (!sched && h.cadence?.type === "specific_days" ? " off-day" : "");
+          html += '<div class="' + cls + '" onclick="toggleHabit(\'' + h.id + '\')"><div class="habit-emoji">' + h.emoji + '</div><div class="habit-info"><div class="habit-name">' + esc(h.name) + '</div><div class="habit-meta">' + meta + '</div></div><div class="habit-check"><span class="check-icon">✓</span></div></div>';
+        });
+        c.innerHTML = html;
       }
       function toggleHabit(id) {
         const k = fmt(selectedDate);
@@ -2424,6 +2523,7 @@
           modalDays = c.type === "specific_days" ? [...(c.days || [])] : [];
           modalFreqCount = c.type === "x_per" ? c.count || 2 : 2;
           modalFreqPeriod = c.type === "x_per" ? c.period || "week" : "week";
+          modalMorning = !!(h.morning);
           document.getElementById("modal-title").textContent = t("edit_habit");
           document.getElementById("modal-save-btn").textContent =
             t("save_changes");
@@ -2435,11 +2535,18 @@
           modalDays = [];
           modalFreqCount = 2;
           modalFreqPeriod = "week";
+          modalMorning = false;
           document.getElementById("modal-title").textContent = t("new_habit");
           document.getElementById("modal-save-btn").textContent =
             t("add_habit");
           renderSuggestions();
         }
+        const mc = document.getElementById("morning-chip");
+        if (mc) mc.classList.toggle("selected", modalMorning);
+        const mcl = document.getElementById("morning-chip-lbl");
+        if (mcl) mcl.textContent = t("morning_routine");
+        const lbl = document.getElementById("lbl-morning");
+        if (lbl) lbl.textContent = t("options_label");
         document.getElementById("habit-name-input").placeholder = t("type_own");
         renderEmojiPicker();
         renderCadence();
@@ -2478,7 +2585,9 @@
               esc(s.name) +
               '</span><span class="s-cad">' +
               cL +
-              '</span><span class="s-add">+</span></div>';
+              '</span>' +
+              (s._p > 0 ? '<span class="s-for-you">★ ' + t("for_you") + '</span>' : '') +
+              '<span class="s-add">+</span></div>';
           });
         });
         html += "</div>";
@@ -2493,6 +2602,8 @@
           name,
           emoji,
           cadence,
+          morning: false,
+          source: "suggested",
           createdAt: fmt(new Date()),
         });
         save();
@@ -2619,6 +2730,7 @@
           h.name = name;
           h.emoji = modalEmoji;
           h.cadence = cadence;
+          h.morning = modalMorning;
           showToast(t("habit_updated"));
         } else {
           state.habits.push({
@@ -2626,6 +2738,8 @@
             name,
             emoji: modalEmoji,
             cadence,
+            morning: modalMorning,
+            source: "custom",
             createdAt: fmt(new Date()),
           });
           showToast(t("habit_added"));
@@ -2936,7 +3050,21 @@
                 "%</span></div>",
             )
             .join("") +
-          "</div>";
+          "</div>" +
+          '<div class="stat-card"><div class="stat-card-title">' + t("stat_formation") + '</div>' +
+          state.habits.map(h => {
+            const days = h.createdAt ? Math.floor((new Date() - new Date(h.createdAt)) / 86400000) : 0;
+            const pct = Math.min(100, Math.round(days / 66 * 100));
+            const phase = days >= 66 ? { key: "phase_formed",   cls: "phase-formed" }
+                        : days >= 50 ? { key: "phase_forming",  cls: "phase-forming" }
+                        : days >= 20 ? { key: "phase_building", cls: "phase-building" }
+                        :              { key: "phase_learning", cls: "phase-learning" };
+            const barColor = days >= 50 ? "var(--success)" : days >= 20 ? "var(--accent)" : "var(--warn)";
+            return '<div class="stat-row"><span class="stat-label">' + h.emoji + ' <span>' + esc(h.name) + '</span></span>'
+                 + '<div class="stat-bar-bg"><div class="stat-bar-fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>'
+                 + '<span class="phase-tag ' + phase.cls + '">' + days + 'd</span></div>';
+          }).join("") +
+          '</div>';
       }
 
       // ═══ SETTINGS ═══
