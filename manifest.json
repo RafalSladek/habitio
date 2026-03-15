@@ -1,15 +1,31 @@
 {
-  "name": "Habits",
-  "short_name": "Habits",
-  "start_url": "/",
+  "name": "habit.io",
+  "short_name": "habit.io",
+  "description": "Offline-first habit tracker",
+  "start_url": "/habitio/",
+  "scope": "/habitio/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#0a0a0f",
-  "theme_color": "#0a0a0f",
+  "theme_color": "#6c5ce7",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☑</text></svg>",
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
     }
   ]
 }
