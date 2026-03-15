@@ -1,0 +1,26 @@
+{
+  "name": "habitio",
+  "version": "1.0.0",
+  "description": "A habit tracker app — offline-first PWA, no account required.",
+  "main": "suggestions.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:report": "playwright show-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RafalSladek/habitio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/RafalSladek/habitio/issues"
+  },
+  "homepage": "https://github.com/RafalSladek/habitio#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}
