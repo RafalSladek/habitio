@@ -4,6 +4,8 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 
 **Live app:** https://rafalsladek.github.io/habitio/
 
+[![Test & Deploy](https://github.com/RafalSladek/habitio/actions/workflows/playwright.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/playwright.yml)
+
 ## Features
 
 - **Personalised suggestions** — habits ranked by age group (teen / young adult / adult / midlife / senior) and sex, based on demographic research
@@ -25,9 +27,9 @@ Files are split for clarity; no build step required.
 | `styles.css` | All styles |
 | `app.js` | All application logic |
 | `suggestions.js` | Habit suggestion data with demographic scoring |
-| `sw.js` | Service worker — full app shell caching, font caching |
+| `sw.js` | Service worker — full offline caching (cache: `habitio-v3`) |
 | `manifest.json` | PWA manifest |
-| `icons/` | Favicon, app icons (16, 32, 192, 512px + SVG) |
+| `icons/` | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG |
 
 ## Data Storage
 
@@ -42,11 +44,28 @@ All data is stored **client-side only** using the browser's `localStorage` API.
 
 ## CI / CD
 
-GitHub Actions runs Playwright e2e tests against a local dev server before deploying to GitHub Pages. Deployment is blocked if any test fails.
+GitHub Actions runs Playwright e2e tests on Desktop, Mobile (Pixel 5), and Tablet (768×1024) viewports against a local dev server before deploying to GitHub Pages. Deployment is blocked if any test fails. Lighthouse CI runs after each deploy.
 
 ```
-push to main → Playwright tests (local) → deploy to Pages
+push to main → Playwright tests (desktop + mobile + tablet) → deploy to Pages → Lighthouse CI
 ```
+
+## Performance
+
+Lighthouse scores (mobile):
+
+| Category | Score |
+|---|---|
+| Performance | 73+ |
+| Accessibility | 69+ |
+| Best Practices | 100 |
+| SEO | 54→100 |
+
+Key optimisations applied:
+- Non-blocking Google Fonts (preconnect + preload swap)
+- Hero image served as WebP (290 KB → 16 KB, 94% smaller) with PNG fallback
+- `fetchpriority="high"` on LCP image
+- WCAG AA contrast on all text elements
 
 ## Research & Science
 
@@ -70,15 +89,15 @@ Personalisation logic and habit formation features are grounded in published res
 ## Development
 
 ```bash
-# Run Playwright tests locally
-npm install
+# Install dependencies and Playwright browsers
+yarn install
 npx playwright install chromium
-npm test
 
-# Regenerate icons (requires Playwright)
-node generate-icons.js
-node generate-favicon.js
-node generate-hero.js
+# Run tests (desktop + mobile + tablet)
+yarn test
+
+# Convert images to WebP
+ffmpeg -i icons/hero-onboarding.png -c:v libwebp -quality 82 icons/hero-onboarding.webp
 ```
 
 Deploy by pushing to `main` — GitHub Actions tests then deploys automatically.
