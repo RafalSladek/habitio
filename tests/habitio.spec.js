@@ -4,7 +4,7 @@ const { test, expect } = require('@playwright/test');
 /** @param {import('@playwright/test').Page} page */
 async function completeOnboarding(page, name = 'Test') {
   await page.locator('#welcome-name').fill(name);
-  await page.locator('.age-chip', { hasText: 'Adult' }).click();
+  await page.locator('.age-chip[onclick*="\'adult\'"]').click();
   await page.getByRole('button', { name: "Let's go!" }).click();
 }
 
@@ -28,7 +28,7 @@ test.describe('habit.io', () => {
   test('onboarding shows age group chips', async ({ page }) => {
     await expect(page.locator('.age-chip', { hasText: 'Teen' })).toBeVisible();
     await expect(page.locator('.age-chip', { hasText: 'Young Adult' })).toBeVisible();
-    await expect(page.locator('.age-chip', { hasText: 'Adult' })).toBeVisible();
+    await expect(page.locator('.age-chip[onclick*="\'adult\'"]')).toBeVisible();
     await expect(page.locator('.age-chip', { hasText: 'Midlife' })).toBeVisible();
     await expect(page.locator('.age-chip', { hasText: 'Senior' })).toBeVisible();
   });
