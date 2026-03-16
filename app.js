@@ -666,14 +666,15 @@
 
       // ---------------------------------------------------------------------------
       // Habit kits — contextual resource suggestions shown after first check-off
-      // Replace placeholder URLs with real affiliate-tagged links before launch.
       // ---------------------------------------------------------------------------
+      const ATOMIC_HABITS = { icon: "📗", name: "Atomic Habits", hook: "The #1 book on habit science · James Clear", url: "https://amzn.to/3NCIaoC", cta: "Get the book →" };
+
       const HABIT_KITS = [
         {
           match: /read|book|librar/i,
           label: "📚 Your reading kit",
           items: [
-            { icon: "📖", name: "Kindle Unlimited", hook: "Access 4M+ books · 30-day free trial", url: "https://www.amazon.com/kindle-dbs/hz/subscribe/ku", cta: "Try free →" },
+            ATOMIC_HABITS,
             { icon: "🎧", name: "Audible", hook: "1 free audiobook to start", url: "https://www.audible.com", cta: "Get started →" },
           ],
         },
@@ -682,7 +683,7 @@
           label: "🏃 Your fitness kit",
           items: [
             { icon: "📊", name: "Strava", hook: "Track every run, ride & swim free", url: "https://www.strava.com", cta: "Join Strava →" },
-            { icon: "👟", name: "Nike Training Club", hook: "Free guided workouts for all levels", url: "https://www.nike.com/ntc-app", cta: "Try free →" },
+            ATOMIC_HABITS,
           ],
         },
         {
@@ -690,7 +691,7 @@
           label: "🧘 Your mindfulness kit",
           items: [
             { icon: "🌿", name: "Calm", hook: "7-day free trial · sleep & meditation", url: "https://www.calm.com", cta: "Try Calm →" },
-            { icon: "🎵", name: "Headspace", hook: "Guided meditation for beginners", url: "https://www.headspace.com", cta: "Try Headspace →" },
+            ATOMIC_HABITS,
           ],
         },
         {
@@ -698,6 +699,7 @@
           label: "💤 Your sleep kit",
           items: [
             { icon: "📱", name: "Sleep Cycle", hook: "Smart alarm + sleep quality analysis", url: "https://www.sleepcycle.com", cta: "Download free →" },
+            ATOMIC_HABITS,
           ],
         },
         {
@@ -705,6 +707,7 @@
           label: "🥗 Your nutrition kit",
           items: [
             { icon: "🥘", name: "HelloFresh", hook: "Fresh recipes delivered · first box discount", url: "https://www.hellofresh.com", cta: "Claim offer →" },
+            ATOMIC_HABITS,
           ],
         },
         {
@@ -712,6 +715,7 @@
           label: "💧 Your hydration kit",
           items: [
             { icon: "📱", name: "WaterMinder", hook: "Smart daily water intake tracker", url: "https://waterminder.com", cta: "Try free →" },
+            ATOMIC_HABITS,
           ],
         },
         {
@@ -719,6 +723,7 @@
           label: "✍️ Your writing kit",
           items: [
             { icon: "📓", name: "Day One", hook: "Beautiful journaling · private & secure", url: "https://dayoneapp.com", cta: "Try Day One →" },
+            ATOMIC_HABITS,
           ],
         },
         {
@@ -726,7 +731,7 @@
           label: "🎓 Your learning kit",
           items: [
             { icon: "🌍", name: "Duolingo", hook: "Learn a language in 5 min/day", url: "https://www.duolingo.com", cta: "Start free →" },
-            { icon: "📹", name: "Skillshare", hook: "1 month free · thousands of courses", url: "https://www.skillshare.com", cta: "Try free →" },
+            ATOMIC_HABITS,
           ],
         },
       ];
