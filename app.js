@@ -190,6 +190,11 @@
           sug_micro_code:    "Code for 15 Minutes",
           sug_micro_sketch:  "Sketch or Doodle",
           sug_micro_music:   "Practice an Instrument",
+          share_app: "Share habit.io",
+          share_copied: "Link copied!",
+          share_text: "Build better habits with habit.io — free, offline-first habit tracker.",
+          analytics_on: "Analytics: On",
+          analytics_off: "Analytics: Off",
         },
         de: {
           nav_today: "Heute",
@@ -382,6 +387,11 @@
           sug_micro_code:    "15 Minuten programmieren",
           sug_micro_sketch:  "Skizzieren oder Kritzeln",
           sug_micro_music:   "Ein Instrument üben",
+          share_app: "habit.io teilen",
+          share_copied: "Link kopiert!",
+          share_text: "Bau bessere Gewohnheiten mit habit.io — kostenloser Habit-Tracker.",
+          analytics_on: "Analyse: An",
+          analytics_off: "Analyse: Aus",
         },
         pl: {
           nav_today: "Dziś",
@@ -573,10 +583,29 @@
           sug_micro_code:    "Programować przez 15 minut",
           sug_micro_sketch:  "Szkicować lub rysować",
           sug_micro_music:   "Ćwiczyć grę na instrumencie",
+          share_app: "Udostępnij habit.io",
+          share_copied: "Link skopiowany!",
+          share_text: "Buduj lepsze nawyki z habit.io — darmowy tracker nawyków.",
+          analytics_on: "Analityka: Wł.",
+          analytics_off: "Analityka: Wył.",
         },
       };
       function t(k) {
         return (T[state.lang] || T.en)[k] || T.en[k] || k;
+      }
+      function trackEvent(name, params) {
+        if (!state.consentAnalytics) return;
+        gtag("event", name, Object.assign({
+          age_group: state.profile.ageGroup || "unknown",
+          sex: state.profile.sex || "unknown",
+        }, params));
+      }
+      function setConsent(granted) {
+        state.consentAnalytics = !!granted;
+        gtag("consent", "update", { analytics_storage: granted ? "granted" : "denied" });
+        save();
+        document.getElementById("consent-banner")?.remove();
+        renderSettings();
       }
 
       const EMOJIS = [
@@ -1019,6 +1048,7 @@
             if (!d.profile.sex) d.profile.sex = "male";
             if (!d.lang) d.lang = "en";
             if (!d.kitsDismissed) d.kitsDismissed = {};
+            if (d.consentAnalytics === undefined) d.consentAnalytics = null;
             state = d;
             // Persist under new key and clean up old keys
             localStorage.setItem("habitio_v4", JSON.stringify(state));
@@ -1034,6 +1064,7 @@
           profile: { name: "", age: "", sex: "male" },
           lang: "en",
           kitsDismissed: {},
+          consentAnalytics: null,
         };
       }
 
@@ -1376,6 +1407,15 @@
         if (!state.checks[k]) state.checks[k] = {};
         state.checks[k][id] = !state.checks[k][id];
         if (!state.checks[k][id]) delete state.checks[k][id];
+        const th = state.habits.find((h) => h.id === id);
+        const isChecked = !!state.checks[k]?.[id];
+        trackEvent(isChecked ? "habit_complete" : "habit_uncheck", {
+          habit_name: th?.name,
+          habit_emoji: th?.emoji,
+          cadence_type: th?.cadence?.type,
+          date: k,
+          is_today: isToday(selectedDate),
+        });
         save();
         render();
         // animate the tapped card
@@ -1709,6 +1749,12 @@
           });
           showToast(t("habit_added"));
         }
+        trackEvent(editId ? "habit_edit" : "habit_add", {
+          habit_name: name,
+          habit_emoji: modalEmoji,
+          cadence_type: cadence.type,
+          is_morning: modalMorning,
+        });
         save();
         closeAddModal();
         render();
@@ -1822,7 +1868,9 @@
       function saveDiary(k, field, val) {
         if (!state.diary[k])
           state.diary[k] = { grateful: "", affirm: "", good: "", better: "" };
+        const wasEmpty = !state.diary[k][field]?.trim();
         state.diary[k][field] = val;
+        if (wasEmpty && val.trim()) trackEvent("journal_write", { section: field, date: k });
         save();
         clearTimeout(diaryTimers[field]);
         const el = document.getElementById("ds_" + field);
@@ -1923,6 +1971,7 @@
               render();
               closeImportModal();
               showToast(t("imported"));
+              trackEvent("data_import", { imported_habits: importOpts.habits, imported_tracking: importOpts.tracking });
             } catch {
               showToast(t("error_file"));
             }
@@ -1940,6 +1989,20 @@
         a.download = "habitio_backup_" + fmt(new Date()) + ".json";
         a.click();
         showToast(t("exported"));
+        trackEvent("data_export", {});
+      }
+      function shareApp() {
+        const url = "https://rafalsladek.github.io/habitio/";
+        if (navigator.share) {
+          navigator.share({ title: "habit.io", text: t("share_text"), url })
+            .then(() => gtag("event", "share", { method: "web_share_api", content_type: "app" }))
+            .catch(() => {});
+        } else {
+          navigator.clipboard.writeText(url).then(() => {
+            showToast(t("share_copied"));
+            gtag("event", "share", { method: "clipboard", content_type: "app" });
+          });
+        }
       }
 
       // ═══ STATS ═══
@@ -2140,10 +2203,16 @@
           '</span></div><span class="setting-action">›</span></div></div></div>' +
           '<div class="settings-section"><div class="settings-title">' +
           t("settings_about") +
-          '</div><div class="settings-list"><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🌱</span><span class="setting-label">habit.io v2.0</span></div><span class="setting-action" style="font-size:11px;font-family:var(--mono)">localStorage</span></div></div></div>';
+          '</div><div class="settings-list"><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🌱</span><span class="setting-label">habit.io v2.0</span></div><span class="setting-action" style="font-size:11px;font-family:var(--mono)">localStorage</span></div><div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
+          t("share_app") +
+          '</span></div><span class="setting-action">›</span></div><div class="setting-item" onclick="setConsent(' + (!state.consentAnalytics) + ')"><div class="setting-left"><span class="setting-emoji">' + (state.consentAnalytics ? "📊" : "🚫") + '</span><span class="setting-label">' +
+          t(state.consentAnalytics ? "analytics_on" : "analytics_off") +
+          '</span></div><span class="setting-action">›</span></div></div></div>';
       }
       function delHabit(id) {
         if (!confirm(t("confirm_delete"))) return;
+        const dh = state.habits.find((h) => h.id === id);
+        trackEvent("habit_remove", { habit_name: dh?.name, habit_emoji: dh?.emoji, cadence_type: dh?.cadence?.type });
         state.habits = state.habits.filter((h) => h.id !== id);
         Object.keys(state.checks).forEach((k) => delete state.checks[k][id]);
         save();
@@ -2154,6 +2223,7 @@
       function resetData() {
         if (!confirm(t("confirm_reset"))) return;
         if (!confirm(t("confirm_really"))) return;
+        trackEvent("data_reset", { habits_count: state.habits.length });
         state = {
           habits: [],
           checks: {},
@@ -2242,5 +2312,19 @@
       load();
       render();
       if (!state.profile.name && !state.habits.length) showWelcome();
+      if (state.consentAnalytics === null) {
+        const b = document.createElement("div");
+        b.id = "consent-banner";
+        b.className = "consent-banner";
+        b.innerHTML =
+          '<span class="consent-text">We use analytics to improve the app. No personal data is shared.</span>' +
+          '<div class="consent-btns">' +
+          '<button class="consent-btn accept" onclick="setConsent(true)">Accept</button>' +
+          '<button class="consent-btn decline" onclick="setConsent(false)">Decline</button>' +
+          '</div>';
+        document.body.appendChild(b);
+      } else if (state.consentAnalytics) {
+        gtag("consent", "update", { analytics_storage: "granted" });
+      }
       if ("serviceWorker" in navigator)
         navigator.serviceWorker.register("sw.js").catch(() => {});

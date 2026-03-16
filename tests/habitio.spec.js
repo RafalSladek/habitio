@@ -14,6 +14,8 @@ async function completeOnboarding(page, name = 'Test') {
  */
 async function seedHabit(page, daysOld, checkedDaysBack = 0) {
   await page.evaluate(({ daysOld, checkedDaysBack }) => {
+    // Remove any pre-seeded v4 so load() will read and migrate from habitio_v2
+    localStorage.removeItem('habitio_v4');
     const id = 'test-habit-001';
 
     // createdAt as YYYY-MM-DD string (same format as fmt() in app.js)
@@ -44,6 +46,7 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
       }],
       checks,
       diary: {},
+      consentAnalytics: false,
     }));
   }, { daysOld, checkedDaysBack });
 
@@ -54,7 +57,17 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
 test.describe('habit.io', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
-    await page.evaluate(() => localStorage.clear());
+    await page.evaluate(() => {
+      localStorage.clear();
+      // Pre-set a valid state so the consent banner doesn't appear in non-consent tests.
+      // Must include habits:[] so load() accepts it (checks d && d.habits).
+      localStorage.setItem('habitio_v4', JSON.stringify({
+        habits: [], checks: {}, diary: {},
+        profile: { name: '', age: '', sex: 'male' },
+        lang: 'en', kitsDismissed: {},
+        consentAnalytics: false,
+      }));
+    });
     await page.reload();
     await page.waitForLoadState('domcontentloaded');
   });
@@ -271,6 +284,63 @@ test.describe('habit.io', () => {
       await seedHabit(page, 66);
       await expect(page.locator('.phase-tag.phase-formed')).toBeVisible();
       await expect(page.locator('.phase-tag.phase-forming')).not.toBeVisible();
+    });
+  });
+
+  test.describe('consent banner', () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto('/');
+      await page.evaluate(() => localStorage.clear());
+      await page.reload();
+      await page.waitForLoadState('domcontentloaded');
+    });
+
+    test('consent banner appears on first visit before consent is set', async ({ page }) => {
+      await expect(page.locator('.consent-banner')).toBeVisible();
+      await expect(page.locator('.consent-btn.accept')).toBeVisible();
+      await expect(page.locator('.consent-btn.decline')).toBeVisible();
+    });
+
+    test('accepting consent hides the banner', async ({ page }) => {
+      await page.locator('.consent-btn.accept').click();
+      await expect(page.locator('.consent-banner')).not.toBeVisible();
+    });
+
+    test('declining consent hides the banner', async ({ page }) => {
+      await page.locator('.consent-btn.decline').click();
+      await expect(page.locator('.consent-banner')).not.toBeVisible();
+    });
+
+    test('consent banner does not reappear after choice is made', async ({ page }) => {
+      await page.locator('.consent-btn.decline').click();
+      await page.reload();
+      await page.waitForLoadState('domcontentloaded');
+      await expect(page.locator('.consent-banner')).not.toBeVisible();
+    });
+  });
+
+  test.describe('share button and analytics toggle', () => {
+    test.beforeEach(async ({ page }) => {
+      await completeOnboarding(page, 'Test');
+    });
+
+    test('settings shows Share habit.io button', async ({ page }) => {
+      await page.getByRole('button', { name: '⚙ Settings' }).click();
+      await expect(page.locator('.setting-label', { hasText: 'Share habit.io' })).toBeVisible();
+    });
+
+    test('settings shows analytics toggle', async ({ page }) => {
+      await page.getByRole('button', { name: '⚙ Settings' }).click();
+      await expect(page.locator('.setting-label', { hasText: /Analytics/ })).toBeVisible();
+    });
+
+    test('analytics toggle flips between on and off', async ({ page }) => {
+      await page.getByRole('button', { name: '⚙ Settings' }).click();
+      const initialText = await page.locator('.setting-label', { hasText: /Analytics/ }).textContent();
+      await page.locator('.setting-item', {
+        has: page.locator('.setting-label', { hasText: /Analytics/ }),
+      }).click();
+      await expect(page.locator('.setting-label', { hasText: /Analytics/ })).not.toHaveText(initialText || '');
     });
   });
 });
