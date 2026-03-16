@@ -134,13 +134,21 @@ test.describe('habit.io', () => {
       await expect(page.locator('#ring-text')).toHaveText('100%');
     });
 
-    test('journal tab shows all four prompts', async ({ page }) => {
+    test('journal tab shows step-by-step prompts', async ({ page }) => {
       await page.getByRole('button', { name: '✎ Journal' }).click();
 
       await expect(page.getByRole('heading', { name: 'Journal' })).toBeVisible();
+      // Step 1: gratitude
       await expect(page.getByText('What I am grateful for today')).toBeVisible();
+      await expect(page.getByRole('button', { name: /Next/i })).toBeVisible();
+      // Advance to step 2
+      await page.getByRole('button', { name: /Next/i }).click();
       await expect(page.getByText(/Affirmations/)).toBeVisible();
-      await expect(page.getByText('3 good things today')).toBeVisible();
+      // Advance to step 3
+      await page.getByRole('button', { name: /Next/i }).click();
+      await expect(page.getByText(/3 good things/i)).toBeVisible();
+      // Advance to step 4
+      await page.getByRole('button', { name: /Next/i }).click();
       await expect(page.getByText(/make this day even better/)).toBeVisible();
     });
 

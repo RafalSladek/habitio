@@ -77,6 +77,18 @@
           diary_good: "3 good things today",
           diary_better: "What could make this day even better",
           diary_saved: "Saved",
+          diary_next: "Next",
+          diary_back: "Back",
+          diary_done: "Done",
+          diary_complete: "Reflection complete",
+          diary_filled: "prompts answered",
+          diary_suggest_label: "Habits worth trying",
+          diary_edit: "Edit",
+          diary_ph_grateful: "e.g. my morning coffee, a kind message, a sunny day…",
+          diary_ph_affirm: "e.g. I am resilient, I am growing, I am enough…",
+          diary_ph_good: "e.g. finished a chapter, had a great workout, called a friend…",
+          diary_ph_better: "e.g. take a walk after lunch, read before bed, drink more water…",
+          habit_added: "added to your habits",
           settings_habits: "Habits",
           settings_data: "Data",
           settings_profile: "Profile",
@@ -234,6 +246,18 @@
           diary_good: "3 gute Dinge heute",
           diary_better: "Was könnte diesen Tag noch besser machen",
           diary_saved: "Gespeichert",
+          diary_next: "Weiter",
+          diary_back: "Zurück",
+          diary_done: "Fertig",
+          diary_complete: "Reflexion abgeschlossen",
+          diary_filled: "Antworten gegeben",
+          diary_suggest_label: "Gewohnheiten zum Ausprobieren",
+          diary_edit: "Bearbeiten",
+          diary_ph_grateful: "z.B. mein Morgenkaffee, eine nette Nachricht, ein sonniger Tag…",
+          diary_ph_affirm: "z.B. Ich bin stark, ich wachse, ich bin genug…",
+          diary_ph_good: "z.B. Kapitel fertig, gutes Training, Freund angerufen…",
+          diary_ph_better: "z.B. nach dem Mittagessen spazieren, vor dem Schlafen lesen…",
+          habit_added: "als Gewohnheit hinzugefügt",
           settings_habits: "Gewohnheiten",
           settings_data: "Daten",
           settings_profile: "Profil",
@@ -390,6 +414,18 @@
           diary_good: "3 dobre rzeczy dzisiaj",
           diary_better: "Co mogłoby sprawić, że ten dzień byłby jeszcze lepszy",
           diary_saved: "Zapisano",
+          diary_next: "Dalej",
+          diary_back: "Wstecz",
+          diary_done: "Gotowe",
+          diary_complete: "Refleksja gotowa",
+          diary_filled: "odpowiedzi",
+          diary_suggest_label: "Nawyki warte wypróbowania",
+          diary_edit: "Edytuj",
+          diary_ph_grateful: "np. poranna kawa, miła wiadomość, słoneczny dzień…",
+          diary_ph_affirm: "np. Jestem silny/a, rosnę, wystarczam…",
+          diary_ph_good: "np. skończyłem rozdział, dobry trening, zadzwoniłem do mamy…",
+          diary_ph_better: "np. spacer po obiedzie, czytanie przed snem, więcej wody…",
+          habit_added: "dodano do nawyków",
           settings_habits: "Nawyki",
           settings_data: "Dane",
           settings_profile: "Profil",
@@ -646,7 +682,8 @@
       };
       let selectedDate = new Date(),
         weekOffset = 0,
-        diaryDate = new Date();
+        diaryDate = new Date(),
+        diaryStep = 0;
       let modalEmoji = "🎯",
         modalCadenceType = "daily",
         modalDays = [],
@@ -1357,62 +1394,108 @@
       }
 
       // ═══ DIARY ═══
+      const DIARY_FIELDS = ["grateful", "affirm", "good", "better"];
+      const DIARY_ICONS  = { grateful: "🙏", affirm: "💪", good: "⭐", better: "🚀" };
+
+      function calcDiaryStep() {
+        const entry = state.diary[fmt(diaryDate)] || {};
+        const first = DIARY_FIELDS.findIndex((f) => !entry[f]?.trim());
+        return first < 0 ? DIARY_FIELDS.length : first; // all answered → summary
+      }
+
       function renderDiary() {
         const c = document.getElementById("diary-content");
+        document.getElementById("diary-header").textContent = t("nav_journal");
         const k = fmt(diaryDate);
-        const entry = state.diary[k] || {
-          grateful: "",
-          affirm: "",
-          good: "",
-          better: "",
-        };
+        const entry = state.diary[k] || { grateful: "", affirm: "", good: "", better: "" };
+
         const dn = isToday(diaryDate)
           ? t("nav_today")
-          : DN()[dIdx(diaryDate)] +
-            ", " +
-            diaryDate.getDate() +
-            " " +
-            MN()[diaryDate.getMonth()];
-        c.innerHTML =
-          '<div class="diary-date-nav"><button class="nav-btn" onclick="changeDiaryDay(-1)">&lsaquo;</button><span class="diary-date">' +
-          dn +
-          '</span><button class="nav-btn" onclick="changeDiaryDay(1)" ' +
-          (isToday(diaryDate) ? "disabled" : "") +
-          ">›</button></div>" +
-          ["grateful", "affirm", "good", "better"]
-            .map((field) => {
-              const label = t("diary_" + field);
-              const icon = {
-                grateful: "🙏",
-                affirm: "💪",
-                good: "⭐",
-                better: "🚀",
-              }[field];
-              return (
-                '<div class="diary-card"><div class="diary-label">' +
-                icon +
-                " " +
-                esc(label) +
-                '</div><textarea class="diary-textarea" placeholder="..." oninput="saveDiary(\'' +
-                k +
-                "','" +
-                field +
-                '\',this.value)" id="d_' +
-                field +
-                '">' +
-                esc(entry[field] || "") +
-                '</textarea><div class="diary-saved" id="ds_' +
-                field +
-                '">' +
-                t("diary_saved") +
-                " ✓</div></div>"
-              );
-            })
-            .join("");
+          : DN()[dIdx(diaryDate)] + ", " + diaryDate.getDate() + " " + MN()[diaryDate.getMonth()];
+
+        const dateNav =
+          '<div class="diary-date-nav">' +
+          '<button class="nav-btn" onclick="changeDiaryDay(-1)">&lsaquo;</button>' +
+          '<span class="diary-date">' + dn + "</span>" +
+          '<button class="nav-btn" onclick="changeDiaryDay(1)" ' + (isToday(diaryDate) ? "disabled" : "") + ">&rsaquo;</button>" +
+          "</div>";
+
+        const dots = DIARY_FIELDS.map((_, i) => {
+          const cl = i < diaryStep ? "done" : i === diaryStep ? "active" : "";
+          return '<div class="diary-dot ' + cl + '"></div>';
+        }).join("");
+        const progress = '<div class="diary-progress">' + dots + "</div>";
+
+        // ── Summary screen ──
+        if (diaryStep >= DIARY_FIELDS.length) {
+          const filled = DIARY_FIELDS.filter((f) => entry[f]?.trim()).length;
+          const suggestions = SUGGESTION_DATA.flatMap((cat) =>
+            cat.items.map((s) => ({ name: t(s.nameKey), emoji: s.emoji, nameKey: s.nameKey }))
+          ).filter((s) => !state.habits.find((h) => h.name === s.name)).slice(0, 3);
+
+          c.innerHTML = dateNav + progress +
+            '<div class="diary-summary">' +
+              '<div class="diary-summary-icon">✨</div>' +
+              '<div class="diary-summary-title">' + t("diary_complete") + "</div>" +
+              '<div class="diary-summary-meta">' + filled + " / " + DIARY_FIELDS.length + " " + t("diary_filled") + "</div>" +
+              (suggestions.length
+                ? '<div class="diary-suggest-wrap">' +
+                    '<div class="diary-suggest-lbl">' + t("diary_suggest_label") + "</div>" +
+                    suggestions.map((s) =>
+                      '<button class="diary-habit-chip" onclick="addFromDiary(\'' +
+                      s.nameKey + "'," + '"' + s.emoji + '"' + ')">' +
+                      s.emoji + " " + esc(s.name) + ' <span class="chip-add">+ Add</span></button>'
+                    ).join("") +
+                  "</div>"
+                : "") +
+              '<button class="diary-edit-btn" onclick="diaryStep=0;renderDiary()">← ' + t("diary_edit") + "</button>" +
+            "</div>";
+          return;
+        }
+
+        // ── Single prompt step ──
+        const field = DIARY_FIELDS[diaryStep];
+        c.innerHTML = dateNav + progress +
+          '<div class="diary-step-card">' +
+            '<div class="diary-step-icon">' + DIARY_ICONS[field] + "</div>" +
+            '<div class="diary-step-label">' + esc(t("diary_" + field)) + "</div>" +
+            '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
+              esc(t("diary_ph_" + field)) + '" ' +
+              'oninput="saveDiary(\'' + k + "','" + field + '\',this.value)" id="d_' + field + '">' +
+              esc(entry[field] || "") +
+            "</textarea>" +
+            '<div class="diary-saved" id="ds_' + field + '">' + t("diary_saved") + " ✓</div>" +
+          "</div>" +
+          '<div class="diary-step-nav">' +
+            (diaryStep > 0
+              ? '<button class="diary-back-btn" onclick="diaryStepGo(-1)">← ' + t("diary_back") + "</button>"
+              : "<span></span>") +
+            '<button class="diary-next-btn" onclick="diaryStepGo(1)">' +
+              (diaryStep < DIARY_FIELDS.length - 1 ? t("diary_next") + " →" : "✓ " + t("diary_done")) +
+            "</button>" +
+          "</div>";
+
+        setTimeout(() => document.getElementById("d_" + field)?.focus(), 80);
       }
+
+      function diaryStepGo(dir) {
+        diaryStep = Math.max(0, Math.min(DIARY_FIELDS.length, diaryStep + dir));
+        renderDiary();
+      }
+
       function changeDiaryDay(dir) {
         diaryDate = addD(diaryDate, dir);
         if (diaryDate > new Date()) diaryDate = new Date();
+        diaryStep = calcDiaryStep();
+        renderDiary();
+      }
+
+      function addFromDiary(nameKey, emoji) {
+        const name = t(nameKey);
+        if (state.habits.find((h) => h.name === name)) return;
+        state.habits.push({ id: uid(), name, emoji, cadence: { type: "daily" }, morning: false, createdAt: fmt(new Date()), source: "suggested" });
+        save();
+        showToast(emoji + " " + name + " — " + t("habit_added"));
         renderDiary();
       }
       function saveDiary(k, field, val) {
@@ -1780,7 +1863,7 @@
               ["tracker", "diary", "stats", "settings"][i] === p,
             ),
           );
-        if (p === "diary") renderDiary();
+        if (p === "diary") { diaryStep = calcDiaryStep(); renderDiary(); }
         if (p === "stats") renderStats();
         if (p === "settings") renderSettings();
       }
