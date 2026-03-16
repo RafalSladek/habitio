@@ -95,6 +95,9 @@ Never change the storage key without migration — users must not lose their hab
 **Always do all of these before committing:**
 
 1. **Run tests**: `yarn test` — all projects (Desktop, Mobile, Tablet) must pass
-2. **Update screenshots**: if any UI change was made (layout, colours, new screens, copy), retake the affected screenshots in `docs/` using Playwright at 393×852 (mobile) and include them in the same commit
+2. **Update screenshots**: if any UI change was made (layout, colours, new screens, copy), retake **all** affected screenshots in `docs/` using Playwright and include them in the same commit. Canonical set:
+   - Mobile 393×852: `screenshot-onboarding.png`, `screenshot-tracker.png`, `screenshot-add-habit.png`, `screenshot-journal.png`, `screenshot-journal-summary.png`, `screenshot-stats.png`, `screenshot-settings.png`
+   - Desktop 1280×800: `desktop-preview.png`, `desktop-stats.png`, `desktop-journal.png`, `desktop-settings.png`, `desktop-modal.png`
+   - Tablet: `tablet-preview.png`
 3. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
 4. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key
