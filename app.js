@@ -2241,11 +2241,15 @@
         renderSettings();
       }
 
+      function setFabVisible(show) {
+        document.getElementById("fab-add")?.classList.toggle("visible", show);
+      }
       function switchPage(p) {
         document
           .querySelectorAll(".page")
           .forEach((x) => x.classList.remove("active"));
         document.getElementById("page-" + p).classList.add("active");
+        setFabVisible(p === "tracker");
         document
           .querySelectorAll(".nav-tab")
           .forEach((t, i) =>
@@ -2311,6 +2315,7 @@
 
       load();
       render();
+      setFabVisible(true);
       if (!state.profile.name && !state.habits.length) showWelcome();
       if (state.consentAnalytics === null) {
         const b = document.createElement("div");

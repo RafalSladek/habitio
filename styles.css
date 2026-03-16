@@ -698,16 +698,19 @@
       }
       .diary-next-btn:active { opacity: 0.8; }
       .diary-back-btn {
-        background: var(--surface);
-        color: var(--text-dim);
+        background: var(--surface-2);
+        color: var(--text-muted);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 14px 16px;
-        font-size: 14px;
+        padding: 14px 18px;
+        font-size: 15px;
+        font-weight: 600;
         cursor: pointer;
         font-family: var(--font);
         white-space: nowrap;
+        transition: opacity 0.15s;
       }
+      .diary-back-btn:active { opacity: 0.7; }
       /* Summary */
       .diary-summary {
         display: flex;
@@ -768,14 +771,19 @@
         font-weight: 600;
       }
       .diary-edit-btn {
-        background: none;
-        border: none;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
         color: var(--text-muted);
-        font-size: 13px;
+        font-size: 15px;
+        font-weight: 600;
         cursor: pointer;
         font-family: var(--font);
-        padding: 8px;
+        padding: 12px 18px;
+        transition: opacity 0.15s;
+        align-self: center;
       }
+      .diary-edit-btn:active { opacity: 0.7; }
 
       /* Tooltips */
       #tt {
@@ -1889,11 +1897,19 @@
           justify-content: space-between;
           padding-top: 20px;
         }
+        /* On desktop, FAB sits in the right content column, not full-viewport center */
+        .fab {
+          left: calc(200px + (100vw - 200px) / 2);
+          bottom: 24px;
+        }
       }
 
       @media (min-width: 1200px) {
         #app {
           grid-template-columns: 240px 1fr;
+        }
+        .fab {
+          left: calc(240px + (100vw - 240px) / 2);
         }
         .habit-group-items {
           grid-template-columns: repeat(3, 1fr);
@@ -1901,6 +1917,37 @@
         .page .header h1 {
           font-size: 28px;
         }
+      }
+
+      /* Floating action button */
+      .fab {
+        position: fixed;
+        bottom: calc(72px + var(--safe-bottom) + 14px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        font-size: 28px;
+        line-height: 1;
+        font-weight: 300;
+        cursor: pointer;
+        z-index: 60;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 18px rgba(108, 92, 231, 0.45);
+        transition: transform 0.15s, box-shadow 0.15s;
+      }
+      .fab.visible {
+        display: flex;
+      }
+      .fab:active {
+        transform: translateX(-50%) scale(0.88);
+        box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
       }
 
       /* Consent banner */

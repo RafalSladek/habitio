@@ -117,7 +117,7 @@ test.describe('habit.io', () => {
     });
 
     test('add habit panel opens on + click', async ({ page }) => {
-      await page.locator('.header').getByRole('button', { name: '+' }).click();
+      await page.locator('#fab-add').click();
       await expect(page.getByRole('heading', { name: 'New Habit' })).toBeVisible();
       await expect(page.getByText('Health & Body')).toBeVisible();
       await expect(page.getByText('Mind & Focus')).toBeVisible();
@@ -125,7 +125,7 @@ test.describe('habit.io', () => {
     });
 
     test('add habit from suggestions list', async ({ page }) => {
-      await page.locator('.header').getByRole('button', { name: '+' }).click();
+      await page.locator('#fab-add').click();
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
       await page.locator('#modal-done-bar').click();
 
@@ -133,7 +133,7 @@ test.describe('habit.io', () => {
     });
 
     test('first habit shows CTA prompt', async ({ page }) => {
-      await page.locator('.header').getByRole('button', { name: '+' }).click();
+      await page.locator('#fab-add').click();
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
       await page.locator('#modal-done-bar').click();
 
@@ -141,7 +141,7 @@ test.describe('habit.io', () => {
     });
 
     test('check off a habit updates progress to 100%', async ({ page }) => {
-      await page.locator('.header').getByRole('button', { name: '+' }).click();
+      await page.locator('#fab-add').click();
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
       await page.locator('#modal-done-bar').click();
 
@@ -169,7 +169,7 @@ test.describe('habit.io', () => {
     });
 
     test('stats tab shows key metrics', async ({ page }) => {
-      await page.locator('.header').getByRole('button', { name: '+' }).click();
+      await page.locator('#fab-add').click();
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
       await page.locator('#modal-done-bar').click();
 
