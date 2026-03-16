@@ -96,7 +96,18 @@
           morning_routine: "Morning routine",
           for_you: "for you",
           own_badge: "mine",
-          stat_formation: "Formation Progress · 66 days",
+          stat_formation: "Formation Journey · 66 days",
+          week_sub: "of all habits completed",
+          streak_unit: "days in a row",
+          heatmap_hint: "Each cell = 1 day · fill height = % of habits completed",
+          hm_none: "None",
+          hm_all: "All done",
+          perf_sub: "% of scheduled days each habit was completed",
+          perf_great: "Great",
+          perf_fair: "Fair",
+          perf_low: "Low",
+          formation_sub: "Research shows it takes ~66 days to form a lasting habit",
+          formation_of: "/ 66d",
           options_label: "Options",
           cat_health: "Health & Body",
           cat_mind: "Mind & Focus",
@@ -242,7 +253,18 @@
           morning_routine: "Morgenroutine",
           for_you: "für dich",
           own_badge: "eigene",
-          stat_formation: "Formierungs-Fortschritt · 66 Tage",
+          stat_formation: "Formierungs-Reise · 66 Tage",
+          week_sub: "Abschlussrate diese Woche",
+          streak_unit: "Tage in Folge",
+          heatmap_hint: "Jedes Feld = 1 Tag · Füllhöhe = % erledigter Gewohnheiten",
+          hm_none: "Keine",
+          hm_all: "Alles",
+          perf_sub: "% der geplanten Tage abgeschlossen",
+          perf_great: "Gut",
+          perf_fair: "Okay",
+          perf_low: "Wenig",
+          formation_sub: "Studien zeigen: ~66 Tage für eine dauerhafte Gewohnheit",
+          formation_of: "/ 66T",
           options_label: "Optionen",
           cat_health: "Gesundheit & Körper",
           cat_mind: "Geist & Fokus",
@@ -387,7 +409,18 @@
           morning_routine: "Poranny rytuał",
           for_you: "dla Ciebie",
           own_badge: "mój",
-          stat_formation: "Postęp formowania · 66 dni",
+          stat_formation: "Droga do nawyku · 66 dni",
+          week_sub: "wskaźnik ukończenia w tym tygodniu",
+          streak_unit: "dni z rzędu",
+          heatmap_hint: "Każde pole = 1 dzień · wysokość = % wykonanych nawyków",
+          hm_none: "Brak",
+          hm_all: "Wszystko",
+          perf_sub: "% zaplanowanych dni z ukończonym nawykiem",
+          perf_great: "Świetnie",
+          perf_fair: "OK",
+          perf_low: "Mało",
+          formation_sub: "Badania: ~66 dni potrzeba by nawyk stał się trwały",
+          formation_of: "/ 66d",
           options_label: "Opcje",
           cat_health: "Zdrowie i ciało",
           cat_mind: "Umysł i skupienie",
@@ -1558,82 +1591,94 @@
             bE = h.emoji;
           }
         });
+        // Water-level cells: fill height = % of habits completed that day
         let hm = "";
         for (let i = 27; i >= 0; i--) {
-          const d = addD(new Date(), -i),
-            ch = state.checks[fmt(d)] || {},
-            sc = state.habits.filter((h) => isScheduled(h, d)),
-            dn = sc.filter((h) => ch[h.id]).length,
-            r = sc.length ? dn / sc.length : 0;
-          hm +=
-            '<div class="heatmap-cell ' +
-            (r === 0
-              ? ""
-              : r < 0.25
-                ? "l1"
-                : r < 0.5
-                  ? "l2"
-                  : r < 0.75
-                    ? "l3"
-                    : "l4") +
-            '"></div>';
+          const d = addD(new Date(), -i);
+          const ch = state.checks[fmt(d)] || {};
+          const sc = state.habits.filter((h) => isScheduled(h, d));
+          const r = sc.length ? sc.filter((h) => ch[h.id]).length / sc.length : 0;
+          const pct = Math.round(r * 100);
+          const fill = pct === 0 ? ''
+            : '<div class="hm-fill" style="height:' + pct + '%;background:' +
+              (pct === 100 ? 'var(--success)' : pct >= 50 ? 'var(--accent)' : 'var(--warn)') +
+              '"></div>';
+          hm += '<div class="heatmap-cell hm-level">' + fill + '</div>';
         }
+        // Legend: three sample cups showing none / partial / full
+        const hmLegend =
+          '<div class="heatmap-legend">' +
+          '<span class="hm-legend-lbl">' + t("hm_none") + '</span>' +
+          '<div class="heatmap-cell hm-level hm-dot"></div>' +
+          '<div class="heatmap-cell hm-level hm-dot"><div class="hm-fill" style="height:40%;background:var(--warn)"></div></div>' +
+          '<div class="heatmap-cell hm-level hm-dot"><div class="hm-fill" style="height:75%;background:var(--accent)"></div></div>' +
+          '<div class="heatmap-cell hm-level hm-dot"><div class="hm-fill" style="height:100%;background:var(--success)"></div></div>' +
+          '<span class="hm-legend-lbl">' + t("hm_all") + '</span>' +
+          '</div>';
+
+        // Performance color legend
+        const perfLegend =
+          '<div class="stat-legend">' +
+          '<span><span class="stat-dot" style="background:var(--success)"></span>' + t("perf_great") + ' ≥70%</span>' +
+          '<span><span class="stat-dot" style="background:var(--warn)"></span>' + t("perf_fair") + ' 40–69%</span>' +
+          '<span><span class="stat-dot" style="background:var(--danger)"></span>' + t("perf_low") + ' &lt;40%</span>' +
+          '</div>';
+
         c.innerHTML =
-          '<div class="stats-grid"><div class="stats-grid-item"><div class="stat-big">' +
-          wP +
-          '%</div><div class="stat-big-label">' +
-          t("this_week") +
-          '</div></div><div class="stats-grid-item"><div class="stat-big">' +
-          bS +
-          '</div><div class="stat-big-label">' +
-          t("best_streak") +
-          " " +
-          bE +
-          '</div></div><div class="stats-grid-item"><div class="stat-big">' +
-          state.habits.length +
-          '</div><div class="stat-big-label">' +
-          t("habits") +
-          '</div></div></div><div class="stat-card"><div class="stat-card-title">' +
-          t("last_28") +
-          '</div><div class="heatmap">' +
-          hm +
-          '</div></div><div class="stat-card"><div class="stat-card-title">' +
-          t("performance") +
-          "</div>" +
-          hs
-            .map(
-              (h) =>
-                '<div class="stat-row"><span class="stat-label">' +
-                h.emoji +
-                " <span>" +
-                esc(h.name) +
-                '</span></span><div class="stat-bar-bg"><div class="stat-bar-fill" style="width:' +
-                h.pct +
-                "%;background:" +
-                (h.pct >= 70
-                  ? "var(--success)"
-                  : h.pct >= 40
-                    ? "var(--warn)"
-                    : "var(--danger)") +
-                '"></div></div><span class="stat-value">' +
-                h.pct +
-                "%</span></div>",
-            )
-            .join("") +
-          "</div>" +
-          '<div class="stat-card"><div class="stat-card-title">' + t("stat_formation") + '</div>' +
-          state.habits.map(h => {
-            const days = h.createdAt ? Math.floor((new Date() - new Date(h.createdAt)) / 86400000) : 0;
-            const pct = Math.min(100, Math.round(days / 66 * 100));
-            const phase = days >= 66 ? { key: "phase_formed",   cls: "phase-formed" }
-                        : days >= 50 ? { key: "phase_forming",  cls: "phase-forming" }
-                        : days >= 20 ? { key: "phase_building", cls: "phase-building" }
-                        :              { key: "phase_learning", cls: "phase-learning" };
-            const barColor = days >= 50 ? "var(--success)" : days >= 20 ? "var(--accent)" : "var(--warn)";
-            return '<div class="stat-row"><span class="stat-label">' + h.emoji + ' <span>' + esc(h.name) + '</span></span>'
-                 + '<div class="stat-bar-bg"><div class="stat-bar-fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>'
-                 + '<span class="phase-tag ' + phase.cls + '">' + days + 'd</span></div>';
-          }).join("") +
+          '<div class="stats-grid">' +
+          '<div class="stats-grid-item">' +
+            '<div class="stat-big">' + wP + '%</div>' +
+            '<div class="stat-big-label">' + t("this_week") + '</div>' +
+            '<div class="stat-big-sub">' + t("week_sub") + '</div>' +
+          '</div>' +
+          '<div class="stats-grid-item">' +
+            '<div class="stat-big">' + bS + (bS ? '<span class="stat-big-unit">d</span>' : '') + ' ' + bE + '</div>' +
+            '<div class="stat-big-label">' + t("best_streak") + '</div>' +
+            '<div class="stat-big-sub">' + t("streak_unit") + '</div>' +
+          '</div>' +
+          '<div class="stats-grid-item">' +
+            '<div class="stat-big">' + state.habits.length + '</div>' +
+            '<div class="stat-big-label">' + t("habits") + '</div>' +
+          '</div>' +
+          '</div>' +
+          '<div class="stat-card">' +
+            '<div class="stat-card-title">' + t("last_28") + '</div>' +
+            '<div class="stat-card-sub">' + t("heatmap_hint") + '</div>' +
+            '<div class="heatmap">' + hm + '</div>' +
+            '<div class="heatmap-dir"><span>← 28 days ago</span><span>today →</span></div>' +
+            hmLegend +
+          '</div>' +
+          '<div class="stat-card">' +
+            '<div class="stat-card-title">' + t("performance") + '</div>' +
+            '<div class="stat-card-sub">' + t("perf_sub") + '</div>' +
+            hs.map((h) =>
+              '<div class="stat-row">' +
+              '<span class="stat-label">' + h.emoji + ' <span>' + esc(h.name) + '</span></span>' +
+              '<div class="stat-bar-bg"><div class="stat-bar-fill" style="width:' + h.pct + '%;background:' +
+                (h.pct >= 70 ? "var(--success)" : h.pct >= 40 ? "var(--warn)" : "var(--danger)") +
+              '"></div></div>' +
+              '<span class="stat-value">' + h.pct + '%</span>' +
+              '</div>'
+            ).join("") +
+            perfLegend +
+          '</div>' +
+          '<div class="stat-card">' +
+            '<div class="stat-card-title">' + t("stat_formation") + '</div>' +
+            '<div class="stat-card-sub">' + t("formation_sub") + '</div>' +
+            state.habits.map(h => {
+              const days = h.createdAt ? Math.floor((new Date() - new Date(h.createdAt)) / 86400000) : 0;
+              const pct = Math.min(100, Math.round(days / 66 * 100));
+              const phase = days >= 66 ? { key: "phase_formed",   cls: "phase-formed" }
+                          : days >= 50 ? { key: "phase_forming",  cls: "phase-forming" }
+                          : days >= 20 ? { key: "phase_building", cls: "phase-building" }
+                          :              { key: "phase_learning", cls: "phase-learning" };
+              const barColor = days >= 50 ? "var(--success)" : days >= 20 ? "var(--accent)" : "var(--warn)";
+              return '<div class="stat-row">' +
+                '<span class="stat-label">' + h.emoji + ' <span>' + esc(h.name) + '</span></span>' +
+                '<div class="stat-bar-bg"><div class="stat-bar-fill" style="width:' + pct + '%;background:' + barColor + '"></div></div>' +
+                '<span class="phase-tag ' + phase.cls + '">' + t(phase.key).split(' ')[0] + ' ' + days + ' ' + t("formation_of") + '</span>' +
+                '</div>';
+            }).join("") +
           '</div>';
       }
 

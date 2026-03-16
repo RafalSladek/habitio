@@ -470,6 +470,64 @@
         color: var(--text-dim);
         margin-top: 2px;
       }
+      .stat-big-unit {
+        font-size: 16px;
+        font-weight: 400;
+      }
+      .stat-big-sub {
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-top: 2px;
+        line-height: 1.3;
+      }
+      .stat-card-sub {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        line-height: 1.4;
+      }
+      .heatmap-dir {
+        display: flex;
+        justify-content: space-between;
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+      .heatmap-legend {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 8px;
+        justify-content: flex-end;
+      }
+      .hm-legend-lbl {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+      .hm-dot {
+        width: 12px;
+        height: 12px;
+        aspect-ratio: 1;
+        flex-shrink: 0;
+      }
+      .stat-legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        padding-top: 8px;
+        border-top: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .stat-dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 3px;
+        vertical-align: middle;
+      }
       .stats-grid {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
@@ -494,17 +552,16 @@
         border-radius: 3px;
         background: var(--surface-2);
       }
-      .heatmap-cell.l1 {
-        background: rgba(108, 92, 231, 0.2);
+      .heatmap-cell.hm-level {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow: hidden;
       }
-      .heatmap-cell.l2 {
-        background: rgba(108, 92, 231, 0.4);
-      }
-      .heatmap-cell.l3 {
-        background: rgba(108, 92, 231, 0.6);
-      }
-      .heatmap-cell.l4 {
-        background: var(--accent);
+      .hm-fill {
+        width: 100%;
+        border-radius: 2px 2px 0 0;
+        transition: height 0.4s ease;
       }
 
       /* Diary */

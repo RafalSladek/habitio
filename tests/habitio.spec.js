@@ -155,7 +155,7 @@ test.describe('habit.io', () => {
       await expect(page.getByText('This Week')).toBeVisible();
       await expect(page.getByText('Best Streak')).toBeVisible();
       await expect(page.getByText('Last 28 Days')).toBeVisible();
-      await expect(page.getByText('Habit Performance · 30 Days')).toBeVisible();
+      await expect(page.getByText('Habit Performance · 30 Days', { exact: true })).toBeVisible();
     });
 
     test('settings tab shows profile, habits, data and about sections', async ({ page }) => {
@@ -230,7 +230,7 @@ test.describe('habit.io', () => {
     test('formation progress bar is partial before 66 days in Stats', async ({ page }) => {
       await seedHabit(page, 33); // 33/66 = 50%
       await page.getByRole('button', { name: '◔ Stats' }).click();
-      const bar = page.locator('.stat-card', { hasText: 'Formation Progress' }).locator('.stat-bar-fill');
+      const bar = page.locator('.stat-card', { hasText: 'Formation Journey' }).locator('.stat-bar-fill');
       await expect(bar).toBeVisible();
       const style = await bar.getAttribute('style');
       expect(style).toContain('width:50%');
