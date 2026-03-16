@@ -664,6 +664,85 @@
         return MN_I[state.lang] || MN_I.en;
       }
 
+      // ---------------------------------------------------------------------------
+      // Habit kits — contextual resource suggestions shown after first check-off
+      // Replace placeholder URLs with real affiliate-tagged links before launch.
+      // ---------------------------------------------------------------------------
+      const HABIT_KITS = [
+        {
+          match: /read|book|librar/i,
+          label: "📚 Your reading kit",
+          items: [
+            { icon: "📖", name: "Kindle Unlimited", hook: "Access 4M+ books · 30-day free trial", url: "https://www.amazon.com/kindle-dbs/hz/subscribe/ku", cta: "Try free →" },
+            { icon: "🎧", name: "Audible", hook: "1 free audiobook to start", url: "https://www.audible.com", cta: "Get started →" },
+          ],
+        },
+        {
+          match: /run|jog|walk|gym|sport|fit|train|workout|exercise|step/i,
+          label: "🏃 Your fitness kit",
+          items: [
+            { icon: "📊", name: "Strava", hook: "Track every run, ride & swim free", url: "https://www.strava.com", cta: "Join Strava →" },
+            { icon: "👟", name: "Nike Training Club", hook: "Free guided workouts for all levels", url: "https://www.nike.com/ntc-app", cta: "Try free →" },
+          ],
+        },
+        {
+          match: /meditat|mindful|breath|calm|relax|stress/i,
+          label: "🧘 Your mindfulness kit",
+          items: [
+            { icon: "🌿", name: "Calm", hook: "7-day free trial · sleep & meditation", url: "https://www.calm.com", cta: "Try Calm →" },
+            { icon: "🎵", name: "Headspace", hook: "Guided meditation for beginners", url: "https://www.headspace.com", cta: "Try Headspace →" },
+          ],
+        },
+        {
+          match: /sleep|rest|nap/i,
+          label: "💤 Your sleep kit",
+          items: [
+            { icon: "📱", name: "Sleep Cycle", hook: "Smart alarm + sleep quality analysis", url: "https://www.sleepcycle.com", cta: "Download free →" },
+          ],
+        },
+        {
+          match: /eat|diet|nutrit|vegetar|vegan|cook|meal|food/i,
+          label: "🥗 Your nutrition kit",
+          items: [
+            { icon: "🥘", name: "HelloFresh", hook: "Fresh recipes delivered · first box discount", url: "https://www.hellofresh.com", cta: "Claim offer →" },
+          ],
+        },
+        {
+          match: /water|drink|hydrat/i,
+          label: "💧 Your hydration kit",
+          items: [
+            { icon: "📱", name: "WaterMinder", hook: "Smart daily water intake tracker", url: "https://waterminder.com", cta: "Try free →" },
+          ],
+        },
+        {
+          match: /journal|writ|diary|reflect/i,
+          label: "✍️ Your writing kit",
+          items: [
+            { icon: "📓", name: "Day One", hook: "Beautiful journaling · private & secure", url: "https://dayoneapp.com", cta: "Try Day One →" },
+          ],
+        },
+        {
+          match: /learn|study|language|course|skill/i,
+          label: "🎓 Your learning kit",
+          items: [
+            { icon: "🌍", name: "Duolingo", hook: "Learn a language in 5 min/day", url: "https://www.duolingo.com", cta: "Start free →" },
+            { icon: "📹", name: "Skillshare", hook: "1 month free · thousands of courses", url: "https://www.skillshare.com", cta: "Try free →" },
+          ],
+        },
+      ];
+
+      function getHabitKit(h) {
+        return HABIT_KITS.find(k => k.match.test(h.name)) || null;
+      }
+
+      function dismissKit(id) {
+        if (!state.kitsDismissed) state.kitsDismissed = {};
+        state.kitsDismissed[id] = true;
+        save();
+        const el = document.getElementById("kit-" + id);
+        if (el) el.remove();
+      }
+
       const QUOTES = [
         {
           q: "Every action you take is a vote for the type of person you wish to become.",
@@ -791,6 +870,7 @@
             if (!d.profile) d.profile = { name: "", age: "", sex: "male" };
             if (!d.profile.sex) d.profile.sex = "male";
             if (!d.lang) d.lang = "en";
+            if (!d.kitsDismissed) d.kitsDismissed = {};
             state = d;
             // Persist under new key and clean up old keys
             localStorage.setItem("habitio_v4", JSON.stringify(state));
@@ -805,6 +885,7 @@
           diary: {},
           profile: { name: "", age: "", sex: "male" },
           lang: "en",
+          kitsDismissed: {},
         };
       }
 
@@ -1098,6 +1179,21 @@
           if (!meta) meta = '<span style="opacity:.4">—</span>';
           const cls = "habit-card" + (checked ? " checked" : "") + (!sched && h.cadence?.type === "specific_days" ? " off-day" : "");
           html += '<div class="' + cls + '" onclick="toggleHabit(\'' + h.id + '\')"><div class="habit-emoji">' + h.emoji + '</div><div class="habit-info"><div class="habit-name">' + esc(h.name) + '</div><div class="habit-meta">' + meta + '</div></div><div class="habit-check"><span class="check-icon">✓</span></div></div>';
+          // Habit kit: show once after first check-off today, if not dismissed
+          const isToday = fmt(selectedDate) === fmt(new Date());
+          const kit = getHabitKit(h);
+          if (checked && isToday && kit && !(state.kitsDismissed || {})[h.id]) {
+            html += '<div class="habit-kit" id="kit-' + h.id + '">' +
+              '<div class="hk-header"><span class="hk-label">' + kit.label + '</span>' +
+              '<button class="hk-dismiss" onclick="event.stopPropagation();dismissKit(\'' + h.id + '\')" aria-label="Dismiss">×</button></div>' +
+              kit.items.map(item =>
+                '<div class="hk-item"><span class="hk-icon">' + item.icon + '</span>' +
+                '<div class="hk-info"><div class="hk-name">' + esc(item.name) + '</div>' +
+                '<div class="hk-hook">' + esc(item.hook) + '</div></div>' +
+                '<a class="hk-cta" href="' + item.url + '" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">' + esc(item.cta) + '</a></div>'
+              ).join('') +
+              '</div>';
+          }
         });
         c.innerHTML = html;
         if (state.habits.length === 1) {
