@@ -675,7 +675,7 @@
           label: "📚 Your reading kit",
           items: [
             ATOMIC_HABITS,
-            { icon: "🎧", name: "Audible", hook: "1 free audiobook to start", url: "https://www.audible.com", cta: "Get started →" },
+            { icon: "📱", name: "Kindle Paperwhite", hook: "Purpose-built e-reader · waterproof, weeks of battery", url: "https://amzn.to/4shY1bp", cta: "See on Amazon →" },
           ],
         },
         {
