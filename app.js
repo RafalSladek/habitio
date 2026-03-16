@@ -676,7 +676,7 @@
       const ATOMIC_HABITS    = { icon: "📗", name: "Atomic Habits",     hook: "The #1 book on habit science · James Clear",          url: "https://amzn.to/3NCIaoC",          cta: "Get the book →"    };
       const KINDLE_UNLIMITED = { icon: "📚", name: "Kindle Unlimited",   hook: "Zugang zu Millionen Büchern · 30 Tage kostenlos",     url: amzDE("/kindle-dbs/hz/signup"),     cta: "Kostenlos testen →" };
       const KINDLE_PW        = { icon: "📖", name: "Kindle Paperwhite", hook: "E-Reader · wasserdicht, wochenlange Akkulaufzeit",     url: "https://amzn.to/4shY1bp",          cta: "Auf Amazon →"      };
-      const AUDIBLE          = { icon: "🎧", name: "Audible",            hook: "1 Hörbuch gratis zum Start",                          url: amzDE("/ep/freimonat"),              cta: "Gratis starten →"  };
+      const AUDIBLE          = { icon: "🎧", name: "Audible",            hook: "1 Hörbuch gratis zum Start",                          url: "https://www.amazon.de/hz/audible/mlp?tag=" + AMZ_TAG, cta: "Gratis starten →"  };
 
       const HABIT_KITS = [
         {
