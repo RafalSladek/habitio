@@ -90,7 +90,7 @@ test.describe('habit.io', () => {
   test('onboarding sets personalised greeting', async ({ page }) => {
     await completeOnboarding(page, 'Test');
 
-    await expect(page.getByRole('heading', { name: 'habit.io' })).toBeVisible();
+    await expect(page).toHaveTitle('habit.io');
     await expect(page.locator('text=Test')).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Welcome to habit.io' })).not.toBeVisible();
   });
