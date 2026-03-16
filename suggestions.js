@@ -54,6 +54,21 @@ const SUGGESTION_DATA = [
     ],
   },
   {
+    catKey: "cat_micro",
+    items: [
+      { nameKey: "sug_micro_vocab",    emoji: "🔤", cadence: { type: "daily" } },
+      { nameKey: "sug_micro_podcast",  emoji: "🎙️", cadence: { type: "daily" } },
+      { nameKey: "sug_micro_flash",    emoji: "🃏", cadence: { type: "daily" } },
+      { nameKey: "sug_micro_typing",   emoji: "⌨️", cadence: { type: "daily" } },
+      { nameKey: "sug_micro_math",     emoji: "🔢", cadence: { type: "daily" } },
+      { nameKey: "sug_micro_ted",      emoji: "📺", cadence: { type: "x_per", count: 3, period: "week" } },
+      { nameKey: "sug_micro_wiki",     emoji: "📖", cadence: { type: "daily" } },
+      { nameKey: "sug_micro_code",     emoji: "💻", cadence: { type: "daily" } },
+      { nameKey: "sug_micro_sketch",   emoji: "✏️", cadence: { type: "daily" } },
+      { nameKey: "sug_micro_music",    emoji: "🎸", cadence: { type: "daily" } },
+    ],
+  },
+  {
     catKey: "cat_prod",
     items: [
       { nameKey: "sug_plan_tomorrow", emoji: "📝", cadence: { type: "daily" } },
