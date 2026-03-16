@@ -82,9 +82,12 @@ test.describe('habit.io', () => {
   });
 
   test('onboarding shows language chips with flags', async ({ page }) => {
-    await expect(page.locator('.lang-chip', { hasText: '🇬🇧' })).toBeVisible();
-    await expect(page.locator('.lang-chip', { hasText: '🇩🇪' })).toBeVisible();
-    await expect(page.locator('.lang-chip', { hasText: '🇵🇱' })).toBeVisible();
+    await expect(page.locator('.lang-chip', { hasText: 'English' })).toBeVisible();
+    await expect(page.locator('.lang-chip', { hasText: 'Deutsch' })).toBeVisible();
+    await expect(page.locator('.lang-chip', { hasText: 'Polski' })).toBeVisible();
+    await expect(page.locator('.lang-chip img[alt="EN"]')).toBeVisible();
+    await expect(page.locator('.lang-chip img[alt="DE"]')).toBeVisible();
+    await expect(page.locator('.lang-chip img[alt="PL"]')).toBeVisible();
   });
 
   test('onboarding sets personalised greeting', async ({ page }) => {

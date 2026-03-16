@@ -877,6 +877,9 @@
         flex-wrap: wrap;
       }
       .lang-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
         padding: 6px 14px;
         border-radius: 16px;
         font-size: 13px;
@@ -886,6 +889,15 @@
         color: var(--text-dim);
         cursor: pointer;
         transition: all 0.15s;
+      }
+      .flag-img {
+        width: 20px;
+        height: 14px;
+        border-radius: 2px;
+        object-fit: cover;
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
       }
       .lang-chip.selected {
         background: var(--accent-dim);

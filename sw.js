@@ -13,6 +13,9 @@ const PRECACHE = [
   './icons/icon-512.png',
   './icons/hero-onboarding.webp',
   './icons/hero-onboarding.png',
+  './icons/flags/gb.svg',
+  './icons/flags/de.svg',
+  './icons/flags/pl.svg',
 ];
 
 // Install: pre-cache all app shell assets

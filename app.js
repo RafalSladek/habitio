@@ -1123,7 +1123,11 @@
         welcomeAgeGroup = state.profile.ageGroup || "";
         renderAgeChips();
         const lc = document.getElementById("welcome-lang-chips");
-        const LANGS = { en: "🇬🇧 English", de: "🇩🇪 Deutsch", pl: "🇵🇱 Polski" };
+        const LANGS = {
+          en: '<img src="icons/flags/gb.svg" class="flag-img" alt="EN"> English',
+          de: '<img src="icons/flags/de.svg" class="flag-img" alt="DE"> Deutsch',
+          pl: '<img src="icons/flags/pl.svg" class="flag-img" alt="PL"> Polski',
+        };
         lc.innerHTML = ["en", "de", "pl"]
           .map(l =>
             '<div class="lang-chip' + (state.lang === l ? " selected" : "") +
@@ -1776,13 +1780,13 @@
           '</div><div class="settings-list"><div class="setting-item" style="cursor:default;flex-wrap:wrap;gap:8px"><div class="setting-left" style="width:100%"><span class="setting-emoji">👤</span><span class="setting-label">' +
           (state.profile.name || "—") +
           (state.profile.age ? ", " + state.profile.age : "") +
-          (state.profile.sex ? " · " + t("sex_" + state.profile.sex) : "") +
+          (state.profile.sex ? " · " + t("sex_" + ({ m: "male", f: "female" }[state.profile.sex] || state.profile.sex)) : "") +
           '</span></div><div style="width:100%;padding-left:32px"><div class="lang-chips" style="justify-content:center">' +
           ["en", "de", "pl"]
             .map(l =>
               '<div class="lang-chip' + (state.lang === l ? " selected" : "") +
               '" onclick="changeLang(\'' + l + '\')">' +
-              { en: "🇬🇧 EN", de: "🇩🇪 DE", pl: "🇵🇱 PL" }[l] + "</div>"
+              { en: '<img src="icons/flags/gb.svg" class="flag-img" alt="EN"> EN', de: '<img src="icons/flags/de.svg" class="flag-img" alt="DE"> DE', pl: '<img src="icons/flags/pl.svg" class="flag-img" alt="PL"> PL' }[l] + "</div>"
             ).join("") +
           "</div></div></div></div></div>" +
           '<div class="settings-section"><div class="settings-title" style="display:flex;align-items:center;justify-content:space-between">' +
