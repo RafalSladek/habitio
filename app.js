@@ -666,8 +666,17 @@
 
       // ---------------------------------------------------------------------------
       // Habit kits — contextual resource suggestions shown after first check-off
+      // Amazon affiliate tag: habitio-21 (amazon.de)
+      // amzn.to short links already carry the tag — do not modify them.
+      // For new amazon.de links append: ?tag=habitio-21
       // ---------------------------------------------------------------------------
-      const ATOMIC_HABITS = { icon: "📗", name: "Atomic Habits", hook: "The #1 book on habit science · James Clear", url: "https://amzn.to/3NCIaoC", cta: "Get the book →" };
+      const AMZ_TAG = "habitio-21";
+      const amzDE = (path) => "https://www.amazon.de" + path + (path.includes("?") ? "&" : "?") + "tag=" + AMZ_TAG;
+
+      const ATOMIC_HABITS    = { icon: "📗", name: "Atomic Habits",     hook: "The #1 book on habit science · James Clear",          url: "https://amzn.to/3NCIaoC",          cta: "Get the book →"    };
+      const KINDLE_UNLIMITED = { icon: "📚", name: "Kindle Unlimited",   hook: "Zugang zu Millionen Büchern · 30 Tage kostenlos",     url: amzDE("/kindle-dbs/hz/signup"),     cta: "Kostenlos testen →" };
+      const KINDLE_PW        = { icon: "📖", name: "Kindle Paperwhite", hook: "E-Reader · wasserdicht, wochenlange Akkulaufzeit",     url: "https://amzn.to/4shY1bp",          cta: "Auf Amazon →"      };
+      const AUDIBLE          = { icon: "🎧", name: "Audible",            hook: "1 Hörbuch gratis zum Start",                          url: amzDE("/ep/freimonat"),              cta: "Gratis starten →"  };
 
       const HABIT_KITS = [
         {
@@ -675,7 +684,7 @@
           label: "📚 Your reading kit",
           items: [
             ATOMIC_HABITS,
-            { icon: "📱", name: "Kindle Paperwhite", hook: "Purpose-built e-reader · waterproof, weeks of battery", url: "https://amzn.to/4shY1bp", cta: "See on Amazon →" },
+            KINDLE_UNLIMITED,
           ],
         },
         {
@@ -683,7 +692,7 @@
           label: "🏃 Your fitness kit",
           items: [
             { icon: "📊", name: "Strava", hook: "Track every run, ride & swim free", url: "https://www.strava.com", cta: "Join Strava →" },
-            ATOMIC_HABITS,
+            AUDIBLE,
           ],
         },
         {
@@ -723,14 +732,14 @@
           label: "✍️ Your writing kit",
           items: [
             { icon: "📓", name: "Day One", hook: "Beautiful journaling · private & secure", url: "https://dayoneapp.com", cta: "Try Day One →" },
-            ATOMIC_HABITS,
+            KINDLE_PW,
           ],
         },
         {
           match: /learn|study|language|course|skill/i,
           label: "🎓 Your learning kit",
           items: [
-            { icon: "🌍", name: "Duolingo", hook: "Learn a language in 5 min/day", url: "https://www.duolingo.com", cta: "Start free →" },
+            KINDLE_UNLIMITED,
             ATOMIC_HABITS,
           ],
         },
