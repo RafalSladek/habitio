@@ -50,6 +50,107 @@
         max-width: 480px;
         margin: 0 auto;
       }
+
+      /* ── Desktop sidebar layout ── */
+      @media (min-width: 768px) {
+        body {
+          background: var(--surface);
+        }
+        #app {
+          display: grid;
+          grid-template-columns: 200px 1fr;
+          grid-template-rows: 1fr;
+          max-width: 1200px;
+          height: 100vh;
+          background: var(--bg);
+          box-shadow: 0 0 0 1px var(--border), 0 8px 40px rgba(0,0,0,0.4);
+          border-radius: 0;
+        }
+        .page {
+          grid-column: 2;
+          grid-row: 1;
+          overflow: hidden;
+        }
+        .page.active {
+          display: flex;
+        }
+        .bottom-nav {
+          grid-column: 1;
+          grid-row: 1;
+          flex-direction: column;
+          align-items: stretch;
+          height: 100vh;
+          border-top: none;
+          border-right: 1px solid var(--border);
+          padding: 24px 12px calc(24px + env(safe-area-inset-bottom, 0px));
+          gap: 4px;
+          overflow-y: auto;
+        }
+        .bottom-nav::before {
+          content: 'habit.io';
+          display: block;
+          font-size: 18px;
+          font-weight: 700;
+          letter-spacing: -0.5px;
+          color: var(--text);
+          padding: 4px 12px 20px;
+        }
+        .nav-tab {
+          flex-direction: row;
+          justify-content: flex-start;
+          gap: 12px;
+          padding: 12px 14px;
+          border-radius: 12px;
+          text-align: left;
+        }
+        .nav-icon {
+          font-size: 18px;
+          margin-bottom: 0;
+          width: 22px;
+          text-align: center;
+        }
+        .nav-label {
+          font-size: 13px;
+          font-weight: 600;
+          letter-spacing: 0;
+        }
+        .nav-tab.active {
+          background: var(--surface-2);
+        }
+        .page .header {
+          padding: 24px 28px 16px;
+        }
+        .page-scroll {
+          padding: 16px 28px 28px;
+        }
+        .modal {
+          border-radius: 20px;
+          max-width: 520px;
+          margin: auto;
+          max-height: 80vh;
+        }
+        .modal-overlay {
+          align-items: center;
+          justify-content: center;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        #app {
+          grid-template-columns: 220px 1fr;
+        }
+      }
+
+      @media (min-width: 768px) {
+        /* Hide "habit.io" h1 from tracker header — already in sidebar */
+        #page-tracker .header h1,
+        #page-tracker .header-greeting {
+          display: none;
+        }
+        #page-tracker .header {
+          justify-content: flex-end;
+        }
+      }
       .header {
         padding: 16px 20px 12px;
         display: flex;
@@ -1091,9 +1192,23 @@
       }
       .s-add {
         color: var(--accent);
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 700;
         flex-shrink: 0;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(108, 92, 231, 0.15);
+        border-radius: 8px;
+        transition: background 0.15s, transform 0.1s;
+      }
+      .suggestion-item:hover .s-add {
+        background: rgba(108, 92, 231, 0.28);
+      }
+      .suggestion-item:active .s-add {
+        transform: scale(0.9);
       }
       .phase-tag {
         padding: 1px 6px;
