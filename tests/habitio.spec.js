@@ -114,7 +114,7 @@ test.describe('habit.io', () => {
     test('add habit from suggestions list', async ({ page }) => {
       await page.locator('.header').getByRole('button', { name: '+' }).click();
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
-      await page.getByRole('button', { name: 'Cancel' }).click();
+      await page.locator('#modal-done-bar').click();
 
       await expect(page.locator('.habit-name', { hasText: 'Drink 2L Water' })).toBeVisible();
     });
@@ -122,7 +122,7 @@ test.describe('habit.io', () => {
     test('first habit shows CTA prompt', async ({ page }) => {
       await page.locator('.header').getByRole('button', { name: '+' }).click();
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
-      await page.getByRole('button', { name: 'Cancel' }).click();
+      await page.locator('#modal-done-bar').click();
 
       await expect(page.locator('.first-habit-cta')).toBeVisible();
     });
@@ -130,7 +130,7 @@ test.describe('habit.io', () => {
     test('check off a habit updates progress to 100%', async ({ page }) => {
       await page.locator('.header').getByRole('button', { name: '+' }).click();
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
-      await page.getByRole('button', { name: 'Cancel' }).click();
+      await page.locator('#modal-done-bar').click();
 
       await page.locator('.habit-check').click();
 
@@ -158,7 +158,7 @@ test.describe('habit.io', () => {
     test('stats tab shows key metrics', async ({ page }) => {
       await page.locator('.header').getByRole('button', { name: '+' }).click();
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
-      await page.getByRole('button', { name: 'Cancel' }).click();
+      await page.locator('#modal-done-bar').click();
 
       await page.getByRole('button', { name: '◔ Stats' }).click();
 

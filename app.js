@@ -726,7 +726,8 @@
         modalFreqCount = 2,
         modalFreqPeriod = "week",
         modalMorning = false,
-        editId = null;
+        editId = null,
+        modalAddedCount = 0;
 
       function getFormationPhase(h) {
         if (!h.createdAt) return null;
@@ -1220,6 +1221,8 @@
           modalFreqCount = 2;
           modalFreqPeriod = "week";
           modalMorning = false;
+          modalAddedCount = 0;
+          updateModalDoneState();
           document.getElementById("modal-title").textContent = t("new_habit");
           document.getElementById("modal-save-btn").textContent =
             t("add_habit");
@@ -1244,6 +1247,24 @@
       function closeAddModal() {
         document.getElementById("add-modal").classList.remove("show");
         editId = null;
+        modalAddedCount = 0;
+        updateModalDoneState();
+      }
+      function updateModalDoneState() {
+        const bar = document.getElementById("modal-done-bar");
+        const cancelBtn = document.getElementById("modal-cancel-btn");
+        if (!bar || !cancelBtn) return;
+        if (modalAddedCount > 0) {
+          bar.classList.add("show");
+          document.getElementById("modal-done-label").textContent =
+            modalAddedCount === 1 ? "1 habit added ✓" : modalAddedCount + " habits added ✓";
+          cancelBtn.textContent = "Done · " + modalAddedCount + " added ✓";
+          cancelBtn.classList.add("done-state");
+        } else {
+          bar.classList.remove("show");
+          cancelBtn.textContent = t("btn_cancel");
+          cancelBtn.classList.remove("done-state");
+        }
       }
       function renderSuggestions() {
         const existing = new Set(state.habits.map((h) => h.name.toLowerCase()));
@@ -1293,6 +1314,8 @@
         save();
         el.remove();
         render();
+        modalAddedCount++;
+        updateModalDoneState();
         showToast(emoji + " " + name + "!");
       }
       function renderEmojiPicker() {
