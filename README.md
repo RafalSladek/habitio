@@ -6,6 +6,16 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 
 [![Test & Deploy](https://github.com/RafalSladek/habitio/actions/workflows/playwright.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/playwright.yml)
 
+## Screenshots
+
+| Onboarding | Today | Add Habit |
+|:---:|:---:|:---:|
+| ![Onboarding](docs/screenshot-onboarding.png) | ![Tracker](docs/screenshot-tracker.png) | ![Add Habit](docs/screenshot-add-habit.png) |
+
+| Journal | Stats | Settings |
+|:---:|:---:|:---:|
+| ![Journal](docs/screenshot-journal.png) | ![Stats](docs/screenshot-stats.png) | ![Settings](docs/screenshot-settings.png) |
+
 ## Features
 
 - **Personalised suggestions** — habits ranked by age group (teen / young adult / adult / midlife / senior) and sex, based on demographic research
