@@ -161,58 +161,53 @@
 
     <!-- WELCOME MODAL -->
     <div class="modal-overlay" id="welcome-modal">
-      <div class="modal" style="text-align: center; padding-top: 0; overflow: hidden">
-        <div style="margin: 0 -24px 16px; border-radius: 14px 14px 0 0; overflow: hidden; line-height: 0">
+      <div class="modal welcome-modal-inner">
+        <!-- Hero image pinned at top -->
+        <div class="welcome-hero">
           <picture>
             <source srcset="icons/hero-onboarding.webp" type="image/webp" />
-            <img src="icons/hero-onboarding.png" alt="" width="400" height="140" fetchpriority="high" style="width: 100%; height: 140px; object-fit: cover; object-position: center 30%" />
+            <img src="icons/hero-onboarding.png" alt="" width="400" height="140" fetchpriority="high" />
           </picture>
         </div>
-        <div style="font-size: 36px; margin: 0 0 12px">🌱</div>
-        <h2 id="welcome-title">Welcome to Habitio</h2>
-        <p
-          style="
-            font-size: 14px;
-            color: var(--text-dim);
-            margin-bottom: 20px;
-            line-height: 1.5;
-          "
-          id="welcome-sub"
-        ></p>
-        <div class="welcome-field">
-          <label id="wl-name-label" for="welcome-name">Your first name</label
-          ><input
-            class="modal-input"
-            id="welcome-name"
-            type="text"
-            maxlength="20"
-            autocomplete="given-name"
-          />
-        </div>
-        <div class="welcome-field" style="gap:12px">
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <label id="wl-age-label">Your age</label>
-            <div class="age-chips" id="welcome-age-chips"></div>
+        <!-- Scrollable form content -->
+        <div class="welcome-scroll">
+          <div style="font-size: 36px; margin: 0 0 10px; text-align:center">🌱</div>
+          <h2 id="welcome-title" style="text-align:center">Welcome to Habitio</h2>
+          <p id="welcome-sub" style="font-size:14px;color:var(--text-dim);margin-bottom:20px;line-height:1.5;text-align:center"></p>
+          <div class="welcome-field">
+            <label id="wl-name-label" for="welcome-name">Your first name</label
+            ><input
+              class="modal-input"
+              id="welcome-name"
+              type="text"
+              maxlength="20"
+              autocomplete="given-name"
+            />
           </div>
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <label id="wl-sex-label">Sex</label>
-            <div class="sex-toggle" id="welcome-sex">
-              <button class="sex-btn active" id="sex-male" onclick="setSex('male')" type="button">♂ <span id="sex-male-lbl">Male</span></button>
-              <button class="sex-btn" id="sex-female" onclick="setSex('female')" type="button">♀ <span id="sex-female-lbl">Female</span></button>
+          <div class="welcome-field" style="gap:12px">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label id="wl-age-label">Your age</label>
+              <div class="age-chips" id="welcome-age-chips"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label id="wl-sex-label">Sex</label>
+              <div class="sex-toggle" id="welcome-sex">
+                <button class="sex-btn active" id="sex-male" onclick="setSex('male')" type="button">♂ <span id="sex-male-lbl">Male</span></button>
+                <button class="sex-btn" id="sex-female" onclick="setSex('female')" type="button">♀ <span id="sex-female-lbl">Female</span></button>
+              </div>
             </div>
           </div>
+          <div class="welcome-field">
+            <label id="wl-lang-label">Language</label>
+            <div class="lang-chips" id="welcome-lang-chips"></div>
+          </div>
         </div>
-        <div class="welcome-field">
-          <label id="wl-lang-label">Language</label>
-          <div class="lang-chips" id="welcome-lang-chips"></div>
+        <!-- CTA pinned at bottom -->
+        <div class="welcome-cta">
+          <button class="modal-btn primary" onclick="finishWelcome()" id="welcome-go-btn">
+            Let's go!
+          </button>
         </div>
-        <button
-          class="modal-btn primary"
-          onclick="finishWelcome()"
-          id="welcome-go-btn"
-        >
-          Let's go!
-        </button>
       </div>
     </div>
 
