@@ -777,6 +777,46 @@
         padding: 8px;
       }
 
+      /* Tooltips */
+      #tt {
+        position: fixed;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        font-size: 12px;
+        color: var(--text-dim);
+        max-width: 260px;
+        line-height: 1.6;
+        z-index: 300;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+        display: none;
+        pointer-events: none;
+      }
+      .tt-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        font-size: 9px;
+        color: var(--text-muted);
+        cursor: pointer;
+        margin-left: 5px;
+        vertical-align: middle;
+        font-style: normal;
+        line-height: 1;
+        flex-shrink: 0;
+        font-family: var(--font);
+        padding: 0;
+      }
+      .tt-btn:hover { border-color: var(--accent); color: var(--accent); }
+      .streak-tag { cursor: pointer; }
+      .phase-tag  { cursor: pointer; }
+
       /* Settings */
       .settings-section {
         margin-bottom: 20px;

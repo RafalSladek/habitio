@@ -105,6 +105,18 @@
           phase_building: "🔨 Building",
           phase_forming:  "⚡ Forming",
           phase_formed:   "✨ Formed",
+          tip_streak:          "🔥 Consecutive days completed without a gap.\n\nYesterday or today must be checked — one missed day resets it to zero.\n\nStreaks are one of the strongest habit motivators (Milkman, 2021).",
+          tip_best_streak:     "The longest active daily streak across all your habits.",
+          tip_performance:     "% of scheduled days each habit was completed in the last 30 days.\n\nA habit set to 3×/week has ~12 possible days — not 30. Only counts days the habit was actually due.",
+          tip_formation:       "Phillippa Lally et al. (2010) studied 96 people over 12 weeks and found habits take 18–254 days to become automatic, averaging 66 days.\n\nMissing an occasional day does not significantly disrupt the process.",
+          tip_phase_learning:  "🌱 Days 0–19: Learning\n\nThe brain is starting to associate the cue with the behaviour. Missing a day is normal — just keep showing up.\n\nFocus: build the trigger, not the streak.",
+          tip_phase_building:  "🔨 Days 20–49: Building\n\nNeural pathways are forming. Repetition is rewiring your automatic responses. Consistency matters most here.\n\nFocus: don't break the chain.",
+          tip_phase_forming:   "⚡ Days 50–65: Forming\n\nThe behaviour is becoming a reflex. You're in the final critical stretch before the habit is truly wired in.\n\nFocus: protect the habit at all costs.",
+          tip_phase_formed:    "✨ Days 66+: Formed\n\nLally et al. (2010): your habit has reached automaticity — it now requires less willpower and feels natural.\n\nFocus: maintain and build on it.",
+          tip_diary_grateful:  "Gratitude journalling\n\nEmmons & McCullough (2003): people who wrote weekly about things they were grateful for were 25% happier and more optimistic than those who didn't.",
+          tip_diary_affirm:    "Self-affirmations\n\nSteele (1988): affirming your core values reduces the brain's threat response, lowers stress, and improves rational decision-making under pressure.",
+          tip_diary_good:      "Three Good Things\n\nSeligman et al. (2005): writing three good things and their causes each day for just one week significantly reduced depression and increased happiness for up to 6 months.",
+          tip_diary_better:    "Implementation intentions\n\nGollwitzer (1999): people who write specific 'if X then Y' improvement plans are 2–3× more likely to follow through compared to vague goals.",
           morning_routine: "Morning routine",
           for_you: "for you",
           own_badge: "mine",
@@ -274,6 +286,18 @@
           phase_building: "🔨 Aufbau",
           phase_forming:  "⚡ Festigung",
           phase_formed:   "✨ Geformt",
+          tip_streak:          "🔥 Aufeinanderfolgende Tage ohne Unterbrechung.\n\nGestern oder heute muss abgehakt sein — ein verpasster Tag setzt auf null zurück.\n\nSerien sind einer der stärksten Motivatoren für Gewohnheiten (Milkman, 2021).",
+          tip_best_streak:     "Die längste aktuelle Tagesserie über alle Gewohnheiten.",
+          tip_performance:     "% der geplanten Tage, an denen die Gewohnheit in den letzten 30 Tagen abgeschlossen wurde.\n\nEine 3×/Woche-Gewohnheit hat ~12 mögliche Tage — nicht 30.",
+          tip_formation:       "Lally et al. (2010): Gewohnheiten brauchen 18–254 Tage, um automatisch zu werden — im Durchschnitt 66 Tage.\n\nEin gelegentlich verpasster Tag stört den Prozess nicht wesentlich.",
+          tip_phase_learning:  "🌱 Tage 0–19: Lernen\n\nDas Gehirn beginnt, den Auslöser mit dem Verhalten zu verknüpfen. Fehlende Tage sind normal.\n\nFokus: den Auslöser aufbauen.",
+          tip_phase_building:  "🔨 Tage 20–49: Aufbauen\n\nNeuronale Bahnen formen sich. Konsequenz überschreibt automatische Reaktionen.\n\nFokus: die Kette nicht unterbrechen.",
+          tip_phase_forming:   "⚡ Tage 50–65: Festigen\n\nDas Verhalten wird zum Reflex. Die letzte entscheidende Phase.\n\nFokus: die Gewohnheit um jeden Preis schützen.",
+          tip_phase_formed:    "✨ Ab Tag 66: Geformt\n\nLally et al. (2010): Deine Gewohnheit hat Automatizität erreicht — weniger Willenskraft nötig.",
+          tip_diary_grateful:  "Dankbarkeitsjournal\n\nEmmons & McCullough (2003): Wer wöchentlich Dankbarkeit aufschrieb, war 25% glücklicher und optimistischer.",
+          tip_diary_affirm:    "Selbstaffirmationen\n\nSteele (1988): Das Bestätigen eigener Werte reduziert die Bedrohungsreaktion des Gehirns und verbessert Entscheidungen.",
+          tip_diary_good:      "Drei gute Dinge\n\nSeligman et al. (2005): Täglich 3 gute Dinge aufzuschreiben reduzierte Depressionen signifikant — Wirkung bis zu 6 Monate.",
+          tip_diary_better:    "Umsetzungsabsichten\n\nGollwitzer (1999): Wer konkrete Pläne aufschreibt, ist 2–3× wahrscheinlicher, sie umzusetzen.",
           morning_routine: "Morgenroutine",
           for_you: "für dich",
           own_badge: "eigene",
@@ -442,6 +466,18 @@
           phase_building: "🔨 Budowanie",
           phase_forming:  "⚡ Utrwalanie",
           phase_formed:   "✨ Nawyk",
+          tip_streak:          "🔥 Kolejne dni bez przerwy.\n\nWczoraj lub dziś musi być odhaczone — jedna przerwa zeruje serię.\n\nSerie to jeden z najsilniejszych motywatorów nawyków (Milkman, 2021).",
+          tip_best_streak:     "Najdłuższa aktywna seria dzienna spośród wszystkich nawyków.",
+          tip_performance:     "% zaplanowanych dni, w których nawyk został wykonany (ostatnie 30 dni).\n\nNawyk 3×/tydzień ma ~12 możliwych dni — nie 30.",
+          tip_formation:       "Lally et al. (2010): nawyki potrzebują 18–254 dni by stać się automatyczne, średnio 66 dni.\n\nOkazjonalne opuszczenie dnia nie psuje procesu.",
+          tip_phase_learning:  "🌱 Dni 0–19: Nauka\n\nMózg zaczyna łączyć sygnał z zachowaniem. Opuszczenie dnia jest normalne.\n\nSkup się na budowaniu wyzwalacza.",
+          tip_phase_building:  "🔨 Dni 20–49: Budowanie\n\nTworzą się ścieżki neuronowe. Regularność przepisuje automatyczne reakcje.\n\nSkup się na utrzymaniu ciągłości.",
+          tip_phase_forming:   "⚡ Dni 50–65: Utrwalanie\n\nZachowanie staje się odruchem. Ostatnia krytyczna faza.\n\nChroń nawyk za wszelką cenę.",
+          tip_phase_formed:    "✨ Od dnia 66: Nawyk\n\nLally et al. (2010): Twój nawyk osiągnął automatyczność — wymaga mniej siły woli.",
+          tip_diary_grateful:  "Dziennik wdzięczności\n\nEmmons i McCullough (2003): zapisywanie wdzięczności zwiększyło szczęście o 25% i poprawiło optymizm.",
+          tip_diary_affirm:    "Afirmacje\n\nSteele (1988): potwierdzanie własnych wartości redukuje reakcję zagrożenia w mózgu i poprawia decyzje.",
+          tip_diary_good:      "Trzy dobre rzeczy\n\nSeligman et al. (2005): codzienne zapisywanie 3 dobrych rzeczy znacznie zmniejszyło depresję — efekt do 6 miesięcy.",
+          tip_diary_better:    "Intencje implementacyjne\n\nGollwitzer (1999): pisanie konkretnych planów zwiększa prawdopodobieństwo realizacji 2–3×.",
           morning_routine: "Poranny rytuał",
           for_you: "dla Ciebie",
           own_badge: "mój",
@@ -1053,10 +1089,10 @@
             pp = periodProg(h, selectedDate),
             phase = getFormationPhase(h);
           let meta = "";
-          if (streak > 0) meta += "<span>" + streak + "d 🔥</span>";
+          if (streak > 0) meta += '<span class="streak-tag" onclick="event.stopPropagation();showTip(this,t(\'tip_streak\'))">' + streak + "d 🔥</span>";
           if (cL) meta += '<span class="cadence-tag">' + cL + "</span>";
           if (pp) meta += '<span class="cadence-tag">' + pp.done + "/" + pp.target + "</span>";
-          if (phase) meta += '<span class="phase-tag ' + phase.cls + '">' + t(phase.key) + ' ' + phase.days + 'd</span>';
+          if (phase) meta += '<span class="phase-tag ' + phase.cls + '" onclick="event.stopPropagation();showTip(this,t(\'tip_' + phase.cls.replace('phase-','phase_') + '\'))">' + t(phase.key) + ' ' + phase.days + 'd</span>';
           if (h.source === "custom") meta += '<span class="own-badge">' + t("own_badge") + '</span>';
           if (!meta) meta = '<span style="opacity:.4">—</span>';
           const cls = "habit-card" + (checked ? " checked" : "") + (!sched && h.cadence?.type === "specific_days" ? " off-day" : "");
@@ -1462,7 +1498,7 @@
         c.innerHTML = dateNav + progress +
           '<div class="diary-step-card">' +
             '<div class="diary-step-icon">' + DIARY_ICONS[field] + "</div>" +
-            '<div class="diary-step-label">' + esc(t("diary_" + field)) + "</div>" +
+            '<div class="diary-step-label">' + esc(t("diary_" + field)) + tipBtn("tip_diary_" + field) + "</div>" +
             '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
               esc(t("diary_ph_" + field)) + '" ' +
               'oninput="saveDiary(\'' + k + "','" + field + '\',this.value)" id="d_' + field + '">' +
@@ -1720,7 +1756,7 @@
           '</div>' +
           '<div class="stats-grid-item">' +
             '<div class="stat-big">' + bS + (bS ? '<span class="stat-big-unit">d</span>' : '') + ' ' + bE + '</div>' +
-            '<div class="stat-big-label">' + t("best_streak") + '</div>' +
+            '<div class="stat-big-label">' + t("best_streak") + tipBtn("tip_best_streak") + '</div>' +
             '<div class="stat-big-sub">' + t("streak_unit") + '</div>' +
           '</div>' +
           '<div class="stats-grid-item">' +
@@ -1736,7 +1772,7 @@
             hmLegend +
           '</div>' +
           '<div class="stat-card">' +
-            '<div class="stat-card-title">' + t("performance") + '</div>' +
+            '<div class="stat-card-title">' + t("performance") + tipBtn("tip_performance") + '</div>' +
             '<div class="stat-card-sub">' + t("perf_sub") + '</div>' +
             hs.map((h) =>
               '<div class="stat-row">' +
@@ -1750,7 +1786,7 @@
             perfLegend +
           '</div>' +
           '<div class="stat-card">' +
-            '<div class="stat-card-title">' + t("stat_formation") + '</div>' +
+            '<div class="stat-card-title">' + t("stat_formation") + tipBtn("tip_formation") + '</div>' +
             '<div class="stat-card-sub">' + t("formation_sub") + '</div>' +
             state.habits.map(h => {
               const days = h.createdAt ? Math.floor((new Date() - new Date(h.createdAt)) / 86400000) : 0;
@@ -1871,6 +1907,30 @@
         if (p === "stats") renderStats();
         if (p === "settings") renderSettings();
       }
+      function showTip(btn, msg) {
+        const tt = document.getElementById("tt");
+        tt.innerHTML = msg.replace(/\n/g, "<br>");
+        tt.style.display = "block";
+        const r = btn.getBoundingClientRect();
+        const tw = tt.offsetWidth || 260;
+        const th = tt.offsetHeight || 80;
+        let top = r.bottom + 8;
+        let left = r.left + r.width / 2 - tw / 2;
+        if (left < 8) left = 8;
+        if (left + tw > window.innerWidth - 8) left = window.innerWidth - tw - 8;
+        if (top + th > window.innerHeight - 8) top = r.top - th - 8;
+        tt.style.top = top + "px";
+        tt.style.left = left + "px";
+        requestAnimationFrame(() => document.addEventListener("click", hideTip, { once: true }));
+      }
+      function hideTip() {
+        const tt = document.getElementById("tt");
+        if (tt) tt.style.display = "none";
+      }
+      function tipBtn(key) {
+        return '<button class="tt-btn" onclick="event.stopPropagation();showTip(this,t(\'' + key + '\'))">ⓘ</button>';
+      }
+
       function showToast(m) {
         const t = document.getElementById("toast");
         t.textContent = m;

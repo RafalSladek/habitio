@@ -166,7 +166,7 @@ test.describe('habit.io', () => {
       await expect(page.getByText('This Week')).toBeVisible();
       await expect(page.getByText('Best Streak')).toBeVisible();
       await expect(page.getByText('Last 28 Days')).toBeVisible();
-      await expect(page.getByText('Habit Performance · 30 Days', { exact: true })).toBeVisible();
+      await expect(page.getByText('Habit Performance · 30 Days')).toBeVisible();
     });
 
     test('settings tab shows profile, habits, data and about sections', async ({ page }) => {
