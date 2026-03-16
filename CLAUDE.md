@@ -18,7 +18,7 @@ Files are split for clarity; no build step required:
 | `styles.css` | All styles |
 | `app.js` | All application logic |
 | `suggestions.js` | Habit suggestion data with demographic scoring |
-| `sw.js` | Service worker — full offline caching (cache name: `habitio-v3`) |
+| `sw.js` | Service worker — full offline caching (cache name: `habitio_v4`) |
 | `manifest.json` | PWA manifest |
 | `icons/` | Favicon, app icons (16, 32, 192, 512px + SVG), hero-onboarding.webp/png |
 
@@ -27,7 +27,7 @@ Files are split for clarity; no build step required:
 All user data is stored **client-side only**:
 
 - API: `localStorage`
-- Key: `habitio_v2`
+- Key: `habitio_v4`
 - Format: JSON-serialized state object: `{ habits[], checks{}, diary{}, profile{name,age,ageGroup,sex}, lang }`
 - No backend, no sync, no accounts
 
@@ -65,9 +65,25 @@ GitHub Actions (`.github/workflows/playwright.yml`):
 - To run tests locally: `yarn test` (starts local server via `npx serve`)
 - To convert images to WebP: `ffmpeg -i input.png -c:v libwebp -quality 82 output.webp`
 
+## Service Worker & Caching
+
+The SW uses **stale-while-revalidate** for all same-origin app shell files (`app.js`, `styles.css`, `index.html`, etc.):
+- Cache is served immediately (fast, works offline)
+- Network fetch always runs in background to refresh the cache
+- Result: users see the new version on the **next** page load after a deploy (one reload lag)
+
+**SW cache name must always match the localStorage key** (`CACHE` in `sw.js` = `habitio_v4`).
+- When the localStorage key is bumped (e.g. `habitio_v4` → `habitio_v5`), update `CACHE` in `sw.js` to the same value
+- This keeps a single version number across both systems — one bump covers both the data schema migration and the asset cache bust
+- Without bumping, users who haven't visited since the last SW version change will keep getting old cached files
+
+**Why not instant updates?**
+GitHub Pages sets `Cache-Control: max-age=600` (10 min) — nothing can be done about that.
+Without asset fingerprinting (e.g. `app.a1b2c3.js`) there is no way to achieve zero-reload updates. One reload is the best achievable without a build tool.
+
 ## Data Migration
 
-When bumping the localStorage version key (e.g. `habitio_v2` → `habitio_v3`), always implement a migration layer in `app.js` that:
+When bumping the localStorage version key (e.g. `habitio_v4` → `habitio_v5`), always implement a migration layer in `app.js` that:
 1. Reads any older version keys on startup
 2. Migrates the data shape to the new format
 3. Saves under the new key and deletes the old one
@@ -80,3 +96,4 @@ Never change the storage key without migration — users must not lose their hab
 
 1. **Run tests**: `yarn test` — all projects (Desktop, Mobile, Tablet) must pass
 2. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
+3. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key

@@ -665,11 +665,16 @@
           : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
       }
       function save() {
-        localStorage.setItem("habitio_v2", JSON.stringify(state));
+        localStorage.setItem("habitio_v4", JSON.stringify(state));
       }
       function load() {
         try {
-          const d = JSON.parse(localStorage.getItem("habitio_v2"));
+          // Migration: read from older keys if current key is absent
+          const raw =
+            localStorage.getItem("habitio_v4") ||
+            localStorage.getItem("habitio_v3") ||
+            localStorage.getItem("habitio_v2");
+          const d = JSON.parse(raw);
           if (d && d.habits) {
             d.habits = (d.habits || []).map((h) => ({
               cadence: { type: "daily" },
@@ -680,6 +685,10 @@
             if (!d.profile.sex) d.profile.sex = "male";
             if (!d.lang) d.lang = "en";
             state = d;
+            // Persist under new key and clean up old keys
+            localStorage.setItem("habitio_v4", JSON.stringify(state));
+            localStorage.removeItem("habitio_v3");
+            localStorage.removeItem("habitio_v2");
             return;
           }
         } catch (e) {}

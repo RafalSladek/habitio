@@ -1,4 +1,4 @@
-const CACHE = 'habitio-v3';
+const CACHE = 'habitio_v4';
 
 const PRECACHE = [
   './',
@@ -75,18 +75,19 @@ self.addEventListener('fetch', (e) => {
     return;
   }
 
-  // App shell (same-origin) — cache-first
+  // App shell (same-origin) — stale-while-revalidate
+  // Serve from cache immediately for speed/offline, but always fetch in
+  // background so the cache is refreshed and the next load is up-to-date.
   if (url.origin === self.location.origin) {
     e.respondWith(
-      caches.match(request).then(
-        (cached) =>
-          cached ||
-          fetch(request).then((res) => {
-            if (res.ok) {
-              caches.open(CACHE).then((c) => c.put(request, res.clone()));
-            }
+      caches.open(CACHE).then((c) =>
+        c.match(request).then((cached) => {
+          const networkFetch = fetch(request).then((res) => {
+            if (res.ok) c.put(request, res.clone());
             return res;
-          })
+          });
+          return cached || networkFetch;
+        })
       )
     );
     return;
