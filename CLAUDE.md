@@ -92,8 +92,9 @@ Never change the storage key without migration — users must not lose their hab
 
 ## Pre-Commit Checklist
 
-**Always do both before committing:**
+**Always do all of these before committing:**
 
 1. **Run tests**: `yarn test` — all projects (Desktop, Mobile, Tablet) must pass
-2. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
-3. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key
+2. **Update screenshots**: if any UI change was made (layout, colours, new screens, copy), retake the affected screenshots in `docs/` using Playwright at 393×852 (mobile) and include them in the same commit
+3. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
+4. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key
