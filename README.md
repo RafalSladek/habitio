@@ -62,20 +62,21 @@ push to main → Playwright tests (desktop + mobile + tablet) → deploy to Page
 
 ## Performance
 
-Lighthouse scores (mobile):
+Lighthouse scores (mobile, avg of 3 runs):
 
 | Category | Score |
 |---|---|
-| Performance | 73+ |
-| Accessibility | 69+ |
+| Performance | 80 |
+| Accessibility | 92 |
 | Best Practices | 100 |
-| SEO | 54→100 |
+| SEO | 100 |
 
 Key optimisations applied:
 - Non-blocking Google Fonts (preconnect + preload swap)
 - Hero image served as WebP (290 KB → 16 KB, 94% smaller) with PNG fallback
 - `fetchpriority="high"` on LCP image
 - WCAG AA contrast on all text elements
+- `viewport-fit=cover` with safe-area insets for device nav bars
 
 ## Research & Science
 
