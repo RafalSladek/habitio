@@ -65,6 +65,15 @@ GitHub Actions (`.github/workflows/playwright.yml`):
 - To run tests locally: `yarn test` (starts local server via `npx serve`)
 - To convert images to WebP: `ffmpeg -i input.png -c:v libwebp -quality 82 output.webp`
 
+## Data Migration
+
+When bumping the localStorage version key (e.g. `habitio_v2` → `habitio_v3`), always implement a migration layer in `app.js` that:
+1. Reads any older version keys on startup
+2. Migrates the data shape to the new format
+3. Saves under the new key and deletes the old one
+
+Never change the storage key without migration — users must not lose their habits, checks, diary entries, or profile.
+
 ## Pre-Commit Checklist
 
 **Always do both before committing:**
