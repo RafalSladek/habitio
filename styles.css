@@ -1156,7 +1156,6 @@
         border: 1px solid var(--border);
         border-radius: 20px 20px 0 0;
         width: 100%;
-        max-width: 480px;
         padding: 20px 20px calc(32px + env(safe-area-inset-bottom, 0px));
         animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         max-height: 100dvh;
@@ -1893,7 +1892,7 @@
           grid-column: 1 / -1;
         }
 
-        /* ── Modal: centered dialog ── */
+        /* ── Modal: centered dialog within content column ── */
         .modal {
           border-radius: 20px;
           max-width: 560px;
@@ -1903,6 +1902,7 @@
         .modal-overlay {
           align-items: center;
           justify-content: center;
+          padding-left: 200px; /* shift center-point into content column */
         }
 
         /* ── Tracker header: hide app title (shown in sidebar), keep greeting ── */
@@ -1926,6 +1926,9 @@
         }
         .fab {
           left: calc(240px + (100vw - 240px) / 2);
+        }
+        .modal-overlay {
+          padding-left: 240px;
         }
         .habit-group-items {
           grid-template-columns: repeat(3, 1fr);
