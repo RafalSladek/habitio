@@ -649,10 +649,13 @@
       /* Step card */
       .diary-step-card {
         background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-radius: 0;
         padding: 24px 20px 16px;
-        margin-bottom: 12px;
+        margin: 0 -16px 12px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -719,8 +722,12 @@
         text-align: center;
         padding: 24px 16px;
         background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-radius: 0;
+        margin: 0 -16px 12px;
       }
       .diary-summary-icon { font-size: 48px; margin-bottom: 12px; }
       .diary-summary-title {
@@ -779,9 +786,9 @@
         font-weight: 600;
         cursor: pointer;
         font-family: var(--font);
-        padding: 12px 18px;
+        padding: 14px 18px;
         transition: opacity 0.15s;
-        align-self: center;
+        width: 100%;
       }
       .diary-edit-btn:active { opacity: 0.7; }
 
@@ -1152,7 +1159,7 @@
         max-width: 480px;
         padding: 20px 20px calc(32px + env(safe-area-inset-bottom, 0px));
         animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        max-height: 88vh;
+        max-height: 100dvh;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
       }
@@ -1859,6 +1866,15 @@
         /* ── Progress header ── */
         .progress-header {
           margin: 8px 32px 16px;
+        }
+
+        /* ── Diary full-bleed cards ── */
+        .diary-step-card,
+        .diary-summary {
+          margin-left: -32px;
+          margin-right: -32px;
+          padding-left: 32px;
+          padding-right: 32px;
         }
 
         /* ── Stat cards: 2-column grid ── */
