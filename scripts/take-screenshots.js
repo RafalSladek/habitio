@@ -101,12 +101,19 @@ async function main() {
     await mobile.waitForTimeout(400);
     await mobile.screenshot({ path: path.join(DOCS_DIR, 'screenshot-tracker.png') });
 
-    // 3. Add-habit modal open — click FAB
+    // 3. Add-habit modal open — 1 habit seeded so FAB is visible, modal scrolled to CTA
     console.log('  screenshot-add-habit.png');
-    await loadWithState(mobile, SEED_STATE);
+    const stateOneHabit = { ...SEED_STATE, habits: [SEED_STATE.habits[0]] };
+    await loadWithState(mobile, stateOneHabit);
     await mobile.click('#fab-add');
     await mobile.waitForSelector('#add-modal.show', { timeout: 3000 }).catch(() => {});
-    await mobile.waitForTimeout(600);
+    await mobile.waitForTimeout(400);
+    // Scroll the modal to the bottom so the Save CTA button is visible
+    await mobile.evaluate(() => {
+      const modal = document.querySelector('#add-modal .modal');
+      if (modal) modal.scrollTop = modal.scrollHeight;
+    });
+    await mobile.waitForTimeout(300);
     await mobile.screenshot({ path: path.join(DOCS_DIR, 'screenshot-add-habit.png') });
 
     // 4. Journal step 1 (gratitude prompt) — no diary data today
