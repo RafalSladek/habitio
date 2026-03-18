@@ -1101,7 +1101,9 @@
             localStorage.removeItem("habitio_v2");
             return;
           }
-        } catch (e) {}
+        } catch (e) {
+          console.warn("[habitio] Failed to load saved state:", e);
+        }
         state = {
           habits: [],
           checks: {},
@@ -1117,11 +1119,11 @@
         return d.toISOString().slice(0, 10);
       }
       function getMon(d) {
-        const t = new Date(d),
-          day = t.getDay() || 7;
-        t.setDate(t.getDate() - day + 1);
-        t.setHours(0, 0, 0, 0);
-        return t;
+        const date = new Date(d),
+          day = date.getDay() || 7;
+        date.setDate(date.getDate() - day + 1);
+        date.setHours(0, 0, 0, 0);
+        return date;
       }
       function addD(d, n) {
         const r = new Date(d);
@@ -1473,8 +1475,8 @@
           const cls = "habit-card" + (checked ? " checked" : "") + (!sched && h.cadence?.type === "specific_days" ? " off-day" : "");
           html += '<div class="' + cls + '" onclick="toggleHabit(\'' + h.id + '\')"><div class="habit-emoji">' + h.emoji + '</div><div class="habit-info"><div class="habit-name">' + esc(h.name) + '</div><div class="habit-meta">' + meta + '</div></div><div class="habit-check"><span class="check-icon">✓</span></div></div>';
           // Micro-fact: shown every time this habit is checked today (rotates daily)
-          const isToday = fmt(selectedDate) === fmt(new Date());
-          if (checked && isToday) {
+          const isTodaySelected = fmt(selectedDate) === fmt(new Date());
+          if (checked && isTodaySelected) {
             const fact = getHabitFact(h, fmt(selectedDate));
             if (fact) {
               html += '<div class="habit-fact">💡 ' + esc(fact) + '</div>';
@@ -1695,7 +1697,7 @@
               '" data-emoji="' +
               s.emoji +
               "\" data-cadence='" +
-              JSON.stringify(s.cadence) +
+              esc(JSON.stringify(s.cadence)) +
               '\'><span class="s-emoji">' +
               s.emoji +
               '</span><span class="s-name">' +
