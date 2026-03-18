@@ -17,12 +17,5 @@
 - [x] **Settings habit hover glow** — `.habit-edit-item` gets fade-in/out background + inset purple glow on hover; deeper glow on active.
 - [x] **Editable profile card** — Profile row in Settings is now clickable; opens the welcome/onboarding modal pre-filled with current name, age, sex, and language. `›` chevron added as affordance.
 - [x] **Export / import tests** — 15 Playwright tests covering: download filename + content, import modal open/cancel, merge deduplication, invalid JSON error toast, round-trip export→re-import.
-- [x] **SonarCloud integration** — `sonar-project.properties`, V8 coverage collection in `test.beforeEach`/`afterEach`, `tests/global-teardown.js` converts coverage to `coverage/lcov.info`, `playwright.config.js` wired to teardown, CI workflow step added.
-
-## Setup required (manual)
-
-- [ ] Add `SONAR_TOKEN` secret to GitHub repo → Settings → Secrets → Actions (get token from sonarcloud.io).
-
-## Backlog / Ideas
-
-- [ ] Mobile edit modal layout review (reported as left-oriented on small screen — screenshot showed correct; investigate specific device).
+- [x] **SonarCloud integration** — `sonar-project.properties`, V8 coverage collection in `test.beforeEach`/`afterEach`, `tests/global-teardown.js` converts coverage to `coverage/lcov.info`, `playwright.config.js` wired to teardown, CI workflow step added. `SONAR_TOKEN` configured as GH secret and env variable.
+- [x] **Mobile modal full-width fix** — removed `justify-content: center` from `.modal-overlay` base styles (mobile); it stays only in the desktop breakpoint. Bottom sheet now stretches edge-to-edge on mobile with no side margins.

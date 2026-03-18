@@ -1152,7 +1152,6 @@
         z-index: 100;
         display: none;
         align-items: flex-end;
-        justify-content: center;
         animation: fadeIn 0.2s;
       }
       .modal-overlay.show {
