@@ -2,4 +2,5 @@ node_modules/
 test-results/
 playwright-report/
 .playwright-mcp/
-.claude
+.claude.nyc_output/
+coverage/

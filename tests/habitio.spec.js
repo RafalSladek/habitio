@@ -1,5 +1,23 @@
 // @ts-check
 const { test, expect } = require('@playwright/test');
+const fs = require('fs');
+const path = require('path');
+
+// ── V8 coverage collection for SonarCloud LCOV report ──────────────
+// Runs in Chromium only (page.coverage is null in other browsers).
+test.beforeEach(async ({ page }) => {
+  if (page.coverage) await page.coverage.startJSCoverage({ resetOnNavigation: false });
+});
+test.afterEach(async ({ page }) => {
+  if (!page.coverage) return;
+  const entries = await page.coverage.stopJSCoverage();
+  const outDir = path.join(__dirname, '..', '.nyc_output');
+  fs.mkdirSync(outDir, { recursive: true });
+  fs.writeFileSync(
+    path.join(outDir, `cov-${Date.now()}-${Math.random().toString(36).slice(2)}.json`),
+    JSON.stringify(entries)
+  );
+});
 
 /** @param {import('@playwright/test').Page} page */
 async function completeOnboarding(page, name = 'Test') {
@@ -12,8 +30,8 @@ async function completeOnboarding(page, name = 'Test') {
  * Seed localStorage with a single habit whose createdAt is `daysOld` days ago,
  * optionally with `checkedDaysBack` consecutive daily checks ending today.
  */
-async function seedHabit(page, daysOld, checkedDaysBack = 0) {
-  await page.evaluate(({ daysOld, checkedDaysBack }) => {
+async function seedHabit(/** @type {import('@playwright/test').Page} */ page, /** @type {number} */ daysOld, checkedDaysBack = 0) {
+  await page.evaluate((/** @type {{daysOld: number, checkedDaysBack: number}} */ { daysOld, checkedDaysBack }) => {
     // Remove any pre-seeded v4 so load() will read and migrate from habitio_v2
     localStorage.removeItem('habitio_v4');
     const id = 'test-habit-001';
@@ -24,7 +42,7 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
     const createdAt = created.toISOString().slice(0, 10);
 
     // Build checks object: consecutive days from today going back
-    const checks = {};
+    /** @type {Record<string, Record<string, boolean>>} */ const checks = {};
     for (let i = 0; i < checkedDaysBack; i++) {
       const d = new Date();
       d.setDate(d.getDate() - i);

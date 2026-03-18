@@ -107,3 +107,4 @@ Never change the storage key without migration — users must not lose their hab
    Fix any issues found before proceeding to commit.
 4. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
 5. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key
+6. **Update `TODO.md`**: add any new tasks completed in this session to `TODO.md` and include it in the same commit as the code changes
