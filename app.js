@@ -1575,6 +1575,7 @@
             '<div class="lang-chip' + (state.lang === l ? " selected" : "") +
             '" onclick="setWelcomeLang(\'' + l + '\')">' + LANGS[l] + '</div>'
           ).join("");
+        document.getElementById("welcome-name").value = state.profile.name || "";
         wl.classList.add("show");
         setTimeout(() => document.getElementById("welcome-name").focus(), 300);
       }
@@ -2271,15 +2272,15 @@
         c.innerHTML =
           '<div class="settings-section"><div class="settings-title">' +
           t("settings_profile") +
-          '</div><div class="settings-list"><div class="setting-item" style="cursor:default;flex-wrap:wrap;gap:8px"><div class="setting-left" style="width:100%"><span class="setting-emoji">👤</span><span class="setting-label">' +
+          '</div><div class="settings-list"><div class="setting-item" style="flex-wrap:wrap;gap:8px" onclick="showWelcome()"><div class="setting-left" style="width:100%"><span class="setting-emoji">👤</span><span class="setting-label">' +
           (state.profile.name || "—") +
           (state.profile.age ? ", " + state.profile.age : "") +
           (state.profile.sex ? " · " + t("sex_" + ({ m: "male", f: "female" }[state.profile.sex] || state.profile.sex)) : "") +
-          '</span></div><div style="width:100%;padding-left:32px"><div class="lang-chips" style="justify-content:center">' +
+          '</span><span class="setting-action" style="margin-left:auto">›</span></div><div style="width:100%;padding-left:32px"><div class="lang-chips" style="justify-content:center">' +
           ["en", "de", "pl"]
             .map(l =>
               '<div class="lang-chip' + (state.lang === l ? " selected" : "") +
-              '" onclick="changeLang(\'' + l + '\')">' +
+              '" onclick="event.stopPropagation();changeLang(\'' + l + '\')">' +
               { en: '<img src="icons/flags/gb.svg" class="flag-img" alt="EN"> EN', de: '<img src="icons/flags/de.svg" class="flag-img" alt="DE"> DE', pl: '<img src="icons/flags/pl.svg" class="flag-img" alt="PL"> PL' }[l] + "</div>"
             ).join("") +
           "</div></div></div></div></div>" +
