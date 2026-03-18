@@ -392,4 +392,167 @@ test.describe('habit.io', () => {
       await expect(page.locator('.setting-label', { hasText: /Analytics/ })).not.toHaveText(initialText || '');
     });
   });
+
+  // ─────────────────────────────────────────────────────────────────
+  // GA4 event tracking
+  // Spies on window.dataLayer to verify gtag() calls without relying
+  // on network interception (sendBeacon bypasses page.route()).
+  // ─────────────────────────────────────────────────────────────────
+  test.describe('GA4 event tracking', () => {
+    /**
+     * Install a dataLayer spy via addInitScript (runs before page scripts).
+     * Returns a helper that reads captured gtag() call arrays from the page.
+     * Each entry is an array of the arguments passed to gtag(), e.g.
+     *   ['event', 'page_view', { page_title: '...' }]
+     *   ['set', 'user_properties', { age_group: 'young', ... }]
+     * @param {import('@playwright/test').Page} page
+     */
+    async function spyOnGtag(page) {
+      await page.addInitScript(() => {
+        /** @type {any} */ (window).__gtagCalls = [];
+        // Pre-set dataLayer so the inline `window.dataLayer = window.dataLayer || []`
+        // picks up our spy array. gtag() is defined as:
+        //   function gtag(){ dataLayer.push(arguments); }
+        // so every gtag() call ends up as dataLayer.push(<Arguments>).
+        /** @type {any[]} */
+        const spy = [];
+        const origPush = Array.prototype.push;
+        spy.push = function () {
+          // arguments[0] is the Arguments object from gtag()
+          const item = arguments[0];
+          if (item && typeof item === 'object') {
+            try { /** @type {any} */ (window).__gtagCalls.push(Array.from(/** @type {any} */ (item))); } catch (_) { /* ignore */ }
+          }
+          return origPush.apply(this, /** @type {any} */ (arguments));
+        };
+        /** @type {any} */ (window).dataLayer = spy;
+      });
+      return () => page.evaluate(() => (/** @type {any} */ (window).__gtagCalls || []).slice());
+    }
+
+    /** Seed a consented state and reload so GA fires on load.
+     * @param {import('@playwright/test').Page} page
+     * @param {Record<string,unknown>} [extra]
+     */
+    async function seedConsented(page, extra = {}) {
+      await page.evaluate((/** @type {Record<string,unknown>} */ extra) => {
+        localStorage.setItem('habitio_v4', JSON.stringify(Object.assign({
+          habits: [], checks: {}, diary: {},
+          profile: { name: 'Test', age: '25', ageGroup: 'young', sex: 'male' },
+          lang: 'en', kitsDismissed: {},
+          consentAnalytics: true,
+        }, extra)));
+      }, extra);
+      await page.reload();
+      await page.waitForLoadState('domcontentloaded');
+      await page.waitForTimeout(300);
+    }
+
+    test.beforeEach(async ({ page }) => {
+      await page.goto('/');
+      await page.evaluate(() => localStorage.clear());
+    });
+
+    test('no GA events fired before consent', async ({ page }) => {
+      const getCalls = await spyOnGtag(page);
+      // Fresh visit — consent not yet given
+      await page.reload();
+      await page.waitForLoadState('domcontentloaded');
+      await page.waitForTimeout(500);
+      /** @type {any[]} */ const calls = await getCalls();
+      const events = calls.filter(c => c[0] === 'event');
+      expect(events).toHaveLength(0);
+    });
+
+    test('page_view fired after accepting consent', async ({ page }) => {
+      const getCalls = await spyOnGtag(page);
+      await page.reload();
+      await page.waitForLoadState('domcontentloaded');
+      await page.locator('.consent-btn.accept').click();
+      await page.waitForTimeout(300);
+      /** @type {any[]} */ const calls = await getCalls();
+      const pageViews = calls.filter(c => c[0] === 'event' && c[1] === 'page_view');
+      expect(pageViews.length).toBeGreaterThanOrEqual(1);
+    });
+
+    test('page_view fired on SPA navigation', async ({ page }) => {
+      const getCalls = await spyOnGtag(page);
+      await seedConsented(page);
+      const before = (await getCalls()).length;
+      await page.getByRole('button', { name: /Journal/ }).click();
+      await page.waitForTimeout(200);
+      /** @type {any[]} */ const calls = await getCalls();
+      const navPageViews = calls.slice(before).filter(c =>
+        c[0] === 'event' && c[1] === 'page_view' &&
+        c[2] && typeof c[2].page_title === 'string' && c[2].page_title.includes('Journal')
+      );
+      expect(navPageViews.length).toBeGreaterThanOrEqual(1);
+    });
+
+    test('user properties set with age_group, sex, ui_language', async ({ page }) => {
+      const getCalls = await spyOnGtag(page);
+      await seedConsented(page);
+      /** @type {any[]} */ const calls = await getCalls();
+      const userPropCall = calls.find(c =>
+        c[0] === 'set' && c[1] === 'user_properties' &&
+        c[2] && c[2].age_group === 'young'
+      );
+      expect(userPropCall).toBeDefined();
+      if (userPropCall) {
+        expect(userPropCall[2].sex).toBe('male');
+        expect(userPropCall[2].ui_language).toBe('en');
+      }
+    });
+
+    test('habit_add event fired when a habit is added', async ({ page }) => {
+      const getCalls = await spyOnGtag(page);
+      await seedConsented(page);
+      const before = (await getCalls()).length;
+      await page.locator('#fab-add').click();
+      await page.waitForTimeout(300);
+      await page.locator('.suggestion-item').first().click();
+      await page.waitForTimeout(300);
+      /** @type {any[]} */ const calls = await getCalls();
+      const addEvent = calls.slice(before).find(c => c[0] === 'event' && c[1] === 'habit_add');
+      expect(addEvent).toBeDefined();
+    });
+
+    test('habit_complete event fired when a habit is checked', async ({ page }) => {
+      const getCalls = await spyOnGtag(page);
+      await seedConsented(page, {
+        habits: [{ id: 'h1', name: 'Test Habit', emoji: '🎯',
+          cadence: { type: 'daily' }, createdAt: new Date().toISOString().slice(0, 10) }],
+      });
+      const before = (await getCalls()).length;
+      await page.locator('.habit-card').first().click();
+      await page.waitForTimeout(200);
+      /** @type {any[]} */ const calls = await getCalls();
+      const completeEvent = calls.slice(before).find(c => c[0] === 'event' && c[1] === 'habit_complete');
+      expect(completeEvent).toBeDefined();
+    });
+
+    test('no GA events fired after declining consent', async ({ page }) => {
+      const getCalls = await spyOnGtag(page);
+      // Seed a named profile so the welcome modal doesn't block navigation,
+      // but leave consentAnalytics: null so the consent banner appears.
+      await page.evaluate(() => {
+        localStorage.setItem('habitio_v4', JSON.stringify({
+          habits: [], checks: {}, diary: {},
+          profile: { name: 'Test', age: '25', ageGroup: 'young', sex: 'male' },
+          lang: 'en', kitsDismissed: {},
+          consentAnalytics: null,
+        }));
+      });
+      await page.reload();
+      await page.waitForLoadState('domcontentloaded');
+      await page.locator('.consent-btn.decline').click();
+      await page.waitForTimeout(300);
+      const before = (await getCalls()).length;
+      await page.getByRole('button', { name: /Stats/ }).click();
+      await page.waitForTimeout(200);
+      /** @type {any[]} */ const calls = await getCalls();
+      const newEvents = calls.slice(before).filter(c => c[0] === 'event');
+      expect(newEvents).toHaveLength(0);
+    });
+  });
 });

@@ -1727,6 +1727,7 @@
         render();
         modalAddedCount++;
         updateModalDoneState();
+        trackEvent("habit_add", { habit_name: name, habit_emoji: emoji, cadence_type: cadence.type, source: "suggestion" });
         showToast(emoji + " " + name + "!");
       }
       function renderEmojiPicker() {
