@@ -99,5 +99,11 @@ Never change the storage key without migration — users must not lose their hab
    - Mobile 393×852: `screenshot-onboarding.png`, `screenshot-tracker.png`, `screenshot-add-habit.png`, `screenshot-journal.png`, `screenshot-journal-summary.png`, `screenshot-stats.png`, `screenshot-settings.png`
    - Desktop 1280×800: `desktop-preview.png`, `desktop-stats.png`, `desktop-journal.png`, `desktop-settings.png`, `desktop-modal.png`
    - Tablet: `tablet-preview.png`
-3. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
-4. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key
+3. **Visual screenshot review**: after retaking screenshots, **read each affected image** using the Read tool and visually verify:
+   - Overlays (modals, consent banner, FAB) are correctly positioned and not bleeding outside their intended area
+   - Desktop layout: consent banner is centered in the content column (not full-width, not left-aligned); sidebar nav items are compact (not stretched); modal does not show FAB behind it
+   - Mobile layout: modal covers full width; FAB is hidden when modal is open
+   - No unexpected elements visible (e.g. glow from hidden components, z-index leaks)
+   Fix any issues found before proceeding to commit.
+4. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
+5. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key

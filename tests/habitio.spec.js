@@ -317,6 +317,50 @@ test.describe('habit.io', () => {
       await page.waitForLoadState('domcontentloaded');
       await expect(page.locator('.consent-banner')).not.toBeVisible();
     });
+
+    test('accepting consent saves consentAnalytics:true to localStorage', async ({ page }) => {
+      await page.locator('.consent-btn.accept').click();
+      const saved = await page.evaluate(() => {
+        const raw = localStorage.getItem('habitio_v4');
+        return raw ? JSON.parse(raw) : null;
+      });
+      expect(saved?.consentAnalytics).toBe(true);
+    });
+
+    test('declining consent saves consentAnalytics:false to localStorage', async ({ page }) => {
+      await page.locator('.consent-btn.decline').click();
+      const saved = await page.evaluate(() => {
+        const raw = localStorage.getItem('habitio_v4');
+        return raw ? JSON.parse(raw) : null;
+      });
+      expect(saved?.consentAnalytics).toBe(false);
+    });
+
+    test('no console errors when accepting consent', async ({ page }) => {
+      /** @type {string[]} */
+      const errors = [];
+      page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
+      page.on('pageerror', err => errors.push(err.message));
+      await page.locator('.consent-btn.accept').click();
+      await page.waitForTimeout(300);
+      expect(errors.filter(e => !e.includes('favicon') && !e.includes('gtag'))).toHaveLength(0);
+    });
+
+    test('desktop consent banner is centered in content column', async ({ page }) => {
+      // Only meaningful on desktop viewport; skip on mobile/tablet
+      const vw = await page.evaluate(() => window.innerWidth);
+      if (vw < 900) return;
+      const banner = await page.locator('.consent-banner').boundingBox();
+      expect(banner).not.toBeNull();
+      if (!banner) return;
+      // Banner should not overlap the sidebar (200px on 900px+, 240px on 1200px+)
+      const sidebarWidth = vw >= 1200 ? 240 : 200;
+      expect(banner.x).toBeGreaterThan(sidebarWidth);
+      // Banner should be horizontally centered in the content column (within 20px tolerance)
+      const contentCenter = sidebarWidth + (vw - sidebarWidth) / 2;
+      const bannerCenter = banner.x + banner.width / 2;
+      expect(Math.abs(bannerCenter - contentCenter)).toBeLessThan(20);
+    });
   });
 
   test.describe('share button and analytics toggle', () => {

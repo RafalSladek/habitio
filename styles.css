@@ -1916,13 +1916,6 @@
           left: calc(200px + (100vw - 200px) / 2);
           bottom: 24px;
         }
-        /* Consent banner: offset by sidebar, don't span full viewport */
-        .consent-banner {
-          left: calc(200px + 16px);
-          right: 16px;
-          max-width: 480px;
-          bottom: 24px;
-        }
       }
 
       @media (min-width: 1200px) {
@@ -1934,9 +1927,6 @@
         }
         .modal-overlay {
           padding-left: 240px;
-        }
-        .consent-banner {
-          left: calc(240px + 16px);
         }
         .habit-group-items {
           grid-template-columns: repeat(3, 1fr);
@@ -2018,4 +2008,18 @@
       .consent-btn.decline {
         background: var(--surface-3, var(--surface-2));
         color: var(--text-muted);
+      }
+      /* Desktop: center consent banner in content column, after sidebar */
+      @media (min-width: 900px) {
+        .consent-banner {
+          left: calc(200px + (100vw - 200px - 480px) / 2);
+          right: auto;
+          width: 480px;
+          bottom: 24px;
+        }
+      }
+      @media (min-width: 1200px) {
+        .consent-banner {
+          left: calc(240px + (100vw - 240px - 480px) / 2);
+        }
       }
