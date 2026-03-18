@@ -97,6 +97,27 @@ Personalisation logic and habit formation features are grounded in published res
 - **Mental health**: women more proactive (therapy, mindfulness); men 30+ show lower distress — [ScienceDirect](https://sciencedirect.com)
 - **Reading gap**: 23% of Americans haven't read a book in a year; men less likely than women
 
+## Running Locally
+
+No build step needed — serve the files with any static server.
+
+**Option A — Node (recommended):**
+```bash
+npx serve .
+# Open http://localhost:3000
+```
+
+**Option B — Python:**
+```bash
+python -m http.server 8080
+# Open http://localhost:8080
+```
+
+**Option C — VS Code:**
+Install the _Live Server_ extension, right-click `index.html` → **Open with Live Server**.
+
+> The app uses a Service Worker for offline caching. The SW only activates over HTTP (not `file://`), so always use a local server rather than opening `index.html` directly.
+
 ## Development
 
 ```bash
