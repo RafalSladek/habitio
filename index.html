@@ -22,7 +22,8 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('consent', 'default', { analytics_storage: 'denied' });
       gtag('js', new Date());
-      gtag('config', 'G-V9TJW7N2VY');
+      // send_page_view:false — SPA; we fire page_view manually after consent
+      gtag('config', 'G-V9TJW7N2VY', { send_page_view: false });
     </script>
     <link rel="manifest" href="manifest.json" />
     <!-- Favicon -->

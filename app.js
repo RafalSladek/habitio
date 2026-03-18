@@ -620,17 +620,35 @@
       function t(k) {
         return (T[state.lang] || T.en)[k] || T.en[k] || k;
       }
+      // Set GA4 user-scoped properties — called once on consent and whenever
+      // profile changes. User properties persist for the whole session and are
+      // attached to every subsequent event automatically.
+      function updateUserProperties() {
+        if (!state.consentAnalytics) return;
+        gtag("set", "user_properties", {
+          age_group:    state.profile.ageGroup || null,
+          sex:          state.profile.sex       || null,
+          ui_language:  state.lang              || null,
+        });
+      }
       function trackEvent(name, params) {
         if (!state.consentAnalytics) return;
+        // Event-level params allow per-event segmentation in addition to user props
         gtag("event", name, Object.assign({
-          age_group: state.profile.ageGroup || "unknown",
-          sex: state.profile.sex || "unknown",
+          age_group:   state.profile.ageGroup || "unknown",
+          sex:         state.profile.sex       || "unknown",
+          ui_language: state.lang              || "unknown",
         }, params));
       }
       function setConsent(granted) {
         state.consentAnalytics = !!granted;
         gtag("consent", "update", { analytics_storage: granted ? "granted" : "denied" });
         save();
+        if (granted) {
+          updateUserProperties();
+          // Send the initial page_view now that consent is confirmed
+          gtag("event", "page_view", { page_title: "habit.io", page_location: location.href });
+        }
         document.getElementById("consent-banner")?.remove();
         renderSettings();
       }
@@ -1578,6 +1596,7 @@
         state.profile.ageGroup = g;
         state.profile.age = g ? String((AGE_GROUPS.find(x => x.key === g) || {}).age || "") : "";
         save();
+        updateUserProperties();
         document.getElementById("welcome-modal").classList.remove("show");
         render();
       }
@@ -2331,6 +2350,7 @@
       function changeLang(l) {
         state.lang = l;
         save();
+        updateUserProperties();
         render();
         renderSettings();
       }
@@ -2423,7 +2443,10 @@
           '</div>';
         document.body.appendChild(b);
       } else if (state.consentAnalytics) {
+        // Returning user — restore consent and set user properties
         gtag("consent", "update", { analytics_storage: "granted" });
+        updateUserProperties();
+        gtag("event", "page_view", { page_title: "habit.io", page_location: location.href });
       }
       if ("serviceWorker" in navigator)
         navigator.serviceWorker.register("sw.js").catch(() => {});
