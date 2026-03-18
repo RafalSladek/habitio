@@ -2375,6 +2375,14 @@
         if (p === "diary") { diaryStep = calcDiaryStep(); renderDiary(); }
         if (p === "stats") renderStats();
         if (p === "settings") renderSettings();
+        // SPA page_view — fires only when consent has been granted
+        if (state.consentAnalytics) {
+          const titles = { tracker: "Today", diary: "Journal", stats: "Stats", settings: "Settings" };
+          gtag("event", "page_view", {
+            page_title:    "habit.io · " + (titles[p] || p),
+            page_location: location.origin + location.pathname + "#" + p,
+          });
+        }
       }
       function showTip(btn, msg) {
         const tt = document.getElementById("tt");
