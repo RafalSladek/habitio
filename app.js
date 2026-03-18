@@ -151,11 +151,18 @@
           sug_walk_10k: "Walk 10k Steps",
           sug_walk_30: "Walk 30 min",
           sug_meal_prep: "Healthy Meal Prep",
+          sug_strength: "Strength Training",
+          sug_balance: "Balance Exercise",
+          sug_sunlight: "Morning Sunlight (10 min)",
+          sug_protein: "High-Protein Meal",
+          sug_no_late_eat: "No Food After 8pm",
           sug_read: "Read 30 min",
           sug_meditate: "Meditate",
           sug_journal: "Journal / Reflect",
           sug_deep_work: "Deep Work Session",
           sug_learn: "Learn Something New",
+          sug_breathwork: "Breathwork / Box Breathing",
+          sug_brain_game: "Brain Training Game",
           sug_no_coffee: "No Coffee before 10am",
           sug_gratitude: "Practice Gratitude",
           sug_no_porn: "No Porn",
@@ -170,10 +177,12 @@
           sug_date_night: "Date Night",
           sug_thank_you: "Write a Thank You",
           sug_cook: "Cook for Family",
+          sug_volunteer: "Volunteer / Give Back",
           sug_plan_tomorrow: "Plan Tomorrow Tonight",
           sug_job_search: "Job Search (1h)",
           sug_side_project: "Side Project",
           sug_finances: "Review Finances",
+          sug_savings: "Transfer to Savings",
           sug_clean: "Clean / Organize",
           sug_inbox: "Inbox Zero",
           sug_lang_practice: "Practice Foreign Language",
@@ -348,10 +357,17 @@
           sug_walk_10k: "10.000 Schritte gehen",
           sug_walk_30: "30 Min. spazieren",
           sug_meal_prep: "Gesundes Meal Prep",
+          sug_strength: "Krafttraining",
+          sug_balance: "Gleichgewichtstraining",
+          sug_sunlight: "Morgensonne (10 Min.)",
+          sug_protein: "Proteinreiche Mahlzeit",
+          sug_no_late_eat: "Kein Essen nach 20 Uhr",
           sug_read: "30 Min. lesen",
           sug_meditate: "Meditieren",
           sug_journal: "Tagebuch schreiben",
           sug_deep_work: "Fokus-Arbeitssession",
+          sug_breathwork: "Atemübungen / Box Breathing",
+          sug_brain_game: "Gehirntraining",
           sug_learn: "Etwas Neues lernen",
           sug_no_coffee: "Kein Kaffee vor 10 Uhr",
           sug_gratitude: "Dankbarkeit üben",
@@ -367,10 +383,12 @@
           sug_date_night: "Romantischer Abend",
           sug_thank_you: "Danke schreiben",
           sug_cook: "Für Familie kochen",
+          sug_volunteer: "Ehrenamt / Helfen",
           sug_plan_tomorrow: "Morgen heute planen",
           sug_job_search: "Jobsuche (1 Std.)",
           sug_side_project: "Nebenprojekt",
           sug_finances: "Finanzen prüfen",
+          sug_savings: "Geld auf Sparkonto überweisen",
           sug_clean: "Aufräumen / Organisieren",
           sug_inbox: "Postfach leeren",
           sug_lang_practice: "Fremdsprache üben",
@@ -544,10 +562,17 @@
           sug_walk_10k: "10 tys. kroków",
           sug_walk_30: "Spacer 30 min",
           sug_meal_prep: "Zdrowe gotowanie",
+          sug_strength: "Trening siłowy",
+          sug_balance: "Trening równowagi",
+          sug_sunlight: "Poranne słońce (10 min)",
+          sug_protein: "Posiłek bogaty w białko",
+          sug_no_late_eat: "Nie jeść po 20:00",
           sug_read: "Czytać 30 min",
           sug_meditate: "Medytować",
           sug_journal: "Pisać dziennik",
           sug_deep_work: "Praca głęboka",
+          sug_breathwork: "Ćwiczenia oddechowe",
+          sug_brain_game: "Trening mózgu",
           sug_learn: "Uczyć się czegoś nowego",
           sug_no_coffee: "Brak kawy przed 10:00",
           sug_gratitude: "Praktykować wdzięczność",
@@ -563,10 +588,12 @@
           sug_date_night: "Wieczór we dwoje",
           sug_thank_you: "Napisać podziękowanie",
           sug_cook: "Gotować dla rodziny",
+          sug_volunteer: "Wolontariat",
           sug_plan_tomorrow: "Planować jutro wieczorem",
           sug_job_search: "Szukanie pracy (1h)",
           sug_side_project: "Projekt poboczny",
           sug_finances: "Przegląd finansów",
+          sug_savings: "Przelew na oszczędności",
           sug_clean: "Sprzątanie",
           sug_inbox: "Opróżnić skrzynkę",
           sug_lang_practice: "Ćwiczyć język obcy",
@@ -1191,45 +1218,107 @@
       function sugPriority(nameKey, profile) {
         const age = parseInt(profile.age) || 30;
         const sex = profile.sex || "male";
-        const isTeen = age < 20, isYoung = age >= 20 && age < 30;
-        const isMid = age >= 30 && age < 60, isSenior = age >= 60;
+        // Five distinct age bands matching AGE_GROUPS
+        const isTeen   = age < 20;
+        const isYoung  = age >= 20 && age < 30;
+        const isAdult  = age >= 30 && age < 50;
+        const isMid    = age >= 50 && age < 65;
+        const isSenior = age >= 65;
         const isM = sex === "male", isF = sex === "female";
+        // Scores are evidence-based: higher = more relevant for that group.
+        // Sources: Lally 2010 (habit formation), Haidt 2023 (teen screen harm),
+        // Holt-Lunstad 2015 (social isolation), Lally/Layne Norton (sarcopenia),
+        // Harvard Study of Adult Development (relationships), Walker 2017 (sleep).
         const P = {
-          sug_no_alcohol:    { M:3, young:3, mid:2 },
-          sug_no_porn:       { M:3, teen:2 },
-          sug_read:          { M:2, teen:2 },
-          sug_journal:       { M:2, F:1 },
-          sug_gratitude:     { M:2, F:1 },
-          sug_no_scrolling:  { teen:3, F:2 },
-          sug_offline_day:   { teen:3, F:2 },
-          sug_no_social:     { teen:3, F:3 },
-          sug_screen_free:   { teen:2, F:2 },
-          sug_sleep_11:      { teen:3, F:1 },
-          sug_morning_workout:{ F:2, teen:2 },
-          sug_gym:           { F:2 },
-          sug_walk_10k:      { senior:3, mid:2 },
-          sug_walk_30:       { senior:3, mid:2, F:1 },
-          sug_meal_prep:     { M:3, young:2 },
-          sug_no_sweets:     { M:2, young:2 },
-          sug_drink_water:   { M:2 },
-          sug_meditate:      { F:2, mid:1 },
-          sug_call_friend:   { senior:3, mid:1 },
-          sug_play_kids:     { mid:2 },
-          sug_deep_work:     { young:2, mid:1 },
-          sug_vitamins:      { F:2, senior:2 },
-          sug_yoga:          { F:2, senior:2 },
-          sug_micro_vocab:   { teen:3, young:2 },
-          sug_micro_podcast: { young:2, mid:2 },
-          sug_micro_flash:   { teen:3, young:2 },
-          sug_micro_typing:  { teen:2, young:1 },
-          sug_micro_ted:     { young:2, mid:1 },
-          sug_micro_code:    { teen:3, young:3, M:2 },
-          sug_micro_music:   { teen:2, senior:2 },
+          // ── Health & Body ──────────────────────────────────────────────
+          sug_wake_up:         { teen:1, young:2, adult:2 },
+          sug_morning_workout: { teen:2, young:3, adult:2, F:1 },
+          sug_cold_shower:     { teen:2, young:3, M:2 },
+          sug_drink_water:     { teen:2, young:2, adult:2, mid:2, senior:2 },
+          sug_gym:             { teen:1, young:3, adult:2, M:2 },
+          // Strength training — sarcopenia prevention, critical 30+, peak urgency 50+
+          sug_strength:        { adult:3, mid:4, senior:3, M:1 },
+          sug_yoga:            { F:2, mid:2, senior:2 },
+          // Balance — fall prevention becomes critical after 50
+          sug_balance:         { mid:2, senior:4 },
+          sug_no_alcohol:      { teen:4, young:3, adult:2, mid:2, M:2 },
+          sug_no_sweets:       { young:2, adult:2, mid:2 },
+          // Metabolism slows with age; late eating disrupts insulin — esp. women
+          sug_no_late_eat:     { adult:2, mid:3, F:2 },
+          sug_vitamins:        { F:2, mid:2, senior:3 },
+          // Protein intake — muscle preservation from 30+ (Layne Norton research)
+          sug_protein:         { adult:2, mid:3, senior:3, M:1 },
+          sug_sleep_11:        { teen:4, young:3, adult:1 },
+          // Morning sunlight — circadian regulation, vitamin D (all ages; critical senior)
+          sug_sunlight:        { teen:2, young:1, adult:2, mid:2, senior:3 },
+          // Walking — #1 evidence-based longevity habit for 50+
+          sug_walk_10k:        { adult:1, mid:2, senior:3 },
+          sug_walk_30:         { mid:2, senior:4, F:1 },
+          sug_meal_prep:       { young:3, adult:2, M:2 },
+
+          // ── Mind & Focus ───────────────────────────────────────────────
+          sug_read:            { teen:3, young:2, mid:1, senior:2 },
+          sug_meditate:        { young:2, adult:3, mid:2, F:2 },
+          sug_journal:         { teen:2, young:2, F:3 },
+          sug_deep_work:       { young:3, adult:2 },
+          // Breathwork — stress management; most needed in high-pressure adult years
+          sug_breathwork:      { young:2, adult:3, mid:2, F:2 },
+          sug_learn:           { teen:2, young:2, adult:1, senior:2 },
+          // Brain training — cognitive reserve building; critical 50+
+          sug_brain_game:      { mid:3, senior:4 },
+          sug_no_coffee:       { teen:3, young:1 },
+          sug_gratitude:       { teen:2, adult:1, mid:2, senior:2, F:2 },
+          sug_no_porn:         { teen:4, young:2, M:3 },
+
+          // ── Digital Detox ──────────────────────────────────────────────
+          // Haidt 2023: social media most harmful to teen girls
+          sug_no_scrolling:    { teen:4, young:2, F:3 },
+          sug_offline_day:     { teen:3, young:2, F:2 },
+          sug_no_social:       { teen:4, young:2, F:3 },
+          sug_screen_free:     { teen:3, young:1, adult:1, F:2 },
+          sug_phone_room:      { teen:3, adult:1 },
+
+          // ── Social ─────────────────────────────────────────────────────
+          // Holt-Lunstad: isolation = 15 cigarettes/day; most dangerous for seniors
+          sug_call_friend:     { young:1, adult:1, mid:2, senior:4 },
+          sug_play_kids:       { adult:3 },
+          sug_hug:             { adult:2, mid:1, senior:2, F:1 },
+          sug_date_night:      { adult:2, mid:1 },
+          sug_thank_you:       { adult:1, mid:2, senior:2 },
+          sug_cook:            { young:2, adult:2, M:1 },
+          // Volunteering — sense of purpose linked to longevity (Blue Zones)
+          sug_volunteer:       { mid:3, senior:4 },
+
+          // ── Productivity ───────────────────────────────────────────────
+          sug_plan_tomorrow:   { teen:2, young:3, adult:2 },
+          sug_job_search:      { teen:1, young:3 },
+          sug_side_project:    { young:3, adult:2 },
+          sug_finances:        { adult:3, mid:2 },
+          // Savings — compound interest window is widest in 20s-30s
+          sug_savings:         { young:4, adult:3 },
+          sug_clean:           { teen:1, young:1, adult:1 },
+          sug_inbox:           { young:2, adult:2 },
+          sug_lang_practice:   { teen:3, young:3, adult:1 },
+          sug_driving:         { teen:3, young:1 },
+          sug_movie_lang:      { teen:2, young:2 },
+
+          // ── Micro Learning ─────────────────────────────────────────────
+          sug_micro_vocab:     { teen:3, young:2, senior:1 },
+          sug_micro_podcast:   { young:2, adult:2, mid:2 },
+          sug_micro_flash:     { teen:4, young:2 },
+          sug_micro_typing:    { teen:2, young:1 },
+          sug_micro_math:      { teen:2, young:1, senior:2 },
+          sug_micro_ted:       { young:2, adult:2, mid:1 },
+          sug_micro_wiki:      { adult:1, mid:1, senior:2 },
+          sug_micro_code:      { teen:3, young:3, M:1 },
+          sug_micro_sketch:    { teen:2, mid:1, senior:2 },
+          sug_micro_music:     { teen:2, senior:3 },
         };
         const p = P[nameKey] || {};
         return (p.M&&isM?p.M:0)+(p.F&&isF?p.F:0)+
                (p.teen&&isTeen?p.teen:0)+(p.young&&isYoung?p.young:0)+
-               (p.mid&&isMid?p.mid:0)+(p.senior&&isSenior?p.senior:0);
+               (p.adult&&isAdult?p.adult:0)+(p.mid&&isMid?p.mid:0)+
+               (p.senior&&isSenior?p.senior:0);
       }
 
       function render() {
@@ -1536,6 +1625,7 @@
         renderEmojiPicker();
         renderCadence();
         document.getElementById("add-modal").classList.add("show");
+        document.getElementById("fab-add")?.classList.remove("visible");
         if (!editId)
           setTimeout(
             () => document.getElementById("habit-name-input").focus(),
@@ -1544,6 +1634,10 @@
       }
       function closeAddModal() {
         document.getElementById("add-modal").classList.remove("show");
+        // Restore FAB visibility if on tracker page
+        const tracker = document.getElementById("page-tracker");
+        if (tracker?.classList.contains("active"))
+          document.getElementById("fab-add")?.classList.add("visible");
         editId = null;
         modalAddedCount = 0;
         updateModalDoneState();

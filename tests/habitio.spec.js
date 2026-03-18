@@ -151,7 +151,7 @@ test.describe('habit.io', () => {
     });
 
     test('journal tab shows step-by-step prompts', async ({ page }) => {
-      await page.getByRole('button', { name: '✎ Journal' }).click();
+      await page.getByRole('button', { name: '📖 Journal' }).click();
 
       await expect(page.getByRole('heading', { name: 'Journal' })).toBeVisible();
       // Step 1: gratitude
@@ -173,7 +173,7 @@ test.describe('habit.io', () => {
       await page.locator('.suggestion-item', { hasText: 'Drink 2L Water' }).getByText('+').click();
       await page.locator('#modal-done-bar').click();
 
-      await page.getByRole('button', { name: '◔ Stats' }).click();
+      await page.getByRole('button', { name: '📊 Stats' }).click();
 
       await expect(page.getByRole('heading', { name: 'Stats' })).toBeVisible();
       await expect(page.getByText('This Week')).toBeVisible();
@@ -247,13 +247,13 @@ test.describe('habit.io', () => {
 
     test('formation progress bar reaches 100% at 66+ days in Stats', async ({ page }) => {
       await seedHabit(page, 70);
-      await page.getByRole('button', { name: '◔ Stats' }).click();
+      await page.getByRole('button', { name: '📊 Stats' }).click();
       await expect(page.locator('.stat-bar-fill[style*="width:100%"]')).toBeVisible();
     });
 
     test('formation progress bar is partial before 66 days in Stats', async ({ page }) => {
       await seedHabit(page, 33); // 33/66 = 50%
-      await page.getByRole('button', { name: '◔ Stats' }).click();
+      await page.getByRole('button', { name: '📊 Stats' }).click();
       const bar = page.locator('.stat-card', { hasText: 'Formation Journey' }).locator('.stat-bar-fill');
       await expect(bar).toBeVisible();
       const style = await bar.getAttribute('style');
