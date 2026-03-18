@@ -70,7 +70,9 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       fetch(request)
         .then((res) => {
-          caches.open(CACHE).then((c) => c.put(request, res.clone()));
+          // Clone synchronously before any async operation consumes the body
+          const clone = res.clone();
+          caches.open(CACHE).then((c) => c.put(request, clone));
           return res;
         })
         .catch(() => caches.match(request))
