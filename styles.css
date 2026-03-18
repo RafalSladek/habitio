@@ -1769,6 +1769,7 @@
           padding: 4px 14px 24px;
         }
         .nav-tab {
+          flex: none;
           flex-direction: row;
           justify-content: flex-start;
           gap: 14px;
@@ -1777,9 +1778,9 @@
           text-align: left;
         }
         .nav-icon {
-          font-size: 32px;
+          font-size: 20px;
           margin-bottom: 0;
-          width: 36px;
+          width: 24px;
           text-align: center;
           line-height: 1;
         }
@@ -1787,9 +1788,6 @@
           font-size: 14px;
           font-weight: 600;
           letter-spacing: 0;
-        }
-        .nav-tab {
-          padding: 16px 18px;
         }
         .nav-tab.active {
           background: var(--surface-2);
@@ -1918,6 +1916,13 @@
           left: calc(200px + (100vw - 200px) / 2);
           bottom: 24px;
         }
+        /* Consent banner: offset by sidebar, don't span full viewport */
+        .consent-banner {
+          left: calc(200px + 16px);
+          right: 16px;
+          max-width: 480px;
+          bottom: 24px;
+        }
       }
 
       @media (min-width: 1200px) {
@@ -1929,6 +1934,9 @@
         }
         .modal-overlay {
           padding-left: 240px;
+        }
+        .consent-banner {
+          left: calc(240px + 16px);
         }
         .habit-group-items {
           grid-template-columns: repeat(3, 1fr);
