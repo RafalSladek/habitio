@@ -410,22 +410,26 @@ test.describe('habit.io', () => {
     async function spyOnGtag(page) {
       await page.addInitScript(() => {
         /** @type {any} */ (window).__gtagCalls = [];
-        // Pre-set dataLayer so the inline `window.dataLayer = window.dataLayer || []`
-        // picks up our spy array. gtag() is defined as:
-        //   function gtag(){ dataLayer.push(arguments); }
-        // so every gtag() call ends up as dataLayer.push(<Arguments>).
-        /** @type {any[]} */
-        const spy = [];
+        // Use a property descriptor to intercept when the inline script assigns
+        // `window.dataLayer = window.dataLayer || []`. We let the real array be
+        // created naturally, then install a push spy on it. This avoids pre-seeding
+        // a non-standard array that can confuse the gtag.js initialisation check.
+        let _dl = /** @type {any} */ (undefined);
         const origPush = Array.prototype.push;
-        spy.push = function () {
-          // arguments[0] is the Arguments object from gtag()
-          const item = arguments[0];
-          if (item && typeof item === 'object') {
-            try { /** @type {any} */ (window).__gtagCalls.push(Array.from(/** @type {any} */ (item))); } catch (_) { /* ignore */ }
-          }
-          return origPush.apply(this, /** @type {any} */ (arguments));
-        };
-        /** @type {any} */ (window).dataLayer = spy;
+        function installSpy(/** @type {any} */ arr) {
+          arr.push = function () {
+            const item = arguments[0];
+            if (item && typeof item === 'object') {
+              try { /** @type {any} */ (window).__gtagCalls.push(Array.from(/** @type {any} */ (item))); } catch (_) { /* ignore */ }
+            }
+            return origPush.apply(this, /** @type {any} */ (arguments));
+          };
+        }
+        Object.defineProperty(window, 'dataLayer', {
+          configurable: true,
+          get() { return _dl; },
+          set(arr) { _dl = arr; if (arr) installSpy(arr); },
+        });
       });
       return () => page.evaluate(() => (/** @type {any} */ (window).__gtagCalls || []).slice());
     }
