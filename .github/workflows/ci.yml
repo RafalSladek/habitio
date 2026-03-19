@@ -1,4 +1,4 @@
-name: Test & Deploy
+name: CI / CD
 
 on:
   push:
@@ -47,9 +47,16 @@ jobs:
           retention-days: 30
 
       - name: SonarCloud Scan
+        id: sonar_scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: SonarCloud Quality Gate check
+        uses: SonarSource/sonarqube-quality-gate-action@v1
+        timeout-minutes: 5
+        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   deploy:
