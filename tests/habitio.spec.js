@@ -112,13 +112,16 @@ test.describe('habit.io', () => {
     await expect(page.locator('.age-chip.selected')).toHaveText(/Young Adult/);
   });
 
-  test('onboarding shows language chips with flags', async ({ page }) => {
-    await expect(page.locator('.lang-chip', { hasText: 'English' })).toBeVisible();
-    await expect(page.locator('.lang-chip', { hasText: 'Deutsch' })).toBeVisible();
-    await expect(page.locator('.lang-chip', { hasText: 'Polski' })).toBeVisible();
-    await expect(page.locator('.lang-chip img[alt="EN"]')).toBeVisible();
-    await expect(page.locator('.lang-chip img[alt="DE"]')).toBeVisible();
-    await expect(page.locator('.lang-chip img[alt="PL"]')).toBeVisible();
+  test('onboarding shows language dropdown with all languages', async ({ page }) => {
+    const sel = page.locator('.lang-select').first();
+    await expect(sel).toBeVisible();
+    await expect(sel.locator('option[value="en"]')).toHaveCount(1);
+    await expect(sel.locator('option[value="de"]')).toHaveCount(1);
+    await expect(sel.locator('option[value="pl"]')).toHaveCount(1);
+    await expect(sel.locator('option[value="pt"]')).toHaveCount(1);
+    await expect(sel.locator('option[value="fr"]')).toHaveCount(1);
+    await expect(sel.locator('option[value="ru"]')).toHaveCount(1);
+    await expect(sel.locator('option[value="hi"]')).toHaveCount(1);
   });
 
   test('onboarding sets personalised greeting', async ({ page }) => {

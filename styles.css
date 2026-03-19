@@ -931,40 +931,30 @@
       .habit-delete-btn:active {
         background: rgba(225, 112, 85, 0.15);
       }
-      .lang-chips {
-        display: flex;
-        gap: 6px;
-        margin-top: 4px;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .lang-chip {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 14px;
-        border-radius: 16px;
-        font-size: 13px;
-        font-weight: 600;
-        background: var(--surface-2);
+      .lang-select {
+        appearance: none;
+        -webkit-appearance: none;
+        background: var(--surface-2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%237878a0'/%3E%3C/svg%3E") no-repeat right 10px center;
         border: 1px solid var(--border);
-        color: var(--text-dim);
+        border-radius: 10px;
+        color: var(--text);
         cursor: pointer;
-        transition: all 0.15s;
+        font-family: inherit;
+        font-size: 14px;
+        font-weight: 500;
+        padding: 8px 32px 8px 12px;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        width: 100%;
+        max-width: 220px;
       }
-      .flag-img {
-        width: 20px;
-        height: 14px;
-        border-radius: 2px;
-        object-fit: cover;
-        display: inline-block;
-        vertical-align: middle;
-        flex-shrink: 0;
-      }
-      .lang-chip.selected {
-        background: var(--accent-dim);
+      .lang-select:focus {
         border-color: var(--accent);
-        color: var(--accent-glow);
+        box-shadow: 0 0 0 2px var(--accent-dim);
+        outline: none;
+      }
+      .lang-select option {
+        background: var(--surface-2);
+        color: var(--text);
       }
       /* Habit kit card */
       .habit-kit {
