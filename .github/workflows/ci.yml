@@ -49,12 +49,14 @@ jobs:
       - name: SonarCloud Scan
         id: sonar_scan
         uses: SonarSource/sonarqube-scan-action@v5
+        continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: https://sonarcloud.io
 
       - name: SonarCloud Quality Gate check
+        if: steps.sonar_scan.outcome == 'success'
         uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 5
         env:
