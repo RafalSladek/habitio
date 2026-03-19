@@ -90,6 +90,16 @@ When bumping the localStorage version key (e.g. `habitio_v4` → `habitio_v5`), 
 
 Never change the storage key without migration — users must not lose their habits, checks, diary entries, or profile.
 
+## Code Quality — Non-Negotiable
+
+**Quality is not optional. All generated code MUST pass SonarCloud before pushing.**
+
+1. **Verify with sonar-scanner** — run `sonar-scanner` after every code change. The `SONAR_TOKEN` will be exported in the session.
+2. **Check the Quality Gate** — after scanning, use the SonarQube MCP tools to check the Quality Gate status, or read the scanner output directly.
+3. **Fix all issues immediately** — if SonarCloud reports bugs or code smells, fix them and re-scan. Do NOT push until issues are resolved.
+4. **Low coverage = blocking** — if a failed Quality Gate is caused by insufficient test coverage, generate the required unit/e2e tests. This is a blocking issue.
+5. **Only recommend pushing when the Quality Gate PASSES.**
+
 ## Pre-Commit Checklist
 
 **Always do all of these before committing:**
