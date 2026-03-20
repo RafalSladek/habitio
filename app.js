@@ -436,28 +436,34 @@ let importOpts = { habits: true, tracking: true };
 let welcomeAgeGroup = "";
 
 const AGE_GROUPS = [
-  { key: "teen", age: 15 },
-  { key: "young", age: 25 },
-  { key: "adult", age: 40 },
-  { key: "mid", age: 55 },
-  { key: "senior", age: 70 },
+  { key: "teen", age: 15, range: "13–17" },
+  { key: "young", age: 25, range: "18–29" },
+  { key: "adult", age: 40, range: "30–49" },
+  { key: "mid", age: 55, range: "50–64" },
+  { key: "senior", age: 70, range: "65+" },
 ];
 function renderAgeChips() {
   const cur = welcomeAgeGroup || state.profile.ageGroup || "";
   document.getElementById("welcome-age-chips").innerHTML = AGE_GROUPS.map(
     (g) =>
-      '<div class="age-chip' +
+      '<button type="button" class="age-chip' +
       (cur === g.key ? " selected" : "") +
       '" onclick="setAgeGroup(\'' +
       g.key +
       "')\">" +
-      t("age_" + g.key) +
-      "</div>"
+      g.range +
+      "</button>"
   ).join("");
 }
 function setAgeGroup(k) {
   welcomeAgeGroup = k;
   renderAgeChips();
+  validateWelcomeForm();
+}
+function validateWelcomeForm() {
+  const name = (document.getElementById("welcome-name").value || "").trim();
+  const valid = name.length > 0 && !!welcomeAgeGroup && !!state.profile.sex;
+  document.getElementById("welcome-go-btn").disabled = !valid;
 }
 let diaryTimers = {};
 
@@ -1024,25 +1030,25 @@ function showWelcome() {
   document.getElementById("sex-male-lbl").textContent = t("sex_male");
   document.getElementById("sex-female-lbl").textContent = t("sex_female");
   document.getElementById("sex-prefer-lbl").textContent = t("sex_prefer");
-  setSex(state.profile.sex || "male");
+  setSex(state.profile.sex || "");
   document.getElementById("wl-lang-label").textContent = t("language");
   document.getElementById("welcome-go-btn").textContent = t("lets_go");
   welcomeAgeGroup = state.profile.ageGroup || "";
   renderAgeChips();
   const lc = document.getElementById("welcome-lang-chips");
   const LANGS = {
-    en: "🇬🇧 English",
+    ar: "🇪🇬 عربي مصري",
+    bar: "🏔️ Bayrisch",
     de: "🇩🇪 Deutsch",
+    en: "🇬🇧 English",
+    fr: "🇫🇷 Français",
+    hi: "🇮🇳 हिन्दी",
     pl: "🇵🇱 Polski",
     pt: "🇧🇷 Português",
-    fr: "🇫🇷 Français",
     ru: "🇷🇺 Русский",
-    hi: "🇮🇳 हिन्दी",
-    uk: "🇺🇦 Українська",
-    ar: "🇪🇬 عربي مصري",
     sq: "🇦🇱 Shqip",
     sr: "🇷🇸 Srpski",
-    bar: "🏔️ Bayrisch",
+    uk: "🇺🇦 Українська",
   };
   lc.innerHTML =
     '<select class="lang-select" onchange="setWelcomeLang(this.value)">' +
@@ -1061,6 +1067,7 @@ function showWelcome() {
     "</select>";
   document.getElementById("welcome-name").value = state.profile.name || "";
   wl.classList.add("show");
+  validateWelcomeForm();
   setTimeout(() => document.getElementById("welcome-name").focus(), 300);
 }
 function setWelcomeLang(l) {
@@ -1074,6 +1081,7 @@ function setSex(val) {
   document.getElementById("sex-male").classList.toggle("active", val === "male");
   document.getElementById("sex-female").classList.toggle("active", val === "female");
   document.getElementById("sex-prefer").classList.toggle("active", val === "prefer");
+  validateWelcomeForm();
 }
 function finishWelcome() {
   const n = document.getElementById("welcome-name").value.trim();
@@ -1907,18 +1915,18 @@ function renderSettings() {
     '</span><span class="setting-action" style="margin-left:auto">›</span></div><div style="width:100%;padding-left:32px;padding-top:6px">' +
     '<select class="lang-select" onclick="event.stopPropagation()" onchange="event.stopPropagation();changeLang(this.value)">' +
     [
-      ["en", "🇬🇧 English"],
+      ["ar", "🇪🇬 عربي مصري"],
+      ["bar", "🏔️ Bayrisch"],
       ["de", "🇩🇪 Deutsch"],
+      ["en", "🇬🇧 English"],
+      ["fr", "🇫🇷 Français"],
+      ["hi", "🇮🇳 हिन्दी"],
       ["pl", "🇵🇱 Polski"],
       ["pt", "🇧🇷 Português"],
-      ["fr", "🇫🇷 Français"],
       ["ru", "🇷🇺 Русский"],
-      ["hi", "🇮🇳 हिन्दी"],
-      ["uk", "🇺🇦 Українська"],
-      ["ar", "🇪🇬 عربي مصري"],
       ["sq", "🇦🇱 Shqip"],
       ["sr", "🇷🇸 Srpski"],
-      ["bar", "🏔️ Bayrisch"],
+      ["uk", "🇺🇦 Українська"],
     ]
       .map(
         ([l, label]) =>

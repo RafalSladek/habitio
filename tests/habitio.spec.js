@@ -23,6 +23,7 @@ test.afterEach(async ({ page }) => {
 async function completeOnboarding(page, name = 'Test') {
   await page.locator('#welcome-name').fill(name);
   await page.locator('.age-chip[onclick*="\'adult\'"]').click();
+  await page.locator('#sex-male').click();
   await page.getByRole('button', { name: "Let's go!" }).click();
 }
 
@@ -100,16 +101,16 @@ test.describe('habit.io', () => {
   });
 
   test('onboarding shows age group chips', async ({ page }) => {
-    await expect(page.locator('.age-chip', { hasText: 'Teen' })).toBeVisible();
-    await expect(page.locator('.age-chip', { hasText: 'Young Adult' })).toBeVisible();
+    await expect(page.locator('.age-chip', { hasText: '13–17' })).toBeVisible();
+    await expect(page.locator('.age-chip', { hasText: '18–29' })).toBeVisible();
     await expect(page.locator('.age-chip[onclick*="\'adult\'"]')).toBeVisible();
-    await expect(page.locator('.age-chip', { hasText: 'Midlife' })).toBeVisible();
-    await expect(page.locator('.age-chip', { hasText: 'Senior' })).toBeVisible();
+    await expect(page.locator('.age-chip', { hasText: '50–64' })).toBeVisible();
+    await expect(page.locator('.age-chip', { hasText: '65+' })).toBeVisible();
   });
 
   test('onboarding age chip selection highlights correctly', async ({ page }) => {
-    await page.locator('.age-chip', { hasText: 'Young Adult' }).click();
-    await expect(page.locator('.age-chip.selected')).toHaveText(/Young Adult/);
+    await page.locator('.age-chip', { hasText: '18–29' }).click();
+    await expect(page.locator('.age-chip.selected')).toHaveText('18–29');
   });
 
   test('onboarding shows language dropdown with all languages', async ({ page }) => {

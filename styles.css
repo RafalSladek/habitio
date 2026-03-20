@@ -1083,26 +1083,42 @@ body {
 }
 .age-chips {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+  gap: 0;
   margin-top: 4px;
 }
 .age-chip {
-  padding: 6px 12px;
-  border-radius: 16px;
+  flex: 1;
+  padding: 8px 2px;
+  border-radius: 0;
   font-size: 12px;
   font-weight: 600;
   background: var(--surface-2);
   border: 1px solid var(--border);
+  border-right: none;
   color: var(--text-dim);
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
+  text-align: center;
+  position: relative;
+}
+.age-chip:first-child {
+  border-radius: 20px 0 0 20px;
+}
+.age-chip:last-child {
+  border-radius: 0 20px 20px 0;
+  border-right: 1px solid var(--border);
 }
 .age-chip.selected {
   background: var(--accent-dim);
   border-color: var(--accent);
   color: var(--accent-glow);
+  z-index: 1;
+}
+.modal-btn.primary:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
 /* Motivational banner */
@@ -1755,8 +1771,8 @@ body {
   animation: none;
 }
 .welcome-hero {
-  flex-shrink: 0;
   line-height: 0;
+  margin: 0 -24px 20px;
 }
 .welcome-hero img {
   width: 100%;
@@ -1768,7 +1784,7 @@ body {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 20px 24px 12px;
+  padding: 0 24px 12px;
 }
 .welcome-cta {
   flex-shrink: 0;

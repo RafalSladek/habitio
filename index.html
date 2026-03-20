@@ -176,21 +176,20 @@
     <!-- WELCOME MODAL -->
     <div class="modal-overlay" id="welcome-modal">
       <div class="modal welcome-modal-inner">
-        <!-- Hero image pinned at top -->
-        <div class="welcome-hero">
-          <picture>
-            <source srcset="icons/hero-onboarding.webp" type="image/webp" />
-            <img
-              src="icons/hero-onboarding.png"
-              alt=""
-              width="400"
-              height="140"
-              fetchpriority="high"
-            />
-          </picture>
-        </div>
-        <!-- Scrollable form content -->
+        <!-- Scrollable form content (hero scrolls with form) -->
         <div class="welcome-scroll">
+          <div class="welcome-hero">
+            <picture>
+              <source srcset="icons/hero-onboarding.webp" type="image/webp" />
+              <img
+                src="icons/hero-onboarding.png"
+                alt=""
+                width="400"
+                height="140"
+                fetchpriority="high"
+              />
+            </picture>
+          </div>
           <div style="font-size: 36px; margin: 0 0 10px; text-align: center">🌱</div>
           <h2 id="welcome-title" style="text-align: center">Welcome to Habitio</h2>
           <p
@@ -211,6 +210,7 @@
               type="text"
               maxlength="20"
               autocomplete="given-name"
+              oninput="validateWelcomeForm()"
             />
           </div>
           <div class="welcome-field">
