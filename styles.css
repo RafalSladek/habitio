@@ -1472,7 +1472,8 @@ body {
   font-weight: 600;
   cursor: pointer;
   border-radius: 0 0 var(--radius) var(--radius);
-  justify-content: space-between;
+  justify-content: center;
+  gap: 8px;
   align-items: center;
   user-select: none;
   opacity: 0;
