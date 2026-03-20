@@ -1743,8 +1743,8 @@ body {
 .welcome-modal-inner {
   display: flex;
   flex-direction: column;
+  height: 100vh; /* fallback for browsers without dvh support */
   height: 100dvh;
-  height: 100vh; /* fallback */
   max-height: none;
   width: 100%;
   max-width: 480px;
@@ -1772,7 +1772,7 @@ body {
 }
 .welcome-cta {
   flex-shrink: 0;
-  padding: 12px 24px calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 12px 24px calc(20px + env(safe-area-inset-bottom, 0px));
   background: var(--bg);
   border-top: 1px solid var(--border);
 }
