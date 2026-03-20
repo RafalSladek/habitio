@@ -1,33 +1,33 @@
 // @ts-check
-const { defineConfig, devices } = require('@playwright/test');
+const { defineConfig, devices } = require("@playwright/test");
 
 module.exports = defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   timeout: 30000,
-  globalTeardown: './tests/global-teardown.js',
+  globalTeardown: "./tests/global-teardown.js",
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: "http://localhost:3000",
     headless: true,
   },
   webServer: {
-    command: 'npx serve . -p 3000 -s',
-    url: 'http://localhost:3000',
+    command: "npx serve . -p 3000 -s",
+    url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
     timeout: 10000,
   },
   projects: [
     {
-      name: 'Desktop Chrome',
-      use: { ...devices['Desktop Chrome'] },
+      name: "Desktop Chrome",
+      use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: 'Mobile Chrome',
-      use: { ...devices['Pixel 5'] },
+      name: "Mobile Chrome",
+      use: { ...devices["Pixel 5"] },
     },
     {
-      name: 'Tablet',
+      name: "Tablet",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
         viewport: { width: 768, height: 1024 },
       },
     },

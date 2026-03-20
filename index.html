@@ -2,11 +2,11 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="habit.io — offline-first PWA habit tracker. Build habits with science-backed formation arcs, personalised suggestions, and a daily journal. No account, no tracking." />
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+      name="description"
+      content="habit.io — offline-first PWA habit tracker. Build habits with science-backed formation arcs, personalised suggestions, and a daily journal. No account, no tracking."
     />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- PWA / install meta -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -19,11 +19,13 @@
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9TJW7N2VY"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('consent', 'default', { analytics_storage: 'denied' });
-      gtag('js', new Date());
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("consent", "default", { analytics_storage: "denied" });
+      gtag("js", new Date());
       // send_page_view:false — SPA; we fire page_view manually after consent
-      gtag('config', 'G-V9TJW7N2VY', { send_page_view: false });
+      gtag("config", "G-V9TJW7N2VY", { send_page_view: false });
     </script>
     <link rel="manifest" href="manifest.json" />
     <!-- Favicon -->
@@ -38,8 +40,20 @@
     <meta name="msapplication-TileColor" content="#6c5ce7" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+      onload="
+        this.onload = null;
+        this.rel = 'stylesheet';
+      "
+    />
+    <noscript
+      ><link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    /></noscript>
     <link rel="preload" as="image" href="icons/hero-onboarding.webp" type="image/webp" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -56,9 +70,7 @@
         <div class="week-nav">
           <button class="nav-btn" onclick="changeWeek(-1)">&lsaquo;</button
           ><span class="week-label" id="week-label"></span
-          ><button class="nav-btn" id="next-week-btn" onclick="changeWeek(1)">
-            &rsaquo;
-          </button>
+          ><button class="nav-btn" id="next-week-btn" onclick="changeWeek(1)">&rsaquo;</button>
         </div>
         <div class="days-header" id="days-header"></div>
         <div class="progress-section">
@@ -106,8 +118,7 @@
           ><span class="nav-label" data-t="nav_journal">Journal</span>
         </button>
         <button class="nav-tab" onclick="switchPage('stats')">
-          <span class="nav-icon">📊</span
-          ><span class="nav-label" data-t="nav_stats">Stats</span>
+          <span class="nav-icon">📊</span><span class="nav-label" data-t="nav_stats">Stats</span>
         </button>
         <button class="nav-tab" onclick="switchPage('settings')">
           <span class="nav-icon">&#9881;</span
@@ -140,15 +151,13 @@
           <div class="cadence-chips" id="cadence-chips"></div>
           <div id="cadence-detail"></div>
         </div>
-        <div style="margin-top:12px;margin-bottom:14px">
+        <div style="margin-top: 12px; margin-bottom: 14px">
           <div class="section-label" id="lbl-morning">Options</div>
-          <div class="morning-chip" id="morning-chip" onclick="toggleModalMorning()">☀️ <span id="morning-chip-lbl">Morning routine</span></div>
+          <div class="morning-chip" id="morning-chip" onclick="toggleModalMorning()">
+            ☀️ <span id="morning-chip-lbl">Morning routine</span>
+          </div>
         </div>
-        <button
-          class="modal-btn primary"
-          id="modal-save-btn"
-          onclick="saveHabit()"
-        ></button>
+        <button class="modal-btn primary" id="modal-save-btn" onclick="saveHabit()"></button>
         <button
           class="modal-btn secondary"
           id="modal-cancel-btn"
@@ -171,14 +180,29 @@
         <div class="welcome-hero">
           <picture>
             <source srcset="icons/hero-onboarding.webp" type="image/webp" />
-            <img src="icons/hero-onboarding.png" alt="" width="400" height="140" fetchpriority="high" />
+            <img
+              src="icons/hero-onboarding.png"
+              alt=""
+              width="400"
+              height="140"
+              fetchpriority="high"
+            />
           </picture>
         </div>
         <!-- Scrollable form content -->
         <div class="welcome-scroll">
-          <div style="font-size: 36px; margin: 0 0 10px; text-align:center">🌱</div>
-          <h2 id="welcome-title" style="text-align:center">Welcome to Habitio</h2>
-          <p id="welcome-sub" style="font-size:14px;color:var(--text-dim);margin-bottom:20px;line-height:1.5;text-align:center"></p>
+          <div style="font-size: 36px; margin: 0 0 10px; text-align: center">🌱</div>
+          <h2 id="welcome-title" style="text-align: center">Welcome to Habitio</h2>
+          <p
+            id="welcome-sub"
+            style="
+              font-size: 14px;
+              color: var(--text-dim);
+              margin-bottom: 20px;
+              line-height: 1.5;
+              text-align: center;
+            "
+          ></p>
           <div class="welcome-field">
             <label id="wl-name-label" for="welcome-name">Your first name</label
             ><input
@@ -189,16 +213,20 @@
               autocomplete="given-name"
             />
           </div>
-          <div class="welcome-field" style="gap:12px">
-            <div style="display:flex;flex-direction:column;gap:6px">
+          <div class="welcome-field" style="gap: 12px">
+            <div style="display: flex; flex-direction: column; gap: 6px">
               <label id="wl-age-label">Your age</label>
               <div class="age-chips" id="welcome-age-chips"></div>
             </div>
-            <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display: flex; flex-direction: column; gap: 6px">
               <label id="wl-sex-label">Sex</label>
               <div class="sex-toggle" id="welcome-sex">
-                <button class="sex-btn active" id="sex-male" onclick="setSex('male')" type="button">👨 <span id="sex-male-lbl">Male</span></button>
-                <button class="sex-btn" id="sex-female" onclick="setSex('female')" type="button">👩 <span id="sex-female-lbl">Female</span></button>
+                <button class="sex-btn active" id="sex-male" onclick="setSex('male')" type="button">
+                  👨 <span id="sex-male-lbl">Male</span>
+                </button>
+                <button class="sex-btn" id="sex-female" onclick="setSex('female')" type="button">
+                  👩 <span id="sex-female-lbl">Female</span>
+                </button>
               </div>
             </div>
           </div>
@@ -226,16 +254,8 @@
           id="import-desc"
         ></p>
         <div id="import-options"></div>
-        <button
-          class="modal-btn primary"
-          onclick="doImport()"
-          id="import-go-btn"
-        ></button>
-        <button
-          class="modal-btn secondary"
-          onclick="closeImportModal()"
-          data-t="btn_cancel"
-        >
+        <button class="modal-btn primary" onclick="doImport()" id="import-go-btn"></button>
+        <button class="modal-btn secondary" onclick="closeImportModal()" data-t="btn_cancel">
           Cancel
         </button>
       </div>
