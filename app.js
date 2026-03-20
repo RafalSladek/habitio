@@ -1146,8 +1146,10 @@ function updateModalDoneState() {
   if (modalAddedCount > 0) {
     bar.classList.add("show");
     document.getElementById("modal-done-label").textContent =
-      modalAddedCount === 1 ? "1 habit added ✓" : modalAddedCount + " habits added ✓";
-    cancelBtn.textContent = "Done · " + modalAddedCount + " added ✓";
+      modalAddedCount === 1
+        ? t("modal_added_one")
+        : t("modal_added_many").replace("{n}", modalAddedCount);
+    cancelBtn.textContent = t("done_added").replace("{n}", modalAddedCount);
     cancelBtn.classList.add("done-state");
   } else {
     bar.classList.remove("show");
