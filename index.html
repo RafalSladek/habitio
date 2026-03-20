@@ -213,24 +213,22 @@
               autocomplete="given-name"
             />
           </div>
-          <div class="welcome-field" style="gap: 12px">
-            <div style="display: flex; flex-direction: column; gap: 6px">
-              <label id="wl-age-label">Your age</label>
-              <div class="age-chips" id="welcome-age-chips"></div>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 6px">
-              <label id="wl-sex-label">Sex</label>
-              <div class="sex-toggle" id="welcome-sex">
-                <button class="sex-btn active" id="sex-male" onclick="setSex('male')" type="button">
-                  👨 <span id="sex-male-lbl">Male</span>
-                </button>
-                <button class="sex-btn" id="sex-female" onclick="setSex('female')" type="button">
-                  👩 <span id="sex-female-lbl">Female</span>
-                </button>
-                <button class="sex-btn" id="sex-prefer" onclick="setSex('prefer')" type="button">
-                  🔒 <span id="sex-prefer-lbl">Prefer not to say</span>
-                </button>
-              </div>
+          <div class="welcome-field">
+            <label id="wl-age-label">Your age</label>
+            <div class="age-chips" id="welcome-age-chips"></div>
+          </div>
+          <div class="welcome-field">
+            <label id="wl-sex-label">Sex</label>
+            <div class="sex-toggle" id="welcome-sex">
+              <button class="sex-btn active" id="sex-male" onclick="setSex('male')" type="button">
+                👨 <span id="sex-male-lbl">Male</span>
+              </button>
+              <button class="sex-btn" id="sex-female" onclick="setSex('female')" type="button">
+                👩 <span id="sex-female-lbl">Female</span>
+              </button>
+              <button class="sex-btn" id="sex-prefer" onclick="setSex('prefer')" type="button">
+                🔒 <span id="sex-prefer-lbl">Prefer not to say</span>
+              </button>
             </div>
           </div>
           <div class="welcome-field">
