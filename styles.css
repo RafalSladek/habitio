@@ -844,10 +844,6 @@ body {
 .streak-tag {
   cursor: pointer;
 }
-.phase-tag {
-  cursor: pointer;
-}
-
 /* Settings */
 .settings-section {
   margin-bottom: 20px;
@@ -1193,13 +1189,13 @@ body {
 }
 
 .sex-toggle {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   border-radius: var(--radius-sm);
   overflow: hidden;
   border: 1px solid var(--border);
 }
 .sex-btn {
-  flex: 1;
   padding: 8px 14px;
   font-size: 13px;
   font-weight: 600;
@@ -1212,6 +1208,10 @@ body {
 }
 .sex-btn:first-child {
   border-right: 1px solid var(--border);
+}
+.sex-btn:last-child {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--border);
 }
 .sex-btn.active {
   background: var(--accent-dim);
@@ -1542,10 +1542,21 @@ body {
   font-size: 18px;
   flex-shrink: 0;
 }
+.s-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 .s-name {
   font-size: 13px;
   font-weight: 500;
-  flex: 1;
+}
+.s-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 .s-cad {
   font-size: 10px;
@@ -1580,6 +1591,7 @@ body {
   font-size: 10px;
   font-weight: 600;
   font-family: var(--mono);
+  cursor: pointer;
 }
 .phase-learning {
   background: rgba(253, 203, 110, 0.15);

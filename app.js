@@ -467,12 +467,13 @@ function uid() {
     : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
 }
 function save() {
-  localStorage.setItem("habitio_v4", JSON.stringify(state));
+  localStorage.setItem("habitio_v5", JSON.stringify(state));
 }
 function load() {
   try {
     // Migration: read from older keys if current key is absent
     const raw =
+      localStorage.getItem("habitio_v5") ||
       localStorage.getItem("habitio_v4") ||
       localStorage.getItem("habitio_v3") ||
       localStorage.getItem("habitio_v2");
@@ -490,7 +491,8 @@ function load() {
       if (d.consentAnalytics === undefined) d.consentAnalytics = null;
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v4", JSON.stringify(state));
+      localStorage.setItem("habitio_v5", JSON.stringify(state));
+      localStorage.removeItem("habitio_v4");
       localStorage.removeItem("habitio_v3");
       localStorage.removeItem("habitio_v2");
       return;
@@ -1018,6 +1020,7 @@ function showWelcome() {
   document.getElementById("wl-sex-label").textContent = t("your_sex");
   document.getElementById("sex-male-lbl").textContent = t("sex_male");
   document.getElementById("sex-female-lbl").textContent = t("sex_female");
+  document.getElementById("sex-prefer-lbl").textContent = t("sex_prefer");
   setSex(state.profile.sex || "male");
   document.getElementById("wl-lang-label").textContent = t("language");
   document.getElementById("welcome-go-btn").textContent = t("lets_go");
@@ -1032,6 +1035,11 @@ function showWelcome() {
     fr: "🇫🇷 Français",
     ru: "🇷🇺 Русский",
     hi: "🇮🇳 हिन्दी",
+    uk: "🇺🇦 Українська",
+    ar: "🇪🇬 عربي مصري",
+    sq: "🇦🇱 Shqip",
+    sr: "🇷🇸 Srpski",
+    bar: "🏔️ Bayrisch",
   };
   lc.innerHTML =
     '<select class="lang-select" onchange="setWelcomeLang(this.value)">' +
@@ -1062,6 +1070,7 @@ function setSex(val) {
   state.profile.sex = val;
   document.getElementById("sex-male").classList.toggle("active", val === "male");
   document.getElementById("sex-female").classList.toggle("active", val === "female");
+  document.getElementById("sex-prefer").classList.toggle("active", val === "prefer");
 }
 function finishWelcome() {
   const n = document.getElementById("welcome-name").value.trim();
@@ -1073,6 +1082,7 @@ function finishWelcome() {
   updateUserProperties();
   document.getElementById("welcome-modal").classList.remove("show");
   render();
+  showConsentBannerIfNeeded();
 }
 
 // ═══ ADD MODAL ═══
@@ -1163,13 +1173,13 @@ function renderSuggestions() {
         esc(JSON.stringify(s.cadence)) +
         '\'><span class="s-emoji">' +
         s.emoji +
-        '</span><span class="s-name">' +
+        '</span><span class="s-info"><span class="s-name">' +
         esc(s.name) +
-        '</span><span class="s-cad">' +
+        '</span><span class="s-meta"><span class="s-cad">' +
         cL +
         "</span>" +
         (s._p > 0 ? '<span class="s-for-you">★ ' + t("for_you") + "</span>" : "") +
-        '<span class="s-add">+</span></div>';
+        '</span></span><span class="s-add">+</span></div>';
     });
   });
   html += "</div>";
@@ -1883,7 +1893,11 @@ function renderSettings() {
     (state.profile.name || "—") +
     (state.profile.age ? ", " + state.profile.age : "") +
     (state.profile.sex
-      ? " · " + t("sex_" + ({ m: "male", f: "female" }[state.profile.sex] || state.profile.sex))
+      ? " · " +
+        t(
+          "sex_" +
+            ({ m: "male", f: "female", prefer: "prefer" }[state.profile.sex] || state.profile.sex)
+        )
       : "") +
     '</span><span class="setting-action" style="margin-left:auto">›</span></div><div style="width:100%;padding-left:32px;padding-top:6px">' +
     '<select class="lang-select" onclick="event.stopPropagation()" onchange="event.stopPropagation();changeLang(this.value)">' +
@@ -1895,6 +1909,11 @@ function renderSettings() {
       ["fr", "🇫🇷 Français"],
       ["ru", "🇷🇺 Русский"],
       ["hi", "🇮🇳 हिन्दी"],
+      ["uk", "🇺🇦 Українська"],
+      ["ar", "🇪🇬 عربي مصري"],
+      ["sq", "🇦🇱 Shqip"],
+      ["sr", "🇷🇸 Srpski"],
+      ["bar", "🏔️ Bayrisch"],
     ]
       .map(
         ([l, label]) =>
@@ -2071,11 +2090,8 @@ document.getElementById("habit-name-input").addEventListener("keydown", (e) => {
   if (e.key === "Enter") saveHabit();
 });
 
-load();
-render();
-setFabVisible(true);
-if (!state.profile.name && !state.habits.length) showWelcome();
-if (state.consentAnalytics === null) {
+function showConsentBannerIfNeeded() {
+  if (state.consentAnalytics !== null) return;
   const b = document.createElement("div");
   b.id = "consent-banner";
   b.className = "consent-banner";
@@ -2086,6 +2102,16 @@ if (state.consentAnalytics === null) {
     '<button class="consent-btn decline" onclick="setConsent(false)">Decline</button>' +
     "</div>";
   document.body.appendChild(b);
+}
+
+load();
+render();
+setFabVisible(true);
+const needsWelcome = !state.profile.name && !state.habits.length;
+if (needsWelcome) {
+  showWelcome();
+} else if (state.consentAnalytics === null) {
+  showConsentBannerIfNeeded();
 } else if (state.consentAnalytics) {
   // Returning user — restore consent and set user properties
   gtag("consent", "update", { analytics_storage: "granted" });

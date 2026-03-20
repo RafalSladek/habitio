@@ -32,8 +32,8 @@ async function completeOnboarding(page, name = 'Test') {
  */
 async function seedHabit(/** @type {import('@playwright/test').Page} */ page, /** @type {number} */ daysOld, checkedDaysBack = 0) {
   await page.evaluate((/** @type {{daysOld: number, checkedDaysBack: number}} */ { daysOld, checkedDaysBack }) => {
-    // Remove any pre-seeded v4 so load() will read and migrate from habitio_v2
-    localStorage.removeItem('habitio_v4');
+    // Remove any pre-seeded v5 so load() will read and migrate from habitio_v2
+    localStorage.removeItem('habitio_v5');
     const id = 'test-habit-001';
 
     // createdAt as YYYY-MM-DD string (same format as fmt() in app.js)
@@ -79,7 +79,7 @@ test.describe('habit.io', () => {
       localStorage.clear();
       // Pre-set a valid state so the consent banner doesn't appear in non-consent tests.
       // Must include habits:[] so load() accepts it (checks d && d.habits).
-      localStorage.setItem('habitio_v4', JSON.stringify({
+      localStorage.setItem('habitio_v5', JSON.stringify({
         habits: [], checks: {}, diary: {},
         profile: { name: '', age: '', sex: 'male' },
         lang: 'en', kitsDismissed: {},
@@ -311,7 +311,17 @@ test.describe('habit.io', () => {
   test.describe('consent banner', () => {
     test.beforeEach(async ({ page }) => {
       await page.goto('/');
-      await page.evaluate(() => localStorage.clear());
+      await page.evaluate(() => {
+        localStorage.clear();
+        // Set a named profile so the welcome modal doesn't appear.
+        // consentAnalytics: null means the banner should show.
+        localStorage.setItem('habitio_v5', JSON.stringify({
+          habits: [], checks: {}, diary: {},
+          profile: { name: 'Test', age: 30, ageGroup: 'adult', sex: 'male' },
+          lang: 'en', kitsDismissed: {},
+          consentAnalytics: null,
+        }));
+      });
       await page.reload();
       await page.waitForLoadState('domcontentloaded');
     });
@@ -342,7 +352,7 @@ test.describe('habit.io', () => {
     test('accepting consent saves consentAnalytics:true to localStorage', async ({ page }) => {
       await page.locator('.consent-btn.accept').click();
       const saved = await page.evaluate(() => {
-        const raw = localStorage.getItem('habitio_v4');
+        const raw = localStorage.getItem('habitio_v5');
         return raw ? JSON.parse(raw) : null;
       });
       expect(saved?.consentAnalytics).toBe(true);
@@ -351,7 +361,7 @@ test.describe('habit.io', () => {
     test('declining consent saves consentAnalytics:false to localStorage', async ({ page }) => {
       await page.locator('.consent-btn.decline').click();
       const saved = await page.evaluate(() => {
-        const raw = localStorage.getItem('habitio_v4');
+        const raw = localStorage.getItem('habitio_v5');
         return raw ? JSON.parse(raw) : null;
       });
       expect(saved?.consentAnalytics).toBe(false);
@@ -461,7 +471,7 @@ test.describe('habit.io', () => {
      */
     async function seedConsented(page, extra = {}) {
       await page.evaluate((/** @type {Record<string,unknown>} */ extra) => {
-        localStorage.setItem('habitio_v4', JSON.stringify(Object.assign({
+        localStorage.setItem('habitio_v5', JSON.stringify(Object.assign({
           habits: [], checks: {}, diary: {},
           profile: { name: 'Test', age: '25', ageGroup: 'young', sex: 'male' },
           lang: 'en', kitsDismissed: {},
@@ -491,6 +501,14 @@ test.describe('habit.io', () => {
 
     test('page_view fired after accepting consent', async ({ page }) => {
       const getCalls = await spyOnGtag(page);
+      await page.evaluate(() => {
+        localStorage.setItem('habitio_v5', JSON.stringify({
+          habits: [], checks: {}, diary: {},
+          profile: { name: 'Test', age: 30, ageGroup: 'adult', sex: 'male' },
+          lang: 'en', kitsDismissed: {},
+          consentAnalytics: null,
+        }));
+      });
       await page.reload();
       await page.waitForLoadState('domcontentloaded');
       await page.locator('.consent-btn.accept').click();
@@ -561,7 +579,7 @@ test.describe('habit.io', () => {
       // Seed a named profile so the welcome modal doesn't block navigation,
       // but leave consentAnalytics: null so the consent banner appears.
       await page.evaluate(() => {
-        localStorage.setItem('habitio_v4', JSON.stringify({
+        localStorage.setItem('habitio_v5', JSON.stringify({
           habits: [], checks: {}, diary: {},
           profile: { name: 'Test', age: '25', ageGroup: 'young', sex: 'male' },
           lang: 'en', kitsDismissed: {},
@@ -588,7 +606,7 @@ test.describe('habit.io', () => {
     /** Seed two habits + one check and navigate to Settings. */
     async function seedAndGoToSettings(/** @type {import('@playwright/test').Page} */ page) {
       await page.evaluate(() => {
-        localStorage.setItem('habitio_v4', JSON.stringify({
+        localStorage.setItem('habitio_v5', JSON.stringify({
           habits: [
             { id: 'h1', name: 'Drink Water', emoji: '💧', cadence: { type: 'daily' }, createdAt: '2024-01-01' },
             { id: 'h2', name: 'Read', emoji: '📖', cadence: { type: 'daily' }, createdAt: '2024-01-01' },
@@ -667,7 +685,7 @@ test.describe('habit.io', () => {
         buffer: Buffer.from(JSON.stringify(importData)),
       }]);
       await expect(page.locator('#import-modal')).not.toHaveClass(/show/);
-      const state = await page.evaluate(() => JSON.parse(localStorage.getItem('habitio_v4') || '{}'));
+      const state = await page.evaluate(() => JSON.parse(localStorage.getItem('habitio_v5') || '{}'));
       // 2 original + 1 new (Meditate); Drink Water not duplicated
       expect(state.habits).toHaveLength(3);
       expect(state.habits.map((/** @type {any} */ h) => h.name)).toContain('Meditate');
@@ -707,7 +725,7 @@ test.describe('habit.io', () => {
 
       // Reset to a named profile (no welcome modal) then re-import
       await page.evaluate(() => {
-        localStorage.setItem('habitio_v4', JSON.stringify({
+        localStorage.setItem('habitio_v5', JSON.stringify({
           habits: [], checks: {}, diary: {},
           profile: { name: 'Test', age: '30', ageGroup: 'adult', sex: 'male' },
           lang: 'en', kitsDismissed: {}, consentAnalytics: false,
@@ -730,7 +748,7 @@ test.describe('habit.io', () => {
         buffer: exportedBuffer,
       }]);
       await expect(page.locator('#import-modal')).not.toHaveClass(/show/);
-      const state = await page.evaluate(() => JSON.parse(localStorage.getItem('habitio_v4') || '{}'));
+      const state = await page.evaluate(() => JSON.parse(localStorage.getItem('habitio_v5') || '{}'));
       expect(state.habits).toHaveLength(2);
       expect(state.habits.map((/** @type {any} */ h) => h.name)).toContain('Drink Water');
       // Checks are re-mapped to new habit IDs on import — verify the day has at least one check

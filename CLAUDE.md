@@ -16,7 +16,7 @@ Files are split for clarity; no build step required:
 |---|---|
 | `index.html` | App shell and markup (~240 lines) |
 | `styles.css` | All styles |
-| `i18n.js` | All translations (`T` object, 7 languages) + `t()`, `DN()`, `MN()` helpers |
+| `i18n.js` | All translations (`T` object, 12 languages) + `t()`, `DN()`, `MN()` helpers |
 | `app.js` | All application logic (~1 800 lines) |
 | `suggestions.js` | Habit suggestion data with demographic scoring |
 | `sw.js` | Service worker — full offline caching (cache name: `habitio_v4`) |
@@ -39,7 +39,8 @@ Export/import via JSON file is the only cross-device migration path. Do not intr
 - **Habit IDs**: `crypto.randomUUID()` via `uid()` function (with fallback)
 - **Age groups**: `AGE_GROUPS = [{key,age}]` — stores both `profile.ageGroup` (key) and `profile.age` (representative int) for backward compat with `getSuggestions()` which uses `parseInt(profile.age)`
 - **Date formatting**: `fmt(d)` uses `toISOString().slice(0,10)` (UTC-based)
-- **i18n**: `T` object in `i18n.js` with `en`/`de`/`pl`/`pt`/`ru`/`fr`/`hi` keys; `t(key)` helper; language stored in `state.lang`
+- **i18n**: `T` object in `i18n.js` with `en`/`de`/`pl`/`pt`/`ru`/`fr`/`hi`/`uk`/`ar`/`sq`/`sr`/`bar` keys; `t(key)` helper; language stored in `state.lang`
+- **Sex options**: `profile.sex` can be `"male"`, `"female"`, or `"prefer"` (prefer not to say)
 - **Formation arc**: 66-day science-backed journey shown as phase emoji per habit
 - **Morning routine**: habits tagged `morning:true` grouped at top
 
