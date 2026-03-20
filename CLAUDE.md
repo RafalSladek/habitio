@@ -16,7 +16,8 @@ Files are split for clarity; no build step required:
 |---|---|
 | `index.html` | App shell and markup (~240 lines) |
 | `styles.css` | All styles |
-| `app.js` | All application logic |
+| `i18n.js` | All translations (`T` object, 7 languages) + `t()`, `DN()`, `MN()` helpers |
+| `app.js` | All application logic (~1 800 lines) |
 | `suggestions.js` | Habit suggestion data with demographic scoring |
 | `sw.js` | Service worker — full offline caching (cache name: `habitio_v4`) |
 | `manifest.json` | PWA manifest |
@@ -38,7 +39,7 @@ Export/import via JSON file is the only cross-device migration path. Do not intr
 - **Habit IDs**: `crypto.randomUUID()` via `uid()` function (with fallback)
 - **Age groups**: `AGE_GROUPS = [{key,age}]` — stores both `profile.ageGroup` (key) and `profile.age` (representative int) for backward compat with `getSuggestions()` which uses `parseInt(profile.age)`
 - **Date formatting**: `fmt(d)` uses `toISOString().slice(0,10)` (UTC-based)
-- **i18n**: `STRINGS` object with `en`/`de`/`pl` keys; `t(key)` helper; language stored in `state.lang`
+- **i18n**: `T` object in `i18n.js` with `en`/`de`/`pl`/`pt`/`ru`/`fr`/`hi` keys; `t(key)` helper; language stored in `state.lang`
 - **Formation arc**: 66-day science-backed journey shown as phase emoji per habit
 - **Morning routine**: habits tagged `morning:true` grouped at top
 
@@ -116,5 +117,6 @@ Never change the storage key without migration — users must not lose their hab
    - No unexpected elements visible (e.g. glow from hidden components, z-index leaks)
    Fix any issues found before proceeding to commit.
 4. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
-5. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key
+5. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, `i18n.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v4` → `habitio_v5`), and add a migration read in `load()` for the old key
 6. **Update `TODO.md`**: add any new tasks completed in this session to `TODO.md` and include it in the same commit as the code changes
+7. **Update docs**: if the architecture, file list, i18n languages, or any dev instructions changed, update `CLAUDE.md` and `README.md` in the same commit
