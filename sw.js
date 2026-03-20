@@ -6,6 +6,7 @@ const PRECACHE = [
   './styles.css',
   './app.js',
   './suggestions.js',
+  './i18n.js',
   './manifest.json',
   './favicon.ico',
   './icons/icon.svg',
