@@ -1504,7 +1504,7 @@ function addFromDiary(nameKey, emoji) {
     source: "suggested",
   });
   save();
-  showToast(emoji + " " + name + " — " + t("habit_added"));
+  showToast(emoji + " " + name + " — " + t("sug_added"));
   renderDiary();
 }
 function saveDiary(k, field, val) {
