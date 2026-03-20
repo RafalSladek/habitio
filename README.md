@@ -4,7 +4,7 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 
 **Live app:** https://rafalsladek.github.io/habitio/
 
-[![Test & Deploy](https://github.com/RafalSladek/habitio/actions/workflows/playwright.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/playwright.yml)
+[![CI / CD](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml)
 
 ## Screenshots
 
@@ -25,7 +25,8 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 - **Stats** — streaks, weekly progress, 28-day heatmap, 30-day performance per habit
 - **Offline-first PWA** — installs on home screen, works without internet
 - **Export / Import** — JSON backup for cross-device migration
-- **Multilingual** — English, Deutsch, Polski, Português, Русский, Français, हिन्दी
+- **Multilingual** — 12 languages: English, Deutsch, Polski, Português, Français, Русский, हिन्दी, Українська, عربي مصري, Shqip, Srpski, Bayrisch
+- **Prefer not to say** — sex option in onboarding and settings for inclusive personalisation
 
 ## Architecture
 
@@ -35,10 +36,10 @@ Files are split for clarity; no build step required.
 |---|---|
 | `index.html` | App shell and markup |
 | `styles.css` | All styles |
-| `i18n.js` | All translations (7 languages) + `t()`, `DN()`, `MN()` helpers |
+| `i18n.js` | All translations (12 languages) + `t()`, `DN()`, `MN()` helpers |
 | `app.js` | All application logic |
 | `suggestions.js` | Habit suggestion data with demographic scoring |
-| `sw.js` | Service worker — full offline caching (cache: `habitio_v4`) |
+| `sw.js` | Service worker — full offline caching (cache: `habitio_v5`) |
 | `manifest.json` | PWA manifest |
 | `icons/` | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG |
 
@@ -46,7 +47,7 @@ Files are split for clarity; no build step required.
 
 All data is stored **client-side only** using the browser's `localStorage` API.
 
-- Storage key: `habitio_v4`, format: JSON
+- Storage key: `habitio_v5`, format: JSON
 - No backend, no server, no database — works fully offline
 - Habit IDs use `crypto.randomUUID()` for collision-free tracking
 - Data is local to the device/browser; clearing browser storage deletes all data
