@@ -46,6 +46,16 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+  sonar:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: SonarCloud Scan
         id: sonar_scan
         uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6
@@ -65,7 +75,7 @@ jobs:
 
   deploy:
     name: Deploy to GitHub Pages
-    needs: test
+    needs: [test, sonar]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
