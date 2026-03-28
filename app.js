@@ -30,6 +30,8 @@ function setConsent(granted) {
   gtag("consent", "update", { analytics_storage: granted ? "granted" : "denied" });
   save();
   if (granted) {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: "gtm.init_consent", "gtm.uniqueEventId": 1 });
     updateUserProperties();
     // Send the initial page_view now that consent is confirmed
     gtag("event", "page_view", { page_title: "habit.io", page_location: location.href });
