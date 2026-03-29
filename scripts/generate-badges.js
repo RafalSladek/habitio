@@ -1,14 +1,16 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const repoRoot = path.resolve(__dirname, "..");
 const testsDir = path.join(repoRoot, "tests");
 const outputDir = path.join(repoRoot, "badges");
 const outputFile = path.join(outputDir, "tests.json");
-const config = require(path.join(repoRoot, "playwright.config.js"));
+
+// Inline ignore list — keep in sync with playwright.config.js testIgnore
+const testIgnore = ["**/habitio.spec.js"];
 
 function normalizeForMatch(value) {
-  return value.replace(/\\/g, "/");
+  return value.replaceAll("\\", "/");
 }
 
 function isIgnored(relativePath, patterns) {
@@ -28,11 +30,7 @@ function countActiveTests(filePath) {
   return matches ? matches.length : 0;
 }
 
-const ignorePatterns = Array.isArray(config.testIgnore)
-  ? config.testIgnore
-  : config.testIgnore
-    ? [config.testIgnore]
-    : [];
+const ignorePatterns = testIgnore;
 
 const specFiles = fs
   .readdirSync(testsDir)
