@@ -7,7 +7,7 @@ const path = require('path');
 
 const BASE_URL = 'http://localhost:3000';
 const DOCS_DIR = path.join(__dirname, '..', 'docs');
-const STORAGE_KEY = 'habitio_v4';
+const STORAGE_KEY = 'habitio_v6';
 
 // The app uses toISOString().slice(0,10) for date keys (UTC-based).
 // We must use the same UTC date so diary/checks align with "today" in the app.
@@ -149,6 +149,14 @@ async function main() {
     await mobile.waitForTimeout(600);
     await mobile.screenshot({ path: path.join(DOCS_DIR, 'screenshot-settings.png') });
 
+    // 8. Consent banner — seeded with consentAnalytics: null so the banner appears
+    console.log('  screenshot-consent.png');
+    const stateConsent = { ...SEED_STATE, consentAnalytics: null };
+    await loadWithState(mobile, stateConsent);
+    await mobile.waitForSelector('.consent-banner', { timeout: 3000 }).catch(() => {});
+    await mobile.waitForTimeout(400);
+    await mobile.screenshot({ path: path.join(DOCS_DIR, 'screenshot-consent.png') });
+
     await mobileCtx.close();
 
     // ─── DESKTOP SCREENSHOTS (1280×800) ───────────────────────────────────────
@@ -195,6 +203,14 @@ async function main() {
     await desktop.waitForTimeout(600);
     await desktop.screenshot({ path: path.join(DOCS_DIR, 'desktop-modal.png') });
 
+    // 13. Desktop consent banner
+    console.log('  desktop-consent.png');
+    const desktopConsent = { ...SEED_STATE, consentAnalytics: null };
+    await loadWithState(desktop, desktopConsent);
+    await desktop.waitForSelector('.consent-banner', { timeout: 3000 }).catch(() => {});
+    await desktop.waitForTimeout(400);
+    await desktop.screenshot({ path: path.join(DOCS_DIR, 'desktop-consent.png') });
+
     await desktopCtx.close();
 
     // ─── TABLET SCREENSHOT (820×1180) ─────────────────────────────────────────
@@ -215,7 +231,7 @@ async function main() {
 
     await tabletCtx.close();
 
-    console.log('\n✅ All 13 screenshots saved to docs/');
+    console.log('\n✅ All 15 screenshots saved to docs/');
   } finally {
     await browser.close();
   }

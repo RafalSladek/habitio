@@ -1,9 +1,116 @@
+const GA_MEASUREMENT_ID = "G-V9TJW7N2VY";
+const GA_SCRIPT_SRC = "https://www.googletagmanager.com/gtag/js?id=" + GA_MEASUREMENT_ID;
+const GA_DISABLE_KEY = "ga-disable-" + GA_MEASUREMENT_ID;
+const GA_COOKIE_RE = /^(_ga|_gid|_gat|_gac_|_dc_gtm_)/;
+const GA_CONSENT_DENIED = {
+  analytics_storage: "denied",
+  ad_storage: "denied",
+  ad_user_data: "denied",
+  ad_personalization: "denied",
+};
+const GA_CONSENT_GRANTED = {
+  analytics_storage: "granted",
+  ad_storage: "denied",
+  ad_user_data: "denied",
+  ad_personalization: "denied",
+};
+
+let analyticsLoadPromise = null;
+let analyticsConfigured = false;
+
+function ensureAnalyticsStub() {
+  globalThis.dataLayer = globalThis.dataLayer || [];
+  if (typeof globalThis.gtag !== "function") {
+    globalThis.gtag = function gtag() {
+      globalThis.dataLayer.push(arguments);
+    };
+  }
+}
+
+function setAnalyticsDisabled(disabled) {
+  globalThis[GA_DISABLE_KEY] = !!disabled;
+}
+
+function ensureAnalyticsBootstrap() {
+  if (analyticsConfigured) return;
+  ensureAnalyticsStub();
+  globalThis.gtag("consent", "default", GA_CONSENT_DENIED);
+  globalThis.gtag("js", new Date());
+  globalThis.gtag("config", GA_MEASUREMENT_ID, {
+    send_page_view: false,
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false,
+  });
+  analyticsConfigured = true;
+}
+
+function loadAnalyticsScript() {
+  if (analyticsLoadPromise) return analyticsLoadPromise;
+  ensureAnalyticsBootstrap();
+  analyticsLoadPromise = new Promise((resolve, reject) => {
+    if (document.querySelector('script[data-ga4-loader="true"]')) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = GA_SCRIPT_SRC;
+    script.dataset.ga4Loader = "true";
+    script.onload = () => resolve();
+    script.onerror = () => {
+      analyticsLoadPromise = null;
+      reject(new Error("Failed to load GA4"));
+    };
+    document.head.appendChild(script);
+  }).catch((error) => {
+    console.warn("[habitio] Failed to load GA4:", error);
+    return false;
+  });
+  return analyticsLoadPromise;
+}
+
+function applyAnalyticsConsent(granted) {
+  ensureAnalyticsBootstrap();
+  setAnalyticsDisabled(!granted);
+  globalThis.gtag("consent", "update", granted ? GA_CONSENT_GRANTED : GA_CONSENT_DENIED);
+  if (granted) void loadAnalyticsScript();
+}
+
+function clearAnalyticsCookies() {
+  const names = document.cookie
+    .split(";")
+    .map((part) => part.trim().split("=")[0])
+    .filter((name) => name && GA_COOKIE_RE.test(name));
+  if (!names.length) return;
+
+  const hostParts = location.hostname.split(".").filter(Boolean);
+  const domains = new Set(["", location.hostname, "." + location.hostname]);
+  if (hostParts.length > 2) domains.add("." + hostParts.slice(-2).join("."));
+
+  names.forEach((name) => {
+    domains.forEach((domain) => {
+      document.cookie =
+        name +
+        "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/" +
+        (domain ? "; domain=" + domain : "");
+    });
+  });
+}
+
+function queueAnalyticsCall() {
+  if (!state.consentAnalytics) return;
+  ensureAnalyticsBootstrap();
+  setAnalyticsDisabled(false);
+  void loadAnalyticsScript();
+  globalThis.gtag.apply(globalThis, arguments);
+}
+
 // Set GA4 user-scoped properties — called once on consent and whenever
 // profile changes. User properties persist for the whole session and are
 // attached to every subsequent event automatically.
 function updateUserProperties() {
   if (!state.consentAnalytics) return;
-  gtag("set", "user_properties", {
+  queueAnalyticsCall("set", "user_properties", {
     age_group: state.profile.ageGroup || null,
     sex: state.profile.sex || null,
     ui_language: state.lang || null,
@@ -12,24 +119,34 @@ function updateUserProperties() {
 function trackEvent(name, params) {
   if (!state.consentAnalytics) return;
   // Event-level params allow per-event segmentation in addition to user props
-  gtag("event", name, {
+  queueAnalyticsCall("event", name, {
     age_group: state.profile.ageGroup || "unknown",
     sex: state.profile.sex || "unknown",
     ui_language: state.lang || "unknown",
     ...params,
   });
 }
+function trackPageView(pageTitle, pageLocation) {
+  if (!state.consentAnalytics) return;
+  queueAnalyticsCall("event", "page_view", {
+    page_title: pageTitle,
+    page_location: pageLocation,
+  });
+}
 function setConsent(granted) {
   state.consentAnalytics = !!granted;
-  gtag("consent", "update", { analytics_storage: granted ? "granted" : "denied" });
   save();
+
   if (granted) {
-    globalThis.dataLayer = globalThis.dataLayer || [];
-    globalThis.dataLayer.push({ event: "gtm.init_consent", "gtm.uniqueEventId": 1 });
+    applyAnalyticsConsent(true);
     updateUserProperties();
-    // Send the initial page_view now that consent is confirmed
-    gtag("event", "page_view", { page_title: "habit.io", page_location: location.href });
+    trackPageView("habit.io", location.href);
+  } else {
+    if (analyticsConfigured) applyAnalyticsConsent(false);
+    setAnalyticsDisabled(true);
+    clearAnalyticsCookies();
   }
+
   document.getElementById("consent-banner")?.remove();
   renderSettings();
 }
@@ -469,12 +586,13 @@ function uid() {
     : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
 }
 function save() {
-  localStorage.setItem("habitio_v5", JSON.stringify(state));
+  localStorage.setItem("habitio_v6", JSON.stringify(state));
 }
 function load() {
   try {
     // Migration: read from older keys if current key is absent
     const raw =
+      localStorage.getItem("habitio_v6") ||
       localStorage.getItem("habitio_v5") ||
       localStorage.getItem("habitio_v4") ||
       localStorage.getItem("habitio_v3") ||
@@ -493,7 +611,8 @@ function load() {
       if (d.consentAnalytics === undefined) d.consentAnalytics = null;
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v5", JSON.stringify(state));
+      localStorage.setItem("habitio_v6", JSON.stringify(state));
+      localStorage.removeItem("habitio_v5");
       localStorage.removeItem("habitio_v4");
       localStorage.removeItem("habitio_v3");
       localStorage.removeItem("habitio_v2");
@@ -1107,7 +1226,6 @@ function finishWelcome() {
   updateUserProperties();
   document.getElementById("welcome-modal").classList.remove("show");
   render();
-  showConsentBannerIfNeeded();
 }
 
 // ═══ ADD MODAL ═══
@@ -1669,12 +1787,12 @@ function shareApp() {
   if (navigator.share) {
     navigator
       .share({ title: "habit.io", text: t("share_text"), url })
-      .then(() => gtag("event", "share", { method: "web_share_api", content_type: "app" }))
+      .then(() => trackEvent("share", { method: "web_share_api", content_type: "app" }))
       .catch(() => {});
   } else {
     navigator.clipboard.writeText(url).then(() => {
       showToast(t("share_copied"));
-      gtag("event", "share", { method: "clipboard", content_type: "app" });
+      trackEvent("share", { method: "clipboard", content_type: "app" });
     });
   }
 }
@@ -2074,10 +2192,7 @@ function switchPage(p) {
   // SPA page_view — fires only when consent has been granted
   if (state.consentAnalytics) {
     const titles = { tracker: "Today", diary: "Journal", stats: "Stats", settings: "Settings" };
-    gtag("event", "page_view", {
-      page_title: "habit.io · " + (titles[p] || p),
-      page_location: location.origin + location.pathname + "#" + p,
-    });
+    trackPageView("habit.io · " + (titles[p] || p), location.origin + location.pathname + "#" + p);
   }
 }
 function showTip(btn, msg) {
@@ -2137,26 +2252,39 @@ function showConsentBannerIfNeeded() {
   b.id = "consent-banner";
   b.className = "consent-banner";
   b.innerHTML =
-    '<span class="consent-text">We use analytics to improve the app. No personal data is shared.</span>' +
+    '<div class="consent-title">' +
+    t("consent_title") +
+    "</div>" +
+    '<span class="consent-text">' +
+    t("consent_text") +
+    "</span>" +
+    '<span class="consent-note">' +
+    t("consent_note") +
+    "</span>" +
     '<div class="consent-btns">' +
-    '<button class="consent-btn accept" onclick="setConsent(true)">Accept</button>' +
-    '<button class="consent-btn decline" onclick="setConsent(false)">Decline</button>' +
+    '<button class="consent-btn decline" type="button" onclick="setConsent(false)">' +
+    t("consent_decline") +
+    "</button>" +
+    '<button class="consent-btn accept" type="button" onclick="setConsent(true)">' +
+    t("consent_accept") +
+    "</button>" +
     "</div>";
   document.body.appendChild(b);
 }
 
 load();
+setAnalyticsDisabled(state.consentAnalytics !== true);
 render();
 setFabVisible(true);
 const needsWelcome = !state.profile.name && !state.habits.length;
 if (needsWelcome) {
   showWelcome();
-} else if (state.consentAnalytics === null) {
+}
+if (state.consentAnalytics === null) {
   showConsentBannerIfNeeded();
 } else if (state.consentAnalytics) {
-  // Returning user — restore consent and set user properties
-  gtag("consent", "update", { analytics_storage: "granted" });
+  applyAnalyticsConsent(true);
   updateUserProperties();
-  gtag("event", "page_view", { page_title: "habit.io", page_location: location.href });
+  trackPageView("habit.io", location.href);
 }
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});

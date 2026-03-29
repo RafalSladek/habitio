@@ -3,13 +3,14 @@ const { defineConfig, devices } = require("@playwright/test");
 
 module.exports = defineConfig({
   testDir: "./tests",
-  testIgnore: ["**/habitio.spec.js"],
   workers: process.env.CI ? 4 : undefined,
   timeout: 30000,
   globalTeardown: "./tests/global-teardown.js",
   use: {
     baseURL: "http://localhost:3000",
     headless: true,
+    video: "retain-on-failure",
+    trace: "on-first-retry",
   },
   webServer: {
     command: "npx serve . -p 3000 -s",
@@ -29,7 +30,7 @@ module.exports = defineConfig({
     {
       name: "Tablet",
       use: {
-        ...devices["Desktop Chrome"],
+        ...devices["Desktop Firefox"],
         viewport: { width: 768, height: 1024 },
       },
     },
