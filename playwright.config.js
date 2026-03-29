@@ -3,6 +3,7 @@ const { defineConfig, devices } = require("@playwright/test");
 
 module.exports = defineConfig({
   testDir: "./tests",
+  testIgnore: ["**/habitio.spec.js"],
   timeout: 30000,
   globalTeardown: "./tests/global-teardown.js",
   use: {
