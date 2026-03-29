@@ -72,10 +72,20 @@ jobs:
           name: coverage-lcov
           path: coverage
 
+      - name: Compute deploy version
+        id: version
+        run: |
+          git fetch --tags --quiet
+          DEPLOY_NUM=$(git tag --list 'deploy-*' | sed 's/deploy-//' | sort -n | tail -1)
+          NEXT=$(printf "%03d" $((${DEPLOY_NUM:-0} + 1)))
+          echo "tag=deploy-${NEXT}" >> "$GITHUB_OUTPUT"
+
       - name: SonarCloud Scan
         id: sonar_scan
         uses: SonarSource/sonarqube-scan-action@fd88b7d7ccbaefd23d8f36f73b59db7a3d246602 # v6
         continue-on-error: true
+        with:
+          args: -Dsonar.projectVersion=${{ steps.version.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
