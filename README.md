@@ -5,12 +5,18 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 **Live app:** https://habitio.rafal-sladek.com/ · [mirror](https://rafalsladek.github.io/habitio/)
 
 [![CI / CD](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/tests.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=coverage)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=bugs)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
-[![Security Hotspots](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=security_hotspots)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 [![Duplications](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
-[![Tests](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/tests.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 
 ## Screenshots
 
