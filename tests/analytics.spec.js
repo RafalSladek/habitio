@@ -19,6 +19,15 @@ test.describe("GA4 event tracking", () => {
 
   test("no GA events fired before consent", async ({ page }) => {
     const getCalls = await spyOnGtag(page);
+    await page.evaluate(
+      (state) => {
+        localStorage.setItem("habitio_v5", JSON.stringify(state));
+      },
+      createState({
+        profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
+        consentAnalytics: null,
+      })
+    );
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
     await expect(page.locator(".consent-banner")).toBeVisible();
