@@ -198,12 +198,13 @@ async function seedConsented(page, extra = {}) {
   );
   await page.reload();
   await page.waitForLoadState("domcontentloaded");
-  await page.waitForTimeout(300);
+  await expect(page.locator("#fab-add")).toBeVisible();
 }
 
 /** @param {import('@playwright/test').Page} page */
 async function goToSettings(page) {
   await page.getByRole("button", { name: /Settings/ }).click();
+  await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
 }
 
 module.exports = {

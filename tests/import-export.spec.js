@@ -35,7 +35,6 @@ async function seedAndGoToSettings(page) {
   await page.reload();
   await page.waitForLoadState("domcontentloaded");
   await goToSettings(page);
-  await page.waitForTimeout(200);
 }
 
 test.describe("export / import", () => {
@@ -194,7 +193,6 @@ test.describe("export / import", () => {
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
     await goToSettings(page);
-    await page.waitForTimeout(200);
     await page
       .locator(".setting-item", {
         has: page.locator(".setting-label", { hasText: /Import/ }),

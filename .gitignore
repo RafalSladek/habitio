@@ -5,4 +5,5 @@ playwright-report/
 .claude/
 .nyc_output/
 coverage/
+badges/
 .vscode/

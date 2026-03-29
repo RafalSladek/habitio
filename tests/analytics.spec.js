@@ -9,6 +9,10 @@ const {
 } = require("./test-helpers");
 
 test.describe("GA4 event tracking", () => {
+  async function waitForTrackedCall(getCalls, predicate) {
+    await expect.poll(async () => (await getCalls()).some(predicate)).toBe(true);
+  }
+
   test.beforeEach(async ({ page }) => {
     await openClearedApp(page);
   });
@@ -17,7 +21,7 @@ test.describe("GA4 event tracking", () => {
     const getCalls = await spyOnGtag(page);
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
-    await page.waitForTimeout(500);
+    await expect(page.locator(".consent-banner")).toBeVisible();
 
     const calls = await getCalls();
     const events = calls.filter((call) => call[0] === "event");
@@ -39,7 +43,7 @@ test.describe("GA4 event tracking", () => {
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
     await page.locator(".consent-btn.accept").click();
-    await page.waitForTimeout(300);
+    await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "page_view");
 
     const calls = await getCalls();
     const pageViews = calls.filter((call) => call[0] === "event" && call[1] === "page_view");
@@ -52,7 +56,16 @@ test.describe("GA4 event tracking", () => {
     const before = (await getCalls()).length;
 
     await page.getByRole("button", { name: /Journal/ }).click();
-    await page.waitForTimeout(200);
+    await expect(page.getByRole("heading", { name: "Journal" })).toBeVisible();
+    await waitForTrackedCall(
+      getCalls,
+      (call) =>
+        call[0] === "event" &&
+        call[1] === "page_view" &&
+        call[2] &&
+        typeof call[2].page_title === "string" &&
+        call[2].page_title.includes("Journal")
+    );
 
     const calls = await getCalls();
     const navPageViews = calls
@@ -71,6 +84,14 @@ test.describe("GA4 event tracking", () => {
   test("user properties set with age_group, sex, ui_language", async ({ page }) => {
     const getCalls = await spyOnGtag(page);
     await seedConsented(page);
+    await waitForTrackedCall(
+      getCalls,
+      (call) =>
+        call[0] === "set" &&
+        call[1] === "user_properties" &&
+        call[2] &&
+        call[2].age_group === "young"
+    );
 
     const calls = await getCalls();
     const userPropCall = calls.find(
@@ -93,9 +114,9 @@ test.describe("GA4 event tracking", () => {
     const before = (await getCalls()).length;
 
     await page.locator("#fab-add").click();
-    await page.waitForTimeout(300);
+    await expect(page.locator(".suggestion-item").first()).toBeVisible();
     await page.locator(".suggestion-item").first().click();
-    await page.waitForTimeout(300);
+    await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "habit_add");
 
     const calls = await getCalls();
     const addEvent = calls
@@ -120,7 +141,10 @@ test.describe("GA4 event tracking", () => {
     const before = (await getCalls()).length;
 
     await page.locator(".habit-card").first().click();
-    await page.waitForTimeout(200);
+    await waitForTrackedCall(
+      getCalls,
+      (call) => call[0] === "event" && call[1] === "habit_complete"
+    );
 
     const calls = await getCalls();
     const completeEvent = calls
@@ -144,11 +168,11 @@ test.describe("GA4 event tracking", () => {
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
     await page.locator(".consent-btn.decline").click();
-    await page.waitForTimeout(300);
+    await expect(page.locator(".consent-banner")).not.toBeVisible();
     const before = (await getCalls()).length;
 
     await page.getByRole("button", { name: /Stats/ }).click();
-    await page.waitForTimeout(200);
+    await expect(page.getByRole("heading", { name: "Stats" })).toBeVisible();
 
     const calls = await getCalls();
     const newEvents = calls.slice(before).filter((call) => call[0] === "event");

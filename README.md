@@ -5,15 +5,17 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 **Live app:** https://habitio.rafal-sladek.com/ · [mirror](https://rafalsladek.github.io/habitio/)
 
 [![CI / CD](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=coverage)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
+[![Tests](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/tests.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
 
 ## Screenshots
 
-| Onboarding | Today | Add Habit |
-|:---:|:---:|:---:|
+|                  Onboarding                   |                  Today                  |                  Add Habit                  |
+| :-------------------------------------------: | :-------------------------------------: | :-----------------------------------------: |
 | ![Onboarding](docs/screenshot-onboarding.png) | ![Tracker](docs/screenshot-tracker.png) | ![Add Habit](docs/screenshot-add-habit.png) |
 
-| Journal | Stats | Settings |
-|:---:|:---:|:---:|
+|                 Journal                 |                Stats                |                 Settings                  |
+| :-------------------------------------: | :---------------------------------: | :---------------------------------------: |
 | ![Journal](docs/screenshot-journal.png) | ![Stats](docs/screenshot-stats.png) | ![Settings](docs/screenshot-settings.png) |
 
 ## Features
@@ -32,16 +34,16 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 
 Files are split for clarity; no build step required.
 
-| File | Purpose |
-|---|---|
-| `index.html` | App shell and markup |
-| `styles.css` | All styles |
-| `i18n.js` | All translations (12 languages) + `t()`, `DN()`, `MN()` helpers |
-| `app.js` | All application logic |
-| `suggestions.js` | Habit suggestion data with demographic scoring |
-| `sw.js` | Service worker — full offline caching (cache: `habitio_v5`) |
-| `manifest.json` | PWA manifest |
-| `icons/` | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG |
+| File             | Purpose                                                         |
+| ---------------- | --------------------------------------------------------------- |
+| `index.html`     | App shell and markup                                            |
+| `styles.css`     | All styles                                                      |
+| `i18n.js`        | All translations (12 languages) + `t()`, `DN()`, `MN()` helpers |
+| `app.js`         | All application logic                                           |
+| `suggestions.js` | Habit suggestion data with demographic scoring                  |
+| `sw.js`          | Service worker — full offline caching (cache: `habitio_v5`)     |
+| `manifest.json`  | PWA manifest                                                    |
+| `icons/`         | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG    |
 
 ## Data Storage
 
@@ -66,14 +68,15 @@ push to main → Playwright tests (desktop + mobile + tablet) → deploy to Page
 
 Lighthouse scores (mobile, avg of 3 runs):
 
-| Category | Score |
-|---|---|
-| Performance | 80 |
-| Accessibility | 92 |
-| Best Practices | 100 |
-| SEO | 100 |
+| Category       | Score |
+| -------------- | ----- |
+| Performance    | 80    |
+| Accessibility  | 92    |
+| Best Practices | 100   |
+| SEO            | 100   |
 
 Key optimisations applied:
+
 - Non-blocking Google Fonts (preconnect + preload swap)
 - Hero image served as WebP (290 KB → 16 KB, 94% smaller) with PNG fallback
 - `fetchpriority="high"` on LCP image
@@ -85,6 +88,7 @@ Key optimisations applied:
 Personalisation logic and habit formation features are grounded in published research.
 
 ### Habit Formation
+
 - **Median formation time is 59–66 days**, not 21 — [Lally et al., 2010, EJSP](https://doi.org/10.1002/ejsp.674)
 - **Missing a day does not break formation** — same Lally study
 - **Morning routines show 43% higher success rates** — habit timing research
@@ -92,6 +96,7 @@ Personalisation logic and habit formation features are grounded in published res
 - **Brain handoff**: prefrontal cortex → basal ganglia as habits automate — [WJARR](https://wjarr.com)
 
 ### Demographic Habit Patterns
+
 - **Physical activity**: 80% of adolescents don't meet WHO guidelines; inactivity worsens after 60
 - **Diet**: women consistently lead; men 18–29 have the worst diets
 - **Sleep & screens**: 45% of US teens say social media hurts sleep; girls more affected — [Pew Research](https://pewresearch.org)
@@ -104,12 +109,14 @@ Personalisation logic and habit formation features are grounded in published res
 No build step needed — serve the files with any static server.
 
 **Option A — Node (recommended):**
+
 ```bash
 npx serve .
 # Open http://localhost:3000
 ```
 
 **Option B — Python:**
+
 ```bash
 python -m http.server 8080
 # Open http://localhost:8080

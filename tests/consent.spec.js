@@ -59,7 +59,7 @@ test.describe("consent banner", () => {
     page.on("pageerror", (err) => errors.push(err.message));
 
     await page.locator(".consent-btn.accept").click();
-    await page.waitForTimeout(300);
+    await expect(page.locator(".consent-banner")).not.toBeVisible();
 
     const realErrors = errors.filter(
       (error) =>
