@@ -601,14 +601,11 @@ function applyLang() {
 
 function getGreeting() {
   const h = new Date().getHours();
-  const key =
-    h >= 5 && h < 12
-      ? "greet_morning"
-      : h >= 12 && h < 17
-        ? "greet_afternoon"
-        : h >= 17 && h < 21
-          ? "greet_evening"
-          : "greet_night";
+  let key;
+  if (h >= 5 && h < 12) key = "greet_morning";
+  else if (h >= 12 && h < 17) key = "greet_afternoon";
+  else if (h >= 17 && h < 21) key = "greet_evening";
+  else key = "greet_night";
   const name = state.profile.name;
   return t(key) + (name ? ", " + name + " 👋" : " 👋");
 }
@@ -1979,9 +1976,8 @@ function renderSettings() {
     ")</span>" +
     '<button class="icon-btn" onclick="openAddModal()" style="font-size:18px;padding:2px 8px">+</button>' +
     '</div><div class="settings-list">' +
-    (!state.habits.length
-      ? '<div style="padding:14px 16px;color:var(--text-muted);font-size:13px">—</div>'
-      : state.habits
+    (state.habits.length
+      ? state.habits
           .map(
             (h) =>
               '<div class="habit-edit-item" onclick="openAddModal(\'' +
@@ -1996,7 +1992,8 @@ function renderSettings() {
               h.id +
               "')\">✕</button></div>"
           )
-          .join("")) +
+          .join("")
+      : '<div style="padding:14px 16px;color:var(--text-muted);font-size:13px">—</div>') +
     "</div></div>" +
     '<div class="settings-section"><div class="settings-title">' +
     t("settings_data") +
@@ -2085,7 +2082,7 @@ function switchPage(p) {
 }
 function showTip(btn, msg) {
   const tt = document.getElementById("tt");
-  tt.innerHTML = msg.replace(/\n/g, "<br>");
+  tt.innerHTML = msg.replaceAll("\n", "<br>");
   tt.style.display = "block";
   const r = btn.getBoundingClientRect();
   const tw = tt.offsetWidth || 260;

@@ -10,8 +10,8 @@
  * If the packages are absent (e.g. first run before install) the teardown
  * exits silently so it never breaks the test run.
  */
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 module.exports = async function globalTeardown() {
   const nycOutput = path.join(process.cwd(), ".nyc_output");
@@ -23,9 +23,10 @@ module.exports = async function globalTeardown() {
     libCoverage = require("istanbul-lib-coverage");
     libReport = require("istanbul-lib-report");
     reports = require("istanbul-reports");
-  } catch (_) {
+  } catch (e) {
     console.warn(
-      "[coverage] Skipping LCOV generation — run: yarn add -D v8-to-istanbul istanbul-lib-coverage istanbul-lib-report istanbul-reports"
+      "[coverage] Skipping LCOV generation — run: yarn add -D v8-to-istanbul istanbul-lib-coverage istanbul-lib-report istanbul-reports",
+      e
     );
     return;
   }
@@ -33,7 +34,7 @@ module.exports = async function globalTeardown() {
   const files = fs.readdirSync(nycOutput).filter((f) => f.endsWith(".json"));
   if (!files.length) return;
 
-  const SOURCE_FILES = ["app.js", "suggestions.js"];
+  const SOURCE_FILES = new Set(["app.js", "suggestions.js"]);
   const coverageMap = libCoverage.createCoverageMap({});
 
   for (const file of files) {
@@ -41,7 +42,7 @@ module.exports = async function globalTeardown() {
     const v8Entries = JSON.parse(fs.readFileSync(path.join(nycOutput, file), "utf8"));
     for (const entry of v8Entries) {
       const fileName = entry.url.replace("http://localhost:3000/", "");
-      if (!SOURCE_FILES.includes(fileName)) continue;
+      if (!SOURCE_FILES.has(fileName)) continue;
       const absPath = path.join(process.cwd(), fileName);
       if (!fs.existsSync(absPath)) continue;
       const converter = v8ToIstanbul(absPath, 0, { source: fs.readFileSync(absPath, "utf8") });

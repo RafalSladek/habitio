@@ -1800,8 +1800,12 @@ body {
 /* Welcome modal fields */
 .welcome-field {
   margin-bottom: 16px;
+  border: none;
+  padding: 0;
+  min-width: 0;
 }
-.welcome-field label {
+.welcome-field label,
+.welcome-field-legend {
   display: block;
   font-size: 12px;
   font-weight: 600;
@@ -1809,6 +1813,8 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 6px;
+  float: none;
+  width: auto;
 }
 /* Import modal */
 .import-option {

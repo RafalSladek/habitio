@@ -1,7 +1,7 @@
 // @ts-check
 const { test: base, expect } = require("@playwright/test");
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const test = base.extend({
   coverageRecorder: [
@@ -38,7 +38,7 @@ function createState(overrides = {}) {
     ...overrides,
     profile: {
       ...baseState.profile,
-      ...(overrides.profile || {}),
+      ...overrides.profile,
     },
   };
 }
@@ -144,7 +144,7 @@ async function addSuggestedHabit(page, name = "Drink 2L Water") {
 async function spyOnGtag(page) {
   await page.addInitScript(() => {
     /** @type {any[]} */
-    window.__gtagCalls = [];
+    globalThis.__gtagCalls = [];
 
     let dataLayerRef;
     const origPush = Array.prototype.push;
@@ -157,16 +157,17 @@ async function spyOnGtag(page) {
         const item = arguments[0];
         if (item && typeof item === "object") {
           try {
-            window.__gtagCalls.push(Array.from(item));
-          } catch (_) {
+            globalThis.__gtagCalls.push(Array.from(item));
+          } catch (e) {
             // Ignore malformed analytics payloads in the spy.
+            console.debug("spy push error", e);
           }
         }
         return origPush.apply(this, arguments);
       };
     }
 
-    Object.defineProperty(window, "dataLayer", {
+    Object.defineProperty(globalThis, "dataLayer", {
       configurable: true,
       get() {
         return dataLayerRef;
@@ -178,7 +179,7 @@ async function spyOnGtag(page) {
     });
   });
 
-  return () => page.evaluate(() => (window.__gtagCalls || []).slice());
+  return () => page.evaluate(() => (globalThis.__gtagCalls || []).slice());
 }
 
 /**

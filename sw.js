@@ -20,19 +20,19 @@ const PRECACHE = [
 ];
 
 // Install: pre-cache all app shell assets
-self.addEventListener("install", (e) => {
+globalThis.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)));
-  self.skipWaiting();
+  globalThis.skipWaiting();
 });
 
 // Activate: delete old caches
-self.addEventListener("activate", (e) => {
+globalThis.addEventListener("activate", (e) => {
   e.waitUntil(
     caches
       .keys()
       .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
   );
-  self.clients.claim();
+  globalThis.clients.claim();
 });
 
 // Fetch strategy:
@@ -40,7 +40,7 @@ self.addEventListener("activate", (e) => {
 // - Google Fonts CSS: network-first, fall back to cache
 // - Font files (.woff2): cache-first (long-lived)
 // - Everything else: network-first, fall back to cache
-self.addEventListener("fetch", (e) => {
+globalThis.addEventListener("fetch", (e) => {
   const { request } = e;
   const url = new URL(request.url);
 
@@ -82,7 +82,7 @@ self.addEventListener("fetch", (e) => {
   // App shell (same-origin) — stale-while-revalidate
   // Serve from cache immediately for speed/offline, but always fetch in
   // background so the cache is refreshed and the next load is up-to-date.
-  if (url.origin === self.location.origin) {
+  if (url.origin === globalThis.location.origin) {
     e.respondWith(
       caches.open(CACHE).then((c) =>
         c.match(request).then((cached) => {

@@ -20,20 +20,20 @@
     <script>
       (function (w, d, s, l, i) {
         w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        w[l].push({ "gtm.start": Date.now(), event: "gtm.js" });
         var f = d.getElementsByTagName(s)[0],
           j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
+          dl = l === "dataLayer" ? "" : "&l=" + l;
         j.async = true;
         j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
         f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PRM6PZ6N");
+      })(globalThis, document, "script", "dataLayer", "GTM-PRM6PZ6N");
     </script>
     <!-- End Google Tag Manager -->
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9TJW7N2VY"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
+      globalThis.dataLayer = globalThis.dataLayer || [];
       function gtag() {
         dataLayer.push(arguments);
       }
@@ -160,7 +160,7 @@
     <div class="modal-overlay" id="add-modal">
       <div class="modal">
         <div class="modal-handle"></div>
-        <h3 id="modal-title"></h3>
+        <h3 id="modal-title">Add habit</h3>
         <div id="suggestions-area"></div>
         <input
           class="modal-input"
@@ -179,9 +179,9 @@
         </div>
         <div style="margin-top: 12px; margin-bottom: 14px">
           <div class="section-label" id="lbl-morning">Options</div>
-          <div class="morning-chip" id="morning-chip" onclick="toggleModalMorning()">
+          <button class="morning-chip" id="morning-chip" type="button" onclick="toggleModalMorning()">
             ☀️ <span id="morning-chip-lbl">Morning routine</span>
-          </div>
+          </button>
         </div>
         <button class="modal-btn primary" id="modal-save-btn" onclick="saveHabit()"></button>
         <button
@@ -193,10 +193,10 @@
           Cancel
         </button>
       </div>
-      <div class="modal-done-bar" id="modal-done-bar" onclick="closeAddModal()">
+      <button class="modal-done-bar" id="modal-done-bar" type="button" onclick="closeAddModal()">
         <span id="modal-done-label"></span>
         <span class="modal-done-arrow" data-t="start_tracking">Start tracking →</span>
-      </div>
+      </button>
     </div>
 
     <!-- WELCOME MODAL -->
@@ -239,12 +239,12 @@
               oninput="validateWelcomeForm()"
             />
           </div>
-          <div class="welcome-field">
-            <label id="wl-age-label">Your age</label>
+          <fieldset class="welcome-field">
+            <legend id="wl-age-label" class="welcome-field-legend">Your age</legend>
             <div class="age-chips" id="welcome-age-chips"></div>
-          </div>
-          <div class="welcome-field">
-            <label id="wl-sex-label">Sex</label>
+          </fieldset>
+          <fieldset class="welcome-field">
+            <legend id="wl-sex-label" class="welcome-field-legend">Sex</legend>
             <div class="sex-toggle" id="welcome-sex">
               <button class="sex-btn active" id="sex-male" onclick="setSex('male')" type="button">
                 👨 <span id="sex-male-lbl">Male</span>
@@ -256,11 +256,11 @@
                 🔒 <span id="sex-prefer-lbl">Prefer not to say</span>
               </button>
             </div>
-          </div>
-          <div class="welcome-field">
-            <label id="wl-lang-label">Language</label>
+          </fieldset>
+          <fieldset class="welcome-field">
+            <legend id="wl-lang-label" class="welcome-field-legend">Language</legend>
             <div class="lang-chips" id="welcome-lang-chips"></div>
-          </div>
+          </fieldset>
         </div>
         <!-- CTA pinned at bottom -->
         <div class="welcome-cta">
