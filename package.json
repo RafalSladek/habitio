@@ -8,8 +8,11 @@
     "test:ui": "playwright test --ui",
     "test:report": "playwright show-report",
     "badges:generate": "node scripts/generate-badges.js",
+    "screenshots": "node scripts/take-screenshots.js",
+    "gif": "node scripts/generate-gif.js",
     "format": "prettier --write \"*.{js,css,html,json}\"",
-    "format:check": "prettier --check \"*.{js,css,html,json}\""
+    "format:check": "prettier --check \"*.{js,css,html,json}\"",
+    "precommit": "yarn format:check && yarn test && echo '\\n✅ Pre-commit checks passed'"
   },
   "repository": {
     "type": "git",

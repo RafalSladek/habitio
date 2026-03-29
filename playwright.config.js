@@ -5,6 +5,7 @@ module.exports = defineConfig({
   testDir: "./tests",
   workers: process.env.CI ? 4 : undefined,
   timeout: 30000,
+  reporter: process.env.CI ? [["html", { open: "never" }], ["list"]] : "list",
   globalTeardown: "./tests/global-teardown.js",
   use: {
     baseURL: "http://localhost:3000",

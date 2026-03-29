@@ -73,7 +73,7 @@ function applyAnalyticsConsent(granted) {
   ensureAnalyticsBootstrap();
   setAnalyticsDisabled(!granted);
   globalThis.gtag("consent", "update", granted ? GA_CONSENT_GRANTED : GA_CONSENT_DENIED);
-  if (granted) void loadAnalyticsScript();
+  if (granted) loadAnalyticsScript();
 }
 
 function clearAnalyticsCookies() {
@@ -84,8 +84,11 @@ function clearAnalyticsCookies() {
   if (!names.length) return;
 
   const hostParts = location.hostname.split(".").filter(Boolean);
-  const domains = new Set(["", location.hostname, "." + location.hostname]);
-  if (hostParts.length > 2) domains.add("." + hostParts.slice(-2).join("."));
+  const domains = new Set(["", location.hostname]);
+  if (location.hostname !== "localhost" && !/^\d{1,3}(\.\d{1,3}){3}$/.test(location.hostname)) {
+    domains.add("." + location.hostname);
+    if (hostParts.length > 2) domains.add("." + hostParts.slice(-2).join("."));
+  }
 
   names.forEach((name) => {
     domains.forEach((domain) => {
@@ -101,8 +104,8 @@ function queueAnalyticsCall() {
   if (!state.consentAnalytics) return;
   ensureAnalyticsBootstrap();
   setAnalyticsDisabled(false);
-  void loadAnalyticsScript();
-  globalThis.gtag.apply(globalThis, arguments);
+  loadAnalyticsScript();
+  globalThis.gtag(...arguments);
 }
 
 // Set GA4 user-scoped properties — called once on consent and whenever
@@ -142,8 +145,11 @@ function setConsent(granted) {
     updateUserProperties();
     trackPageView("habit.io", location.href);
   } else {
-    if (analyticsConfigured) applyAnalyticsConsent(false);
-    setAnalyticsDisabled(true);
+    if (analyticsConfigured) {
+      applyAnalyticsConsent(false);
+    } else {
+      setAnalyticsDisabled(true);
+    }
     clearAnalyticsCookies();
   }
 
