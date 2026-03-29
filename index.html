@@ -16,6 +16,20 @@
     <meta name="theme-color" content="#6c5ce7" />
     <title>habit.io</title>
     <link rel="canonical" href="https://habitio.rafal-sladek.com/" />
+    <!-- Consent Mode v2 defaults — must run before GTM loads -->
+    <script>
+      globalThis.dataLayer = globalThis.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("consent", "default", {
+        analytics_storage: "denied",
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        wait_for_update: 500,
+      });
+    </script>
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {
@@ -33,11 +47,6 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9TJW7N2VY"></script>
     <script>
-      globalThis.dataLayer = globalThis.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("consent", "default", { analytics_storage: "denied" });
       gtag("js", new Date());
       // send_page_view:false — SPA; we fire page_view manually after consent
       gtag("config", "G-V9TJW7N2VY", { send_page_view: false });
@@ -179,7 +188,12 @@
         </div>
         <div style="margin-top: 12px; margin-bottom: 14px">
           <div class="section-label" id="lbl-morning">Options</div>
-          <button class="morning-chip" id="morning-chip" type="button" onclick="toggleModalMorning()">
+          <button
+            class="morning-chip"
+            id="morning-chip"
+            type="button"
+            onclick="toggleModalMorning()"
+          >
             ☀️ <span id="morning-chip-lbl">Morning routine</span>
           </button>
         </div>
