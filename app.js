@@ -12,26 +12,20 @@ function updateUserProperties() {
 function trackEvent(name, params) {
   if (!state.consentAnalytics) return;
   // Event-level params allow per-event segmentation in addition to user props
-  gtag(
-    "event",
-    name,
-    Object.assign(
-      {
-        age_group: state.profile.ageGroup || "unknown",
-        sex: state.profile.sex || "unknown",
-        ui_language: state.lang || "unknown",
-      },
-      params
-    )
-  );
+  gtag("event", name, {
+    age_group: state.profile.ageGroup || "unknown",
+    sex: state.profile.sex || "unknown",
+    ui_language: state.lang || "unknown",
+    ...params,
+  });
 }
 function setConsent(granted) {
   state.consentAnalytics = !!granted;
   gtag("consent", "update", { analytics_storage: granted ? "granted" : "denied" });
   save();
   if (granted) {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event: "gtm.init_consent", "gtm.uniqueEventId": 1 });
+    globalThis.dataLayer = globalThis.dataLayer || [];
+    globalThis.dataLayer.push({ event: "gtm.init_consent", "gtm.uniqueEventId": 1 });
     updateUserProperties();
     // Send the initial page_view now that consent is confirmed
     gtag("event", "page_view", { page_title: "habit.io", page_location: location.href });
@@ -210,7 +204,7 @@ function getHabitFact(h, date) {
   const entry = HABIT_FACTS.find((f) => f.match.test(h.name));
   if (!entry) return null;
   // Deterministic daily rotation: seed by date string + habit id
-  const seed = (date + h.id).split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+  const seed = (date + h.id).split("").reduce((a, c) => a + c.codePointAt(0), 0);
   return entry.facts[seed % entry.facts.length];
 }
 
@@ -423,7 +417,7 @@ let modalEmoji = "🎯",
 
 function getFormationPhase(h) {
   if (!h.createdAt) return null;
-  const days = Math.floor((new Date() - new Date(h.createdAt)) / 86400000);
+  const days = Math.floor((Date.now() - new Date(h.createdAt)) / 86400000);
   if (days >= 66) return { key: "phase_formed", cls: "phase-formed", days };
   if (days >= 50) return { key: "phase_forming", cls: "phase-forming", days };
   if (days >= 20) return { key: "phase_building", cls: "phase-building", days };
@@ -486,7 +480,7 @@ function load() {
       localStorage.getItem("habitio_v3") ||
       localStorage.getItem("habitio_v2");
     const d = JSON.parse(raw);
-    if (d && d.habits) {
+    if (d?.habits) {
       d.habits = (d.habits || []).map((h) => ({
         cadence: { type: "daily" },
         ...h,
@@ -622,8 +616,20 @@ function getGreeting() {
 let motivTimer = null;
 function showMotivation(pct) {
   if (!isToday(selectedDate)) return;
-  const level = pct === 100 ? "perfect" : pct >= 75 ? "great" : pct >= 40 ? "good" : "low";
-  const emoji = pct === 100 ? "🏆" : pct >= 75 ? "💪" : pct >= 40 ? "✨" : "🌱";
+  let level, emoji;
+  if (pct === 100) {
+    level = "perfect";
+    emoji = "🏆";
+  } else if (pct >= 75) {
+    level = "great";
+    emoji = "💪";
+  } else if (pct >= 40) {
+    level = "good";
+    emoji = "✨";
+  } else {
+    level = "low";
+    emoji = "🌱";
+  }
   const pool = t("motiv_" + level);
   const msg = Array.isArray(pool) ? pool[Math.floor(Math.random() * pool.length)] : pool;
   const banner = document.getElementById("motiv-banner");
@@ -647,8 +653,12 @@ function showMotivation(pct) {
   }, 3500);
 }
 
+function scoreFor(val, flag) {
+  return val && flag ? val : 0;
+}
+
 function sugPriority(nameKey, profile) {
-  const age = parseInt(profile.age) || 30;
+  const age = Number.parseInt(profile.age) || 30;
   const sex = profile.sex || "male";
   // Five distinct age bands matching AGE_GROUPS
   const isTeen = age < 20;
@@ -749,13 +759,13 @@ function sugPriority(nameKey, profile) {
   };
   const p = P[nameKey] || {};
   return (
-    (p.M && isM ? p.M : 0) +
-    (p.F && isF ? p.F : 0) +
-    (p.teen && isTeen ? p.teen : 0) +
-    (p.young && isYoung ? p.young : 0) +
-    (p.adult && isAdult ? p.adult : 0) +
-    (p.mid && isMid ? p.mid : 0) +
-    (p.senior && isSenior ? p.senior : 0)
+    scoreFor(p.M, isM) +
+    scoreFor(p.F, isF) +
+    scoreFor(p.teen, isTeen) +
+    scoreFor(p.young, isYoung) +
+    scoreFor(p.adult, isAdult) +
+    scoreFor(p.mid, isMid) +
+    scoreFor(p.senior, isSenior)
   );
 }
 
@@ -824,10 +834,7 @@ function renderProgress() {
   document.getElementById("ring-fill").style.stroke =
     pct === 100 ? "var(--success)" : "var(--accent)";
   document.getElementById("ring-text").textContent = pct + "%";
-  if (!state.habits.length) {
-    document.getElementById("progress-title").textContent = t("no_habits");
-    document.getElementById("progress-subtitle").textContent = t("tap_add");
-  } else {
+  if (state.habits.length) {
     document.getElementById("progress-title").textContent =
       done + " / " + total + " " + t("scheduled");
     const dn = isToday(selectedDate)
@@ -838,7 +845,99 @@ function renderProgress() {
         " " +
         MN()[selectedDate.getMonth()];
     document.getElementById("progress-subtitle").textContent = dn;
+  } else {
+    document.getElementById("progress-title").textContent = t("no_habits");
+    document.getElementById("progress-subtitle").textContent = t("tap_add");
   }
+}
+
+function buildHabitHtml(h, ch) {
+  const sched = isScheduled(h, selectedDate),
+    checked = !!ch[h.id],
+    streak = getStreak(h.id),
+    cL = cadenceLabel(h.cadence),
+    pp = periodProg(h, selectedDate),
+    phase = getFormationPhase(h);
+  let meta = "";
+  if (streak > 0)
+    meta +=
+      '<span class="streak-tag" onclick="event.stopPropagation();showTip(this,t(\'tip_streak\'))">' +
+      streak +
+      "d 🔥</span>";
+  if (cL) meta += '<span class="cadence-tag">' + cL + "</span>";
+  if (pp) meta += '<span class="cadence-tag">' + pp.done + "/" + pp.target + "</span>";
+  if (phase)
+    meta +=
+      '<span class="phase-tag ' +
+      phase.cls +
+      '" onclick="event.stopPropagation();showTip(this,t(\'tip_' +
+      phase.cls.replace("phase-", "phase_") +
+      "'))\">" +
+      t(phase.key) +
+      " " +
+      phase.days +
+      "d</span>";
+  if (h.source === "custom") meta += '<span class="own-badge">' + t("own_badge") + "</span>";
+  if (!meta) meta = '<span style="opacity:.4">—</span>';
+  const cls =
+    "habit-card" +
+    (checked ? " checked" : "") +
+    (!sched && h.cadence?.type === "specific_days" ? " off-day" : "");
+  let html =
+    '<div class="' +
+    cls +
+    '" onclick="toggleHabit(\'' +
+    h.id +
+    '\')"><div class="habit-emoji">' +
+    h.emoji +
+    '</div><div class="habit-info"><div class="habit-name">' +
+    esc(h.name) +
+    '</div><div class="habit-meta">' +
+    meta +
+    '</div></div><div class="habit-check"><span class="check-icon">✓</span></div></div>';
+  // Micro-fact: shown every time this habit is checked today (rotates daily)
+  const isTodaySelected = fmt(selectedDate) === fmt(new Date());
+  if (checked && isTodaySelected) {
+    const fact = getHabitFact(h, fmt(selectedDate));
+    if (fact) {
+      html += '<div class="habit-fact">💡 ' + esc(fact) + "</div>";
+    }
+  }
+  // Habit kit: show once after first check-off today, if not dismissed
+  const kit = getHabitKit(h);
+  if (checked && isToday && kit && !state.kitsDismissed?.[h.id]) {
+    html +=
+      '<div class="habit-kit" id="kit-' +
+      h.id +
+      '">' +
+      '<div class="hk-header"><span class="hk-label">' +
+      kit.label +
+      "</span>" +
+      '<button class="hk-dismiss" onclick="event.stopPropagation();dismissKit(\'' +
+      h.id +
+      '\')" aria-label="Dismiss">×</button></div>' +
+      kit.items
+        .map(
+          (item) =>
+            '<div class="hk-item"><span class="hk-icon">' +
+            item.icon +
+            "</span>" +
+            '<div class="hk-info"><div class="hk-name">' +
+            esc(item.name) +
+            "</div>" +
+            '<div class="hk-hook">' +
+            esc(item.hook) +
+            "</div></div>" +
+            '<a class="hk-cta" href="' +
+            item.url +
+            '" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">' +
+            esc(item.cta) +
+            "</a></div>"
+        )
+        .join("") +
+      "</div>";
+  }
+  return html;
 }
 
 function renderHabits() {
@@ -880,91 +979,7 @@ function renderHabits() {
         "</div>";
       restHeaderShown = true;
     }
-    const sched = isScheduled(h, selectedDate),
-      checked = !!ch[h.id],
-      streak = getStreak(h.id),
-      cL = cadenceLabel(h.cadence),
-      pp = periodProg(h, selectedDate),
-      phase = getFormationPhase(h);
-    let meta = "";
-    if (streak > 0)
-      meta +=
-        '<span class="streak-tag" onclick="event.stopPropagation();showTip(this,t(\'tip_streak\'))">' +
-        streak +
-        "d 🔥</span>";
-    if (cL) meta += '<span class="cadence-tag">' + cL + "</span>";
-    if (pp) meta += '<span class="cadence-tag">' + pp.done + "/" + pp.target + "</span>";
-    if (phase)
-      meta +=
-        '<span class="phase-tag ' +
-        phase.cls +
-        '" onclick="event.stopPropagation();showTip(this,t(\'tip_' +
-        phase.cls.replace("phase-", "phase_") +
-        "'))\">" +
-        t(phase.key) +
-        " " +
-        phase.days +
-        "d</span>";
-    if (h.source === "custom") meta += '<span class="own-badge">' + t("own_badge") + "</span>";
-    if (!meta) meta = '<span style="opacity:.4">—</span>';
-    const cls =
-      "habit-card" +
-      (checked ? " checked" : "") +
-      (!sched && h.cadence?.type === "specific_days" ? " off-day" : "");
-    html +=
-      '<div class="' +
-      cls +
-      '" onclick="toggleHabit(\'' +
-      h.id +
-      '\')"><div class="habit-emoji">' +
-      h.emoji +
-      '</div><div class="habit-info"><div class="habit-name">' +
-      esc(h.name) +
-      '</div><div class="habit-meta">' +
-      meta +
-      '</div></div><div class="habit-check"><span class="check-icon">✓</span></div></div>';
-    // Micro-fact: shown every time this habit is checked today (rotates daily)
-    const isTodaySelected = fmt(selectedDate) === fmt(new Date());
-    if (checked && isTodaySelected) {
-      const fact = getHabitFact(h, fmt(selectedDate));
-      if (fact) {
-        html += '<div class="habit-fact">💡 ' + esc(fact) + "</div>";
-      }
-    }
-    // Habit kit: show once after first check-off today, if not dismissed
-    const kit = getHabitKit(h);
-    if (checked && isToday && kit && !(state.kitsDismissed || {})[h.id]) {
-      html +=
-        '<div class="habit-kit" id="kit-' +
-        h.id +
-        '">' +
-        '<div class="hk-header"><span class="hk-label">' +
-        kit.label +
-        "</span>" +
-        '<button class="hk-dismiss" onclick="event.stopPropagation();dismissKit(\'' +
-        h.id +
-        '\')" aria-label="Dismiss">×</button></div>' +
-        kit.items
-          .map(
-            (item) =>
-              '<div class="hk-item"><span class="hk-icon">' +
-              item.icon +
-              "</span>" +
-              '<div class="hk-info"><div class="hk-name">' +
-              esc(item.name) +
-              "</div>" +
-              '<div class="hk-hook">' +
-              esc(item.hook) +
-              "</div></div>" +
-              '<a class="hk-cta" href="' +
-              item.url +
-              '" target="_blank" rel="noopener sponsored" onclick="event.stopPropagation()">' +
-              esc(item.cta) +
-              "</a></div>"
-          )
-          .join("") +
-        "</div>";
-    }
+    html += buildHabitHtml(h, ch);
   });
   c.innerHTML = html;
   if (state.habits.length === 1) {
@@ -1090,7 +1105,7 @@ function finishWelcome() {
   const g = welcomeAgeGroup;
   state.profile.name = n;
   state.profile.ageGroup = g;
-  state.profile.age = g ? String((AGE_GROUPS.find((x) => x.key === g) || {}).age || "") : "";
+  state.profile.age = g ? String(AGE_GROUPS.find((x) => x.key === g)?.age || "") : "";
   save();
   updateUserProperties();
   document.getElementById("welcome-modal").classList.remove("show");
@@ -1329,7 +1344,7 @@ function saveHabit() {
       showToast(t("select_day"));
       return;
     }
-    cadence = { type: "specific_days", days: [...modalDays].sort() };
+    cadence = { type: "specific_days", days: [...modalDays].sort((a, b) => a - b) };
   } else {
     const ct = document.getElementById("freq-count");
     cadence = {
@@ -1400,7 +1415,9 @@ function renderDiary() {
     "</div>";
 
   const dots = DIARY_FIELDS.map((_, i) => {
-    const cl = i < diaryStep ? "done" : i === diaryStep ? "active" : "";
+    let cl = "";
+    if (i < diaryStep) cl = "done";
+    else if (i === diaryStep) cl = "active";
     return '<div class="diary-dot ' + cl + '"></div>';
   }).join("");
   const progress = '<div class="diary-progress">' + dots + "</div>";
@@ -1411,7 +1428,7 @@ function renderDiary() {
     const suggestions = SUGGESTION_DATA.flatMap((cat) =>
       cat.items.map((s) => ({ name: t(s.nameKey), emoji: s.emoji, nameKey: s.nameKey }))
     )
-      .filter((s) => !state.habits.find((h) => h.name === s.name))
+      .filter((s) => !state.habits.some((h) => h.name === s.name))
       .slice(0, 3);
 
     c.innerHTML =
@@ -1518,7 +1535,7 @@ function changeDiaryDay(dir) {
 
 function addFromDiary(nameKey, emoji) {
   const name = t(nameKey);
-  if (state.habits.find((h) => h.name === name)) return;
+  if (state.habits.some((h) => h.name === name)) return;
   state.habits.push({
     id: uid(),
     name,
@@ -1574,70 +1591,68 @@ function toggleImpOpt(k) {
     document.getElementById("imp-habits").classList.add("selected");
   }
 }
+function applyImportData(d) {
+  if (!d.habits || !Array.isArray(d.habits)) {
+    showToast(t("invalid_file"));
+    return;
+  }
+  if (importOpts.habits) {
+    const existing = new Set(state.habits.map((h) => h.name.toLowerCase()));
+    const nw = d.habits
+      .filter((h) => !existing.has(h.name.toLowerCase()))
+      .map((h) => ({
+        ...h,
+        id: uid(),
+        cadence: h.cadence || { type: "daily" },
+      }));
+    state.habits = [...state.habits, ...nw];
+  }
+  if (importOpts.tracking) {
+    if (d.checks)
+      Object.keys(d.checks).forEach((day) => {
+        if (!state.checks[day]) state.checks[day] = {};
+        Object.keys(d.checks[day]).forEach((hid) => {
+          const oh = d.habits.find((h) => h.id === hid);
+          if (oh) {
+            const nh = state.habits.find((h) => h.name.toLowerCase() === oh.name.toLowerCase());
+            if (nh && d.checks[day][hid]) state.checks[day][nh.id] = true;
+          }
+        });
+      });
+    if (d.diary)
+      Object.keys(d.diary).forEach((day) => {
+        if (!state.diary[day]) state.diary[day] = d.diary[day];
+      });
+  }
+  if (d.profile && !state.profile.name) {
+    state.profile = d.profile;
+  }
+  if (d.lang && !state.profile.name) {
+    state.lang = d.lang;
+  }
+  save();
+  render();
+  closeImportModal();
+  showToast(t("imported"));
+  trackEvent("data_import", {
+    imported_habits: importOpts.habits,
+    imported_tracking: importOpts.tracking,
+  });
+}
+
 function doImport() {
   const i = document.createElement("input");
   i.type = "file";
   i.accept = ".json";
-  i.onchange = (e) => {
+  i.onchange = async (e) => {
     const f = e.target.files[0];
     if (!f) return;
-    const r = new FileReader();
-    r.onload = (ev) => {
-      try {
-        const d = JSON.parse(ev.target.result);
-        if (!d.habits || !Array.isArray(d.habits)) {
-          showToast(t("invalid_file"));
-          return;
-        }
-        if (importOpts.habits) {
-          const existing = new Set(state.habits.map((h) => h.name.toLowerCase()));
-          const nw = d.habits
-            .filter((h) => !existing.has(h.name.toLowerCase()))
-            .map((h) => ({
-              ...h,
-              id: uid(),
-              cadence: h.cadence || { type: "daily" },
-            }));
-          state.habits = [...state.habits, ...nw];
-        }
-        if (importOpts.tracking) {
-          if (d.checks)
-            Object.keys(d.checks).forEach((day) => {
-              if (!state.checks[day]) state.checks[day] = {};
-              Object.keys(d.checks[day]).forEach((hid) => {
-                const oh = d.habits.find((h) => h.id === hid);
-                if (oh) {
-                  const nh = state.habits.find(
-                    (h) => h.name.toLowerCase() === oh.name.toLowerCase()
-                  );
-                  if (nh && d.checks[day][hid]) state.checks[day][nh.id] = true;
-                }
-              });
-            });
-          if (d.diary)
-            Object.keys(d.diary).forEach((day) => {
-              if (!state.diary[day]) state.diary[day] = d.diary[day];
-            });
-        }
-        if (d.profile && !state.profile.name) {
-          state.profile = d.profile;
-        }
-        if (d.lang && !state.profile.name) {
-          state.lang = d.lang;
-        }
-        save();
-        render();
-        closeImportModal();
-        showToast(t("imported"));
-        trackEvent("data_import", {
-          imported_habits: importOpts.habits,
-          imported_tracking: importOpts.tracking,
-        });
-      } catch {
-        showToast(t("error_file"));
-      }
-    };
-    r.readAsText(f);
+    try {
+      const text = await f.text();
+      applyImportData(JSON.parse(text));
+    } catch {
+      showToast(t("error_file"));
+    }
   };
   i.click();
 }
@@ -1668,6 +1683,58 @@ function shareApp() {
 }
 
 // ═══ STATS ═══
+function calcHabitStats(h) {
+  let done = 0,
+    exp = 0;
+  for (let i = 0; i < 30; i++) {
+    const d = addD(new Date(), -i);
+    if (d < new Date(h.createdAt)) continue;
+    if (!isScheduled(h, d)) continue;
+    exp++;
+    if (state.checks[fmt(d)]?.[h.id]) done++;
+  }
+  return {
+    ...h,
+    done,
+    exp,
+    pct: exp ? Math.round((done / exp) * 100) : 0,
+    streak: getStreak(h.id),
+  };
+}
+
+function calcBestStreak(hs) {
+  let bS = 0,
+    bE = "";
+  hs.forEach((h) => {
+    if (h.streak > bS) {
+      bS = h.streak;
+      bE = h.emoji;
+    }
+  });
+  return { bS, bE };
+}
+
+function buildHeatmapHtml() {
+  let hm = "";
+  for (let i = 27; i >= 0; i--) {
+    const d = addD(new Date(), -i);
+    const ch = state.checks[fmt(d)] || {};
+    const sc = state.habits.filter((h) => isScheduled(h, d));
+    const r = sc.length ? sc.filter((h) => ch[h.id]).length / sc.length : 0;
+    const pct = Math.round(r * 100);
+    let fill = "";
+    if (pct > 0) {
+      let bg;
+      if (pct === 100) bg = "var(--success)";
+      else if (pct >= 50) bg = "var(--accent)";
+      else bg = "var(--warn)";
+      fill = '<div class="hm-fill" style="height:' + pct + "%;background:" + bg + '"></div>';
+    }
+    hm += '<div class="heatmap-cell hm-level">' + fill + "</div>";
+  }
+  return hm;
+}
+
 function renderStats() {
   const c = document.getElementById("stats-content");
   document.getElementById("stats-header").textContent = t("nav_stats");
@@ -1692,52 +1759,10 @@ function renderStats() {
     wT += sc.length;
   }
   const wP = wT ? Math.round((wD / wT) * 100) : 0;
-  const hs = state.habits
-    .map((h) => {
-      let done = 0,
-        exp = 0;
-      for (let i = 0; i < 30; i++) {
-        const d = addD(new Date(), -i);
-        if (d < new Date(h.createdAt)) continue;
-        if (!isScheduled(h, d)) continue;
-        exp++;
-        if (state.checks[fmt(d)]?.[h.id]) done++;
-      }
-      return {
-        ...h,
-        done,
-        exp,
-        pct: exp ? Math.round((done / exp) * 100) : 0,
-        streak: getStreak(h.id),
-      };
-    })
-    .sort((a, b) => b.pct - a.pct);
-  let bS = 0,
-    bE = "";
-  hs.forEach((h) => {
-    if (h.streak > bS) {
-      bS = h.streak;
-      bE = h.emoji;
-    }
-  });
+  const hs = state.habits.map(calcHabitStats).sort((a, b) => b.pct - a.pct);
+  const { bS, bE } = calcBestStreak(hs);
   // Water-level cells: fill height = % of habits completed that day
-  let hm = "";
-  for (let i = 27; i >= 0; i--) {
-    const d = addD(new Date(), -i);
-    const ch = state.checks[fmt(d)] || {};
-    const sc = state.habits.filter((h) => isScheduled(h, d));
-    const r = sc.length ? sc.filter((h) => ch[h.id]).length / sc.length : 0;
-    const pct = Math.round(r * 100);
-    const fill =
-      pct === 0
-        ? ""
-        : '<div class="hm-fill" style="height:' +
-          pct +
-          "%;background:" +
-          (pct === 100 ? "var(--success)" : pct >= 50 ? "var(--accent)" : "var(--warn)") +
-          '"></div>';
-    hm += '<div class="heatmap-cell hm-level">' + fill + "</div>";
-  }
+  const hm = buildHeatmapHtml();
   // Legend: three sample cups showing none / partial / full
   const hmLegend =
     '<div class="heatmap-legend">' +
@@ -1826,8 +1851,12 @@ function renderStats() {
     t("perf_sub") +
     "</div>" +
     hs
-      .map(
-        (h) =>
+      .map((h) => {
+        let perfColor;
+        if (h.pct >= 70) perfColor = "var(--success)";
+        else if (h.pct >= 40) perfColor = "var(--warn)";
+        else perfColor = "var(--danger)";
+        return (
           '<div class="stat-row">' +
           '<span class="stat-label">' +
           h.emoji +
@@ -1837,13 +1866,14 @@ function renderStats() {
           '<div class="stat-bar-bg"><div class="stat-bar-fill" style="width:' +
           h.pct +
           "%;background:" +
-          (h.pct >= 70 ? "var(--success)" : h.pct >= 40 ? "var(--warn)" : "var(--danger)") +
+          perfColor +
           '"></div></div>' +
           '<span class="stat-value">' +
           h.pct +
           "%</span>" +
           "</div>"
-      )
+        );
+      })
       .join("") +
     perfLegend +
     "</div>" +
@@ -1857,18 +1887,17 @@ function renderStats() {
     "</div>" +
     state.habits
       .map((h) => {
-        const days = h.createdAt ? Math.floor((new Date() - new Date(h.createdAt)) / 86400000) : 0;
+        const days = h.createdAt ? Math.floor((Date.now() - new Date(h.createdAt)) / 86400000) : 0;
         const pct = Math.min(100, Math.round((days / 66) * 100));
-        const phase =
-          days >= 66
-            ? { key: "phase_formed", cls: "phase-formed" }
-            : days >= 50
-              ? { key: "phase_forming", cls: "phase-forming" }
-              : days >= 20
-                ? { key: "phase_building", cls: "phase-building" }
-                : { key: "phase_learning", cls: "phase-learning" };
-        const barColor =
-          days >= 50 ? "var(--success)" : days >= 20 ? "var(--accent)" : "var(--warn)";
+        let phase;
+        if (days >= 66) phase = { key: "phase_formed", cls: "phase-formed" };
+        else if (days >= 50) phase = { key: "phase_forming", cls: "phase-forming" };
+        else if (days >= 20) phase = { key: "phase_building", cls: "phase-building" };
+        else phase = { key: "phase_learning", cls: "phase-learning" };
+        let barColor;
+        if (days >= 50) barColor = "var(--success)";
+        else if (days >= 20) barColor = "var(--accent)";
+        else barColor = "var(--warn)";
         return (
           '<div class="stat-row">' +
           '<span class="stat-label">' +
