@@ -125,6 +125,7 @@ jobs:
 
       - name: Tag deploy
         run: |
+          git fetch --tags --quiet
           DEPLOY_NUM=$(git tag --list 'deploy-*' | sed 's/deploy-//' | sort -n | tail -1)
           NEXT=$(printf "%03d" $((${DEPLOY_NUM:-0} + 1)))
           git config user.name "github-actions[bot]"
