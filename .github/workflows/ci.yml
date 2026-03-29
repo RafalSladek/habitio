@@ -38,6 +38,15 @@ jobs:
       - name: Run Playwright tests
         run: yarn test
 
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-lcov
+          path: coverage/lcov.info
+          if-no-files-found: warn
+          retention-days: 30
+
       - name: Upload test report
         uses: actions/upload-artifact@v4
         if: always()
@@ -48,6 +57,7 @@ jobs:
 
   sonar:
     name: SonarCloud Analysis
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -55,6 +65,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-lcov
+          path: coverage
 
       - name: SonarCloud Scan
         id: sonar_scan
