@@ -95,7 +95,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       pages: write
       id-token: write
     environment:
@@ -122,6 +122,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Tag deploy
+        run: |
+          DEPLOY_NUM=$(git tag --list 'deploy-*' | sed 's/deploy-//' | sort -n | tail -1)
+          NEXT=$(printf "%03d" $((${DEPLOY_NUM:-0} + 1)))
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "deploy-${NEXT}" "${{ github.sha }}"
+          git push origin "deploy-${NEXT}"
 
   pagespeed:
     name: PageSpeed Insights
