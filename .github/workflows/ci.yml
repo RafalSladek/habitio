@@ -134,14 +134,26 @@ jobs:
         uses: actions/deploy-pages@v4
 
       - name: Tag deploy
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git fetch --tags --quiet
           DEPLOY_NUM=$(git tag --list 'deploy-*' | sed 's/deploy-//' | sort -n | tail -1)
           NEXT=$(printf "%03d" $(( 10#${DEPLOY_NUM:-0} + 1 )))
+          TAG="deploy-${NEXT}"
+          PREV_TAG=$(git tag --list 'deploy-*' | sort -V | tail -1)
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag "deploy-${NEXT}" "${{ github.sha }}"
-          git push origin "deploy-${NEXT}"
+          git tag "${TAG}" "${{ github.sha }}"
+          git push origin "${TAG}"
+          if [ -n "${PREV_TAG}" ]; then
+            CHANGELOG=$(git log "${PREV_TAG}".."${{ github.sha }}" --pretty=format:"- %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log "${{ github.sha }}" --pretty=format:"- %s (%h)" --no-merges)
+          fi
+          gh release create "${TAG}" \
+            --title "${TAG}" \
+            --notes "${CHANGELOG}"
 
   pagespeed:
     name: PageSpeed Insights
