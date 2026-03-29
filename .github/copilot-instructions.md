@@ -4,7 +4,7 @@
 
 **habit.io** is an offline-first PWA habit tracker with no build step. All files are edited directly and deployed as-is.
 
-- **Live app:** https://rafalsladek.github.io/habitio/
+- **Live app:** https://habitio.rafal-sladek.com/ (mirror: https://rafalsladek.github.io/habitio/)
 - **Deploy:** Push to `main` → GitHub Actions tests → auto-deploy to GitHub Pages
 - **Languages:** 28 languages supported in i18n.js
 

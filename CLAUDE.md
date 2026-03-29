@@ -4,7 +4,7 @@
 
 **habit.io** is an offline-first PWA habit tracker. Single-page app with no build step.
 
-**Live app:** https://rafalsladek.github.io/habitio/
+**Live app:** https://habitio.rafal-sladek.com/ (mirror: https://rafalsladek.github.io/habitio/)
 **Repo:** https://github.com/RafalSladek/habitio
 **Deployed via:** GitHub Pages from `main` branch, root `/`
 

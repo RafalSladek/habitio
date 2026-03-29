@@ -1653,7 +1653,7 @@ function exportData() {
   trackEvent("data_export", {});
 }
 function shareApp() {
-  const url = "https://rafalsladek.github.io/habitio/";
+  const url = "https://habitio.rafal-sladek.com/";
   if (navigator.share) {
     navigator
       .share({ title: "habit.io", text: t("share_text"), url })
