@@ -27,6 +27,17 @@
     <!-- Windows / Android tile -->
     <meta name="msapplication-TileImage" content="icons/icon-192.png" />
     <meta name="msapplication-TileColor" content="#6c5ce7" />
+    <script>
+      // LCP: show welcome modal before CSS blocks for first-time visitors
+      if (!localStorage.getItem("habitio_v6")) document.documentElement.classList.add("new-user");
+    </script>
+    <link
+      rel="preload"
+      as="image"
+      href="icons/hero-onboarding.webp"
+      type="image/webp"
+      fetchpriority="high"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -43,7 +54,6 @@
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
         rel="stylesheet"
     /></noscript>
-    <link rel="preload" as="image" href="icons/hero-onboarding.webp" type="image/webp" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>

@@ -681,7 +681,7 @@ function cadenceLabel(c) {
 }
 function periodProg(h, date) {
   const c = h.cadence;
-  if (!c || c.type !== "x_per") return null;
+  if (c?.type !== "x_per") return null;
   let s, e;
   if (c.period === "week") {
     s = getMon(date);
@@ -2286,6 +2286,7 @@ const needsWelcome = !state.profile.name && !state.habits.length;
 if (needsWelcome) {
   showWelcome();
 }
+document.documentElement.classList.remove("new-user");
 if (state.consentAnalytics === null) {
   showConsentBannerIfNeeded();
 } else if (state.consentAnalytics) {
