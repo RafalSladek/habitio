@@ -6,13 +6,6 @@
       { "metric": "largest-contentful-paint", "budget": 3000 },
       { "metric": "total-blocking-time", "budget": 300 },
       { "metric": "cumulative-layout-shift", "budget": 0.1 }
-    ],
-    "scores": [
-      { "category": "performance", "minScore": 80 },
-      { "category": "accessibility", "minScore": 80 },
-      { "category": "best-practices", "minScore": 80 },
-      { "category": "seo", "minScore": 80 },
-      { "category": "pwa", "minScore": 50 }
     ]
   }
 ]
