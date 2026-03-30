@@ -21,7 +21,7 @@ test.describe("GA4 event tracking", () => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
       (state) => {
-        localStorage.setItem("habitio_v5", JSON.stringify(state));
+        localStorage.setItem("habitio_v6", JSON.stringify(state));
       },
       createState({
         profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
@@ -31,6 +31,7 @@ test.describe("GA4 event tracking", () => {
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
     await expect(page.locator(".consent-banner")).toBeVisible();
+    await expect(page.locator('script[src*="gtag/js?id="]')).toHaveCount(0);
 
     const calls = await getCalls();
     const events = calls.filter((call) => call[0] === "event");
@@ -41,7 +42,7 @@ test.describe("GA4 event tracking", () => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
       (state) => {
-        localStorage.setItem("habitio_v5", JSON.stringify(state));
+        localStorage.setItem("habitio_v6", JSON.stringify(state));
       },
       createState({
         profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
@@ -52,6 +53,7 @@ test.describe("GA4 event tracking", () => {
     await page.reload();
     await page.waitForLoadState("domcontentloaded");
     await page.locator(".consent-btn.accept").click();
+    await expect(page.locator('script[src*="gtag/js?id="]')).toHaveCount(1);
     await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "page_view");
 
     const calls = await getCalls();
@@ -166,7 +168,7 @@ test.describe("GA4 event tracking", () => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
       (state) => {
-        localStorage.setItem("habitio_v5", JSON.stringify(state));
+        localStorage.setItem("habitio_v6", JSON.stringify(state));
       },
       createState({
         profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
@@ -178,6 +180,7 @@ test.describe("GA4 event tracking", () => {
     await page.waitForLoadState("domcontentloaded");
     await page.locator(".consent-btn.decline").click();
     await expect(page.locator(".consent-banner")).not.toBeVisible();
+    await expect(page.locator('script[src*="gtag/js?id="]')).toHaveCount(0);
     const before = (await getCalls()).length;
 
     await page.getByRole("button", { name: /Stats/ }).click();

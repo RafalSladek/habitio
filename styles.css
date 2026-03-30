@@ -2125,14 +2125,27 @@ body {
   z-index: 150;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
 }
+.consent-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
 .consent-text {
   font-size: 13px;
   color: var(--text-dim);
   line-height: 1.5;
 }
+.consent-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
 .consent-btns {
   display: flex;
   gap: 8px;
+  margin-top: 12px;
 }
 .consent-btn {
   flex: 1;

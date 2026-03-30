@@ -18,15 +18,13 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 
-## Screenshots
+## User Journey
 
-|                  Onboarding                   |                  Today                  |                  Add Habit                  |
-| :-------------------------------------------: | :-------------------------------------: | :-----------------------------------------: |
-| ![Onboarding](docs/screenshot-onboarding.png) | ![Tracker](docs/screenshot-tracker.png) | ![Add Habit](docs/screenshot-add-habit.png) |
+<p align="center">
+  <img src="docs/user-journey.gif" alt="habit.io user journey — onboarding, consent, tracker, add habit, journal, stats, settings" width="393">
+</p>
 
-|                 Journal                 |                Stats                |                 Settings                  |
-| :-------------------------------------: | :---------------------------------: | :---------------------------------------: |
-| ![Journal](docs/screenshot-journal.png) | ![Stats](docs/screenshot-stats.png) | ![Settings](docs/screenshot-settings.png) |
+> Onboarding → Consent → Today → Add Habit → Journal → Journal Summary → Stats → Settings
 
 ## Features
 
@@ -51,7 +49,7 @@ Files are split for clarity; no build step required.
 | `i18n.js`        | All translations (12 languages) + `t()`, `DN()`, `MN()` helpers |
 | `app.js`         | All application logic                                           |
 | `suggestions.js` | Habit suggestion data with demographic scoring                  |
-| `sw.js`          | Service worker — full offline caching (cache: `habitio_v5`)     |
+| `sw.js`          | Service worker — full offline caching (cache: `habitio_v6`)     |
 | `manifest.json`  | PWA manifest                                                    |
 | `icons/`         | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG    |
 
@@ -59,7 +57,7 @@ Files are split for clarity; no build step required.
 
 All data is stored **client-side only** using the browser's `localStorage` API.
 
-- Storage key: `habitio_v5`, format: JSON
+- Storage key: `habitio_v6`, format: JSON
 - No backend, no server, no database — works fully offline
 - Habit IDs use `crypto.randomUUID()` for collision-free tracking
 - Data is local to the device/browser; clearing browser storage deletes all data
@@ -147,8 +145,37 @@ npx playwright install chromium
 # Run tests (desktop + mobile + tablet)
 yarn test
 
-# Convert images to WebP
-ffmpeg -i icons/hero-onboarding.png -c:v libwebp -quality 82 icons/hero-onboarding.webp
+# Format code
+yarn format
 ```
 
 Deploy by pushing to `main` — GitHub Actions tests then deploys automatically.
+
+### Scripts
+
+| Script | Purpose | Requirements |
+| --- | --- | --- |
+| `node scripts/take-screenshots.js` | Regenerate all `docs/` screenshots (mobile, desktop, tablet) | Local server on `:3000` + Playwright |
+| `node scripts/generate-gif.js` | Create `docs/user-journey.gif` from mobile screenshots | ffmpeg + screenshots already in `docs/` |
+| `node scripts/generate-badges.js` | Update `badges/tests.json` with active test count | — |
+
+### Regenerating Images & GIF
+
+When UI changes (layout, colours, new screens, copy), regenerate all screenshots and the GIF:
+
+```bash
+# 1. Start the local server
+npx serve . -p 3000 &
+
+# 2. Regenerate all screenshots (mobile 393×852, desktop 1280×800, tablet 820×1180)
+node scripts/take-screenshots.js
+
+# 3. Regenerate the animated user-journey GIF from mobile screenshots
+node scripts/generate-gif.js
+
+# 4. Convert images to WebP (if updating hero image)
+ffmpeg -i icons/hero-onboarding.png -c:v libwebp -quality 82 icons/hero-onboarding.webp
+```
+
+The GIF uses 8 mobile screenshots in user-journey order (2 s per frame, 393 px wide, palette-optimised).
+Individual screenshots remain in `docs/` for desktop/tablet previews and PR reviews.

@@ -2,13 +2,15 @@
 const { test: base, expect } = require("@playwright/test");
 const fs = require("node:fs");
 const path = require("node:path");
+const gaRouteInstalled = new WeakSet();
 
 const test = base.extend({
   coverageRecorder: [
-    async ({ page }, use) => {
-      if (page.coverage) await page.coverage.startJSCoverage({ resetOnNavigation: false });
+    async ({ page, browserName }, use) => {
+      const canCover = browserName === "chromium" && page.coverage;
+      if (canCover) await page.coverage.startJSCoverage({ resetOnNavigation: false });
       await use();
-      if (!page.coverage) return;
+      if (!canCover) return;
 
       const entries = await page.coverage.stopJSCoverage();
       const outDir = path.join(__dirname, "..", ".nyc_output");
@@ -44,7 +46,21 @@ function createState(overrides = {}) {
 }
 
 /** @param {import('@playwright/test').Page} page */
+async function mockGoogleAnalytics(page) {
+  if (gaRouteInstalled.has(page)) return;
+  gaRouteInstalled.add(page);
+  await page.route("https://www.googletagmanager.com/gtag/js?id=*", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/javascript",
+      body: "",
+    });
+  });
+}
+
+/** @param {import('@playwright/test').Page} page */
 async function openClearedApp(page) {
+  await mockGoogleAnalytics(page);
   await page.goto("/");
   await page.evaluate(() => localStorage.clear());
 }
@@ -54,10 +70,11 @@ async function openClearedApp(page) {
  * @param {Record<string, unknown>} [overrides]
  */
 async function resetToDefaultState(page, overrides = {}) {
+  await mockGoogleAnalytics(page);
   await page.goto("/");
   await page.evaluate((state) => {
     localStorage.clear();
-    localStorage.setItem("habitio_v5", JSON.stringify(state));
+    localStorage.setItem("habitio_v6", JSON.stringify(state));
   }, createState(overrides));
   await page.reload();
   await page.waitForLoadState("domcontentloaded");
@@ -82,19 +99,21 @@ async function completeOnboarding(page, name = "Test") {
 async function seedHabit(page, daysOld, checkedDaysBack = 0) {
   await page.evaluate(
     ({ daysOld, checkedDaysBack }) => {
-      localStorage.removeItem("habitio_v5");
+      localStorage.removeItem("habitio_v6");
       const id = "test-habit-001";
 
-      const created = new Date();
-      created.setDate(created.getDate() - daysOld);
-      const createdAt = created.toISOString().slice(0, 10);
+      // Use a timestamp exactly daysOld * 86400000 ms ago so that
+      // Math.floor((Date.now() - new Date(createdAt)) / 86400000) === daysOld
+      const createdAt = new Date(Date.now() - daysOld * 86400000)
+        .toISOString()
+        .slice(0, 10);
 
       /** @type {Record<string, Record<string, boolean>>} */
       const checks = {};
       for (let i = 0; i < checkedDaysBack; i++) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const key = d.toISOString().slice(0, 10);
+        const key = new Date(Date.now() - i * 86400000)
+          .toISOString()
+          .slice(0, 10);
         checks[key] = { [id]: true };
       }
 
@@ -142,6 +161,7 @@ async function addSuggestedHabit(page, name = "Drink 2L Water") {
  * @returns {Promise<() => Promise<any[]>>}
  */
 async function spyOnGtag(page) {
+  await mockGoogleAnalytics(page);
   await page.addInitScript(() => {
     /** @type {any[]} */
     globalThis.__gtagCalls = [];
@@ -187,9 +207,10 @@ async function spyOnGtag(page) {
  * @param {Record<string, unknown>} [extra]
  */
 async function seedConsented(page, extra = {}) {
+  await mockGoogleAnalytics(page);
   await page.evaluate(
     (state) => {
-      localStorage.setItem("habitio_v5", JSON.stringify(state));
+      localStorage.setItem("habitio_v6", JSON.stringify(state));
     },
     createState({
       profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
@@ -212,6 +233,7 @@ module.exports = {
   test,
   expect,
   createState,
+  mockGoogleAnalytics,
   openClearedApp,
   resetToDefaultState,
   completeOnboarding,

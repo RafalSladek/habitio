@@ -6,7 +6,7 @@
 
 - **Live app:** https://habitio.rafal-sladek.com/ (mirror: https://rafalsladek.github.io/habitio/)
 - **Deploy:** Push to `main` → GitHub Actions tests → auto-deploy to GitHub Pages
-- **Languages:** 28 languages supported in i18n.js
+- **Languages:** 12 languages supported in i18n.js
 
 ## Build, Test, and Lint Commands
 
@@ -63,7 +63,7 @@ npx serve . -p 3000
 | `index.html` | App shell and markup | ~278 |
 | `app.js` | All application logic | ~2,084 |
 | `styles.css` | All styles (single file) | ~2,138 |
-| `i18n.js` | Translations for 28 languages | ~2,883 |
+| `i18n.js` | Translations for 12 languages | ~2,883 |
 | `suggestions.js` | Habit suggestions with demographic scoring | ~500 |
 | `sw.js` | Service worker (stale-while-revalidate caching) | ~50 |
 
@@ -81,17 +81,17 @@ GitHub Actions (`.github/workflows/ci.yml`):
 ### Data Storage
 
 - **API:** `localStorage` only (no backend, no database)
-- **Storage key:** `habitio_v5` (bump when schema changes)
+- **Storage key:** `habitio_v6` (bump when schema changes)
 - **Format:** JSON object: `{ habits[], checks{}, diary{}, profile{name,age,ageGroup,sex}, lang, kitsDismissed{}, consentAnalytics }`
 - **IDs:** `crypto.randomUUID()` via `uid()` helper
 
-**Migration:** When bumping version (e.g., `habitio_v5` → `habitio_v6`), always implement migration in `app.js` that reads old key, transforms data, saves to new key, and deletes old key.
+**Migration:** When bumping version (e.g., `habitio_v6` → `habitio_v7`), always implement migration in `app.js` that reads old key, transforms data, saves to new key, and deletes old key.
 
 ### Service Worker & Cache Versioning
 
 **CRITICAL:** The SW cache name (`CACHE` in `sw.js`) MUST match the localStorage key.
 
-When bumping `habitio_v5` → `habitio_v6`:
+When bumping `habitio_v6` → `habitio_v7`:
 1. Update localStorage key in `app.js`
 2. Update `CACHE` in `sw.js` to the same value
 3. Add migration logic in `load()` to read old version
@@ -112,10 +112,9 @@ This keeps a single version number across both systems. One bump covers data mig
 - **66-day journey:** Habits show phase emoji (🌱 → 🔨 → ⚡ → ✨) based on check count
 - **Morning routine:** Habits with `morning: true` are grouped at top
 - **Personalisation:** Suggestions ranked by age group (teen/young-adult/adult/midlife/senior) and sex
-- **Analytics:** Google Analytics 4 + Google Tag Manager integrated with consent banner (GTM-PRM6PZ6N, GA4 G-V9TJW7N2VY)
+- **Analytics:** Privacy-first GA4 (G-V9TJW7N2VY) — GA4 script is **not** loaded in `index.html`. It is lazy-loaded from `app.js` only after the user grants consent. GTM has been removed entirely.
   - Consent stored in `state.consentAnalytics` (null/true/false)
-  - `trackEvent(name, params)` helper for event tracking
-  - `updateUserProperties()` sets GA4 user-scoped properties (age_group, sex, ui_language)
+  - Key functions: `ensureAnalyticsBootstrap()`, `loadAnalyticsScript()`, `applyAnalyticsConsent()`, `clearAnalyticsCookies()`, `queueAnalyticsCall()`, `trackEvent()`, `trackPageView()`, `updateUserProperties()`
 
 ## Conventions
 

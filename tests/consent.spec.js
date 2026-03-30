@@ -11,8 +11,8 @@ test.describe("consent banner", () => {
 
   test("consent banner appears on first visit before consent is set", async ({ page }) => {
     await expect(page.locator(".consent-banner")).toBeVisible();
-    await expect(page.locator(".consent-btn.accept")).toBeVisible();
-    await expect(page.locator(".consent-btn.decline")).toBeVisible();
+    await expect(page.locator(".consent-btn.accept")).toHaveText(/Allow analytics/i);
+    await expect(page.locator(".consent-btn.decline")).toHaveText(/Decline/i);
   });
 
   test("accepting consent hides the banner", async ({ page }) => {
@@ -35,7 +35,7 @@ test.describe("consent banner", () => {
   test("accepting consent saves consentAnalytics:true to localStorage", async ({ page }) => {
     await page.locator(".consent-btn.accept").click();
     const saved = await page.evaluate(() => {
-      const raw = localStorage.getItem("habitio_v5");
+      const raw = localStorage.getItem("habitio_v6");
       return raw ? JSON.parse(raw) : null;
     });
     expect(saved?.consentAnalytics).toBe(true);
@@ -44,7 +44,7 @@ test.describe("consent banner", () => {
   test("declining consent saves consentAnalytics:false to localStorage", async ({ page }) => {
     await page.locator(".consent-btn.decline").click();
     const saved = await page.evaluate(() => {
-      const raw = localStorage.getItem("habitio_v5");
+      const raw = localStorage.getItem("habitio_v6");
       return raw ? JSON.parse(raw) : null;
     });
     expect(saved?.consentAnalytics).toBe(false);
@@ -70,6 +70,12 @@ test.describe("consent banner", () => {
         !error.includes("cookie")
     );
     expect(realErrors).toHaveLength(0);
+  });
+
+  test("google tag script is only injected after consent is granted", async ({ page }) => {
+    await expect(page.locator('script[src*="gtag/js?id="]')).toHaveCount(0);
+    await page.locator(".consent-btn.accept").click();
+    await expect(page.locator('script[src*="gtag/js?id="]')).toHaveCount(1);
   });
 
   test("desktop consent banner is centered in content column", async ({ page }) => {

@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta
       name="description"
-      content="habit.io — offline-first PWA habit tracker. Build habits with science-backed formation arcs, personalised suggestions, and a daily journal. No account, no tracking."
+      content="habit.io — offline-first PWA habit tracker. Build habits with science-backed formation arcs, personalised suggestions, and a daily journal. No account, privacy-first."
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <!-- PWA / install meta -->
@@ -16,41 +16,6 @@
     <meta name="theme-color" content="#6c5ce7" />
     <title>habit.io</title>
     <link rel="canonical" href="https://habitio.rafal-sladek.com/" />
-    <!-- Consent Mode v2 defaults — must run before GTM loads -->
-    <script>
-      globalThis.dataLayer = globalThis.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("consent", "default", {
-        analytics_storage: "denied",
-        ad_storage: "denied",
-        ad_user_data: "denied",
-        ad_personalization: "denied",
-        wait_for_update: 500,
-      });
-    </script>
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": Date.now(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l === "dataLayer" ? "" : "&l=" + l;
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(globalThis, document, "script", "dataLayer", "GTM-PRM6PZ6N");
-    </script>
-    <!-- End Google Tag Manager -->
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9TJW7N2VY"></script>
-    <script>
-      gtag("js", new Date());
-      // send_page_view:false — SPA; we fire page_view manually after consent
-      gtag("config", "G-V9TJW7N2VY", { send_page_view: false });
-    </script>
     <link rel="manifest" href="manifest.json" />
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
@@ -82,17 +47,6 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript
-      ><iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-PRM6PZ6N"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-        title="Google Tag Manager"
-      ></iframe
-    ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
     <div id="app">
       <div class="page active" id="page-tracker">
         <div class="header">
