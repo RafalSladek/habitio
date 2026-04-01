@@ -165,7 +165,7 @@ When UI changes (layout, colours, new screens, copy), regenerate all screenshots
 
 ```bash
 # 1. Start the local server
-npx serve . -p 3000 &
+npx serve . -p 3000
 
 # 2. Regenerate all screenshots (mobile 393×852, desktop 1280×800, tablet 820×1180)
 node scripts/take-screenshots.js

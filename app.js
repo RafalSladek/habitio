@@ -1,4 +1,4 @@
-const APP_VERSION = "v2.8";
+const APP_VERSION = "v2.9";
 // Replace with your deployed worker URL after running: wrangler deploy
 const FEEDBACK_WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
 
@@ -596,12 +596,13 @@ function uid() {
     : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
 }
 function save() {
-  localStorage.setItem("habitio_v8", JSON.stringify(state));
+  localStorage.setItem("habitio_v9", JSON.stringify(state));
 }
 function load() {
   try {
     // Migration: read from older keys if current key is absent
     const raw =
+      localStorage.getItem("habitio_v9") ||
       localStorage.getItem("habitio_v8") ||
       localStorage.getItem("habitio_v7") ||
       localStorage.getItem("habitio_v6") ||
@@ -623,7 +624,8 @@ function load() {
       if (d.consentAnalytics === undefined) d.consentAnalytics = null;
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v8", JSON.stringify(state));
+      localStorage.setItem("habitio_v9", JSON.stringify(state));
+      localStorage.removeItem("habitio_v8");
       localStorage.removeItem("habitio_v7");
       localStorage.removeItem("habitio_v6");
       localStorage.removeItem("habitio_v5");

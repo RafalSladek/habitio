@@ -1478,10 +1478,7 @@ body {
 }
 .modal-done-bar {
   display: flex;
-  position: sticky;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  width: 100%;
   background: var(--accent);
   color: #fff;
   padding: 0 20px;
@@ -1490,21 +1487,24 @@ body {
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  border-radius: 0 0 var(--radius) var(--radius);
+  border-radius: var(--radius-sm);
   justify-content: center;
   gap: 8px;
   align-items: center;
   user-select: none;
   opacity: 0;
+  margin-bottom: 0;
   transition:
     max-height 0.25s ease,
     opacity 0.2s,
-    padding 0.25s;
+    padding 0.25s,
+    margin-bottom 0.25s;
 }
 .modal-done-bar.show {
   max-height: 60px;
   padding: 14px 20px;
   opacity: 1;
+  margin-bottom: 8px;
 }
 .modal-done-arrow {
   font-size: 13px;
@@ -1530,7 +1530,7 @@ body {
   transform: translateX(-50%) translateY(0);
 }
 .suggestions {
-  margin-bottom: 16px;
+  margin: 0 -20px 16px;
 }
 .suggestion-cat {
   font-size: 11px;
@@ -1539,7 +1539,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin: 10px 0 6px;
-  padding-left: 2px;
+  padding-left: 20px;
 }
 .suggestion-cat:first-child {
   margin-top: 0;
@@ -1548,11 +1548,12 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 10px 20px;
   background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  margin-bottom: 5px;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  margin-bottom: 0;
   cursor: pointer;
   transition: all 0.15s;
 }

@@ -1,4 +1,4 @@
-const CACHE = "habitio_v8";
+const CACHE = "habitio_v9";
 
 const PRECACHE = [
   "./",
