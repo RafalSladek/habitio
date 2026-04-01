@@ -36,8 +36,8 @@ test.describe("feedback form", () => {
     await expect(stars.nth(0)).toHaveCSS("opacity", "1");
     await expect(stars.nth(1)).toHaveCSS("opacity", "1");
     await expect(stars.nth(2)).toHaveCSS("opacity", "1");
-    await expect(stars.nth(3)).toHaveCSS("opacity", "0.3");
-    await expect(stars.nth(4)).toHaveCSS("opacity", "0.3");
+    await expect(stars.nth(3)).toHaveCSS("opacity", "0.25");
+    await expect(stars.nth(4)).toHaveCSS("opacity", "0.25");
   });
 
   test("shows toast when message is too short", async ({ page }) => {

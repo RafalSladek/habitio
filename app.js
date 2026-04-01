@@ -1,4 +1,4 @@
-const APP_VERSION = "v2.7";
+const APP_VERSION = "v2.8";
 // Replace with your deployed worker URL after running: wrangler deploy
 const FEEDBACK_WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
 
@@ -596,12 +596,13 @@ function uid() {
     : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
 }
 function save() {
-  localStorage.setItem("habitio_v7", JSON.stringify(state));
+  localStorage.setItem("habitio_v8", JSON.stringify(state));
 }
 function load() {
   try {
     // Migration: read from older keys if current key is absent
     const raw =
+      localStorage.getItem("habitio_v8") ||
       localStorage.getItem("habitio_v7") ||
       localStorage.getItem("habitio_v6") ||
       localStorage.getItem("habitio_v5") ||
@@ -622,7 +623,8 @@ function load() {
       if (d.consentAnalytics === undefined) d.consentAnalytics = null;
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v7", JSON.stringify(state));
+      localStorage.setItem("habitio_v8", JSON.stringify(state));
+      localStorage.removeItem("habitio_v7");
       localStorage.removeItem("habitio_v6");
       localStorage.removeItem("habitio_v5");
       localStorage.removeItem("habitio_v4");
@@ -2172,9 +2174,9 @@ function renderSettings() {
           n +
           '" onclick="setFeedbackStar(' +
           n +
-          ')" style="background:none;border:none;font-size:24px;cursor:pointer;padding:0;opacity:0.3" aria-label="' +
+          ')" style="background:none;border:none;font-size:24px;cursor:pointer;padding:0;opacity:0.25;transition:opacity 0.1s" aria-label="' +
           n +
-          ' star">★</button>'
+          ' plant">🌱</button>'
       )
       .join("") +
     "</div></div>" +
@@ -2187,7 +2189,7 @@ function renderSettings() {
 }
 function setFeedbackStar(n) {
   document.querySelectorAll("#feedback-stars button").forEach((btn) => {
-    btn.style.opacity = Number(btn.dataset.star) <= n ? "1" : "0.3";
+    btn.style.opacity = Number(btn.dataset.star) <= n ? "1" : "0.25";
   });
   const stars = document.getElementById("feedback-stars");
   if (stars) stars.dataset.value = n;
