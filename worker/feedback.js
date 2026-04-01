@@ -1,16 +1,11 @@
 const REPO = "RafalSladek/habitio";
-const ALLOWED_ORIGINS = [
-  "https://habitio.rafal-sladek.com",
-  "https://rafalsladek.github.io",
-];
 const MIN_LEN = 10;
 const MAX_LEN = 2000;
 const VALID_TYPES = new Set(["bug", "wish", "feature"]);
 
-function corsHeaders(origin) {
-  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+function corsHeaders() {
   return {
-    "Access-Control-Allow-Origin": allowed,
+    "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
   };
@@ -25,8 +20,7 @@ function jsonResponse(body, status, extraHeaders = {}) {
 
 export default {
   async fetch(request, env) {
-    const origin = request.headers.get("Origin") || "";
-    const cors = corsHeaders(origin);
+    const cors = corsHeaders();
 
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: cors });
