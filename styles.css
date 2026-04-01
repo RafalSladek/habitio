@@ -1444,6 +1444,31 @@ body {
   border-color: var(--accent);
   color: var(--accent-glow);
 }
+/* Must be used alongside .freq-row which provides display:flex */
+.goal-inputs {
+  gap: 8px;
+}
+.goal-target-input {
+  width: 80px;
+  flex-shrink: 0;
+}
+.goal-unit-input {
+  flex: 1;
+  min-width: 100px;
+  padding: 10px 12px;
+  font-size: 15px;
+}
+.goal-tag {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+  color: var(--accent-glow);
+  cursor: pointer;
+}
+.goal-tag.goal-reached {
+  background: #1a3a1a;
+  border-color: #4caf50;
+  color: #81c784;
+}
 .modal-btn {
   width: 100%;
   padding: 14px;

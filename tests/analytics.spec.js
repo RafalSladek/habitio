@@ -21,7 +21,7 @@ test.describe("GA4 event tracking", () => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
       (state) => {
-        localStorage.setItem("habitio_v7", JSON.stringify(state));
+        localStorage.setItem("habitio_v8", JSON.stringify(state));
       },
       createState({
         profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
@@ -42,7 +42,7 @@ test.describe("GA4 event tracking", () => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
       (state) => {
-        localStorage.setItem("habitio_v7", JSON.stringify(state));
+        localStorage.setItem("habitio_v8", JSON.stringify(state));
       },
       createState({
         profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
@@ -168,7 +168,7 @@ test.describe("GA4 event tracking", () => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
       (state) => {
-        localStorage.setItem("habitio_v7", JSON.stringify(state));
+        localStorage.setItem("habitio_v8", JSON.stringify(state));
       },
       createState({
         profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },

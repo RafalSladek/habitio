@@ -211,6 +211,13 @@
             ☀️ <span id="morning-chip-lbl">Morning routine</span>
           </button>
         </div>
+        <div id="goal-section" style="margin-top: 0; margin-bottom: 14px">
+          <div class="section-label" data-t="lbl_goal">Goal</div>
+          <button class="morning-chip" id="goal-chip" type="button" onclick="toggleModalGoal()">
+            🎯 <span id="goal-chip-lbl" data-t="goal_chip">Set a quantity goal</span>
+          </button>
+          <div id="goal-detail" style="display: none"></div>
+        </div>
         <button class="modal-btn primary" id="modal-save-btn" onclick="saveHabit()"></button>
         <button
           class="modal-btn secondary"

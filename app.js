@@ -1,4 +1,4 @@
-const APP_VERSION = "v2.7";
+const APP_VERSION = "v2.8";
 // Replace with your deployed worker URL after running: wrangler deploy
 const FEEDBACK_WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
 
@@ -539,6 +539,9 @@ let modalEmoji = "🎯",
   modalFreqCount = 2,
   modalFreqPeriod = "week",
   modalMorning = false,
+  modalGoalEnabled = false,
+  modalGoalTarget = 100,
+  modalGoalUnit = "",
   editId = null,
   modalAddedCount = 0;
 
@@ -596,12 +599,13 @@ function uid() {
     : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
 }
 function save() {
-  localStorage.setItem("habitio_v7", JSON.stringify(state));
+  localStorage.setItem("habitio_v8", JSON.stringify(state));
 }
 function load() {
   try {
     // Migration: read from older keys if current key is absent
     const raw =
+      localStorage.getItem("habitio_v8") ||
       localStorage.getItem("habitio_v7") ||
       localStorage.getItem("habitio_v6") ||
       localStorage.getItem("habitio_v5") ||
@@ -622,7 +626,8 @@ function load() {
       if (d.consentAnalytics === undefined) d.consentAnalytics = null;
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v7", JSON.stringify(state));
+      localStorage.setItem("habitio_v8", JSON.stringify(state));
+      localStorage.removeItem("habitio_v7");
       localStorage.removeItem("habitio_v6");
       localStorage.removeItem("habitio_v5");
       localStorage.removeItem("habitio_v4");
@@ -703,6 +708,14 @@ function periodProg(h, date) {
     d = addD(d, 1);
   }
   return { done: cnt, target: c.count };
+}
+function goalProgress(h) {
+  if (!h.goal?.target) return null;
+  let done = 0;
+  Object.values(state.checks).forEach((day) => {
+    if (day[h.id]) done++;
+  });
+  return { done, target: h.goal.target, unit: h.goal.unit || "" };
 }
 function getStreak(id) {
   const h = state.habits.find((x) => x.id === id);
@@ -985,6 +998,7 @@ function buildHabitHtml(h, ch) {
     streak = getStreak(h.id),
     cL = cadenceLabel(h.cadence),
     pp = periodProg(h, selectedDate),
+    gp = goalProgress(h),
     phase = getFormationPhase(h);
   let meta = "";
   if (streak > 0)
@@ -994,6 +1008,17 @@ function buildHabitHtml(h, ch) {
       "d 🔥</span>";
   if (cL) meta += '<span class="cadence-tag">' + cL + "</span>";
   if (pp) meta += '<span class="cadence-tag">' + pp.done + "/" + pp.target + "</span>";
+  if (gp) {
+    const gpLabel = gp.done + "/" + gp.target + (gp.unit ? " " + esc(gp.unit) : "");
+    const gpDone = gp.done >= gp.target;
+    meta +=
+      '<span class="cadence-tag goal-tag' +
+      (gpDone ? " goal-reached" : "") +
+      '" onclick="event.stopPropagation();showTip(this,t(\'tip_goal\'))">' +
+      gpLabel +
+      (gpDone ? " 🎉" : "") +
+      "</span>";
+  }
   if (phase)
     meta +=
       '<span class="phase-tag ' +
@@ -1254,6 +1279,9 @@ function openAddModal(hid) {
     modalFreqCount = c.type === "x_per" ? c.count || 2 : 2;
     modalFreqPeriod = c.type === "x_per" ? c.period || "week" : "week";
     modalMorning = !!h.morning;
+    modalGoalEnabled = !!h.goal?.target;
+    modalGoalTarget = h.goal?.target || 100;
+    modalGoalUnit = h.goal?.unit || "";
     document.getElementById("modal-title").textContent = t("edit_habit");
     document.getElementById("modal-save-btn").textContent = t("save_changes");
     sa.innerHTML = "";
@@ -1265,6 +1293,9 @@ function openAddModal(hid) {
     modalFreqCount = 2;
     modalFreqPeriod = "week";
     modalMorning = false;
+    modalGoalEnabled = false;
+    modalGoalTarget = 100;
+    modalGoalUnit = "";
     modalAddedCount = 0;
     updateModalDoneState();
     document.getElementById("modal-title").textContent = t("new_habit");
@@ -1280,6 +1311,7 @@ function openAddModal(hid) {
   document.getElementById("habit-name-input").placeholder = t("type_own");
   renderEmojiPicker();
   renderCadence();
+  renderGoal();
   document.getElementById("add-modal").classList.add("show");
   document.getElementById("fab-add")?.classList.remove("visible");
   if (!editId) setTimeout(() => document.getElementById("habit-name-input").focus(), 300);
@@ -1458,6 +1490,37 @@ function setFP(p) {
   modalFreqPeriod = p;
   renderCadDetail();
 }
+function toggleModalGoal() {
+  modalGoalEnabled = !modalGoalEnabled;
+  renderGoal();
+}
+function renderGoal() {
+  const el = document.getElementById("goal-section");
+  if (!el) return;
+  const chip = document.getElementById("goal-chip");
+  if (chip) chip.classList.toggle("selected", modalGoalEnabled);
+  const detail = document.getElementById("goal-detail");
+  if (!detail) return;
+  if (modalGoalEnabled) {
+    detail.innerHTML =
+      '<div class="freq-row goal-inputs">' +
+      '<input class="freq-input goal-target-input" id="goal-target" type="number" min="1" value="' +
+      modalGoalTarget +
+      '" placeholder="' +
+      t("goal_placeholder_target") +
+      '" onchange="modalGoalTarget=Math.max(1,+this.value)">' +
+      '<input class="modal-input goal-unit-input" id="goal-unit" type="text" maxlength="20" value="' +
+      esc(modalGoalUnit) +
+      '" placeholder="' +
+      t("goal_placeholder_unit") +
+      '" oninput="modalGoalUnit=this.value.trim()">' +
+      "</div>";
+    detail.style.display = "";
+  } else {
+    detail.innerHTML = "";
+    detail.style.display = "none";
+  }
+}
 function saveHabit() {
   const name = document.getElementById("habit-name-input").value.trim();
   if (!name) {
@@ -1480,15 +1543,25 @@ function saveHabit() {
       period: modalFreqPeriod,
     };
   }
+  const goalTarget = document.getElementById("goal-target");
+  const goalUnit = document.getElementById("goal-unit");
+  const goal = modalGoalEnabled
+    ? {
+        target: Math.max(1, +(goalTarget?.value ?? modalGoalTarget)),
+        unit: (goalUnit?.value ?? modalGoalUnit).trim(),
+      }
+    : null;
   if (editId) {
     const h = state.habits.find((x) => x.id === editId);
     h.name = name;
     h.emoji = modalEmoji;
     h.cadence = cadence;
     h.morning = modalMorning;
+    if (goal) h.goal = goal;
+    else delete h.goal;
     showToast(t("habit_updated"));
   } else {
-    state.habits.push({
+    const newHabit = {
       id: uid(),
       name,
       emoji: modalEmoji,
@@ -1496,7 +1569,9 @@ function saveHabit() {
       morning: modalMorning,
       source: "custom",
       createdAt: fmt(new Date()),
-    });
+    };
+    if (goal) newHabit.goal = goal;
+    state.habits.push(newHabit);
     showToast(t("habit_added"));
   }
   trackEvent(editId ? "habit_edit" : "habit_add", {
