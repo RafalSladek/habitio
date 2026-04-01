@@ -1071,6 +1071,19 @@ body {
   text-align: center;
   animation: fadeIn 0.4s ease;
 }
+.focus-mode-expand {
+  margin: 12px 0 4px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius);
+  transition: color 0.15s;
+}
+.focus-mode-expand:hover {
+  color: var(--accent);
+}
 .fhc-icon {
   font-size: 24px;
   margin-bottom: 6px;

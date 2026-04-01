@@ -1,4 +1,4 @@
-const APP_VERSION = "v2.7";
+const APP_VERSION = "v2.8";
 // Replace with your deployed worker URL after running: wrangler deploy
 const FEEDBACK_WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
 
@@ -159,6 +159,17 @@ function setConsent(granted) {
 
   document.getElementById("consent-banner")?.remove();
   renderSettings();
+}
+function toggleFocusMode() {
+  state.focusMode = !state.focusMode;
+  focusModeExpanded = false;
+  save();
+  renderHabits();
+  renderSettings();
+}
+function expandFocusMode() {
+  focusModeExpanded = true;
+  renderHabits();
 }
 
 const EMOJIS = [
@@ -528,6 +539,7 @@ let state = {
   diary: {},
   profile: { name: "", age: "", sex: "male" },
   lang: "en",
+  focusMode: false,
 };
 let selectedDate = new Date(),
   weekOffset = 0,
@@ -541,6 +553,7 @@ let modalEmoji = "🎯",
   modalMorning = false,
   editId = null,
   modalAddedCount = 0;
+let focusModeExpanded = false;
 
 function getFormationPhase(h) {
   if (!h.createdAt) return null;
@@ -596,12 +609,13 @@ function uid() {
     : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
 }
 function save() {
-  localStorage.setItem("habitio_v7", JSON.stringify(state));
+  localStorage.setItem("habitio_v8", JSON.stringify(state));
 }
 function load() {
   try {
     // Migration: read from older keys if current key is absent
     const raw =
+      localStorage.getItem("habitio_v8") ||
       localStorage.getItem("habitio_v7") ||
       localStorage.getItem("habitio_v6") ||
       localStorage.getItem("habitio_v5") ||
@@ -620,9 +634,11 @@ function load() {
       if (!d.lang) d.lang = "en";
       if (!d.kitsDismissed) d.kitsDismissed = {};
       if (d.consentAnalytics === undefined) d.consentAnalytics = null;
+      if (d.focusMode === undefined) d.focusMode = false;
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v7", JSON.stringify(state));
+      localStorage.setItem("habitio_v8", JSON.stringify(state));
+      localStorage.removeItem("habitio_v7");
       localStorage.removeItem("habitio_v6");
       localStorage.removeItem("habitio_v5");
       localStorage.removeItem("habitio_v4");
@@ -884,6 +900,18 @@ function sugPriority(nameKey, profile) {
     sug_micro_code: { teen: 3, young: 3, M: 1 },
     sug_micro_sketch: { teen: 2, mid: 1, senior: 2 },
     sug_micro_music: { teen: 2, senior: 3 },
+
+    // ── Focus & Flow ───────────────────────────────────────────────
+    // Movement breaks improve cognitive control and reduce restlessness at all ages
+    sug_movement_break: { teen: 2, young: 3, adult: 3, mid: 2 },
+    // Brain dump externalises working memory; most valuable in high-demand years
+    sug_brain_dump: { teen: 2, young: 3, adult: 3, mid: 1 },
+    // Time-blocking aids task initiation; critical during peak career years
+    sug_time_block: { teen: 2, young: 3, adult: 3, mid: 1 },
+    // Single-task focus counters modern multitasking habits
+    sug_single_task: { teen: 1, young: 2, adult: 3, mid: 2 },
+    // Daily review builds self-awareness and closes the planning loop
+    sug_daily_review: { teen: 1, young: 2, adult: 2, mid: 2 },
   };
   const p = P[nameKey] || {};
   return (
@@ -945,6 +973,7 @@ function renderDays() {
       '</div><div class="day-dot"></div>';
     col.addEventListener("click", () => {
       selectedDate = d;
+      focusModeExpanded = false;
       render();
     });
     c.appendChild(col);
@@ -1092,10 +1121,30 @@ function renderHabits() {
     ch = state.checks[k] || {};
   const sorted = [...state.habits].sort((a, b) => (b.morning ? 1 : 0) - (a.morning ? 1 : 0));
   const hasMorning = sorted.some((h) => h.morning);
+
+  // Focus Mode: show checked habits + up to 3 unchecked; expand on demand
+  const FOCUS_LIMIT = 3;
+  const useFocus = state.focusMode && !focusModeExpanded && isToday(selectedDate);
+  let uncheckedShown = 0,
+    hiddenCount = 0;
+  if (useFocus) {
+    sorted.forEach((h) => {
+      if (!ch[h.id]) {
+        if (uncheckedShown < FOCUS_LIMIT) uncheckedShown++;
+        else hiddenCount++;
+      }
+    });
+    uncheckedShown = 0;
+  }
+
   let html = "",
     morningHeaderShown = false,
     restHeaderShown = false;
   sorted.forEach((h) => {
+    if (useFocus && !ch[h.id]) {
+      if (uncheckedShown >= FOCUS_LIMIT) return;
+      uncheckedShown++;
+    }
     if (h.morning && !morningHeaderShown) {
       html += '<div class="habit-section-label">☀️ ' + t("morning_routine") + "</div>";
       morningHeaderShown = true;
@@ -1109,6 +1158,12 @@ function renderHabits() {
     }
     html += buildHabitHtml(h, ch);
   });
+  if (useFocus && hiddenCount > 0) {
+    html +=
+      '<div class="focus-mode-expand" onclick="expandFocusMode()">· ' +
+      t("focus_show_more").replace("{n}", hiddenCount) +
+      " ·</div>";
+  }
   c.innerHTML = html;
   if (state.habits.length === 1) {
     const k = fmt(selectedDate),
@@ -1161,6 +1216,7 @@ function changeWeek(dir) {
   weekOffset += dir;
   if (weekOffset > 0) weekOffset = 0;
   selectedDate = weekOffset === 0 ? new Date() : getMon(addD(new Date(), weekOffset * 7));
+  focusModeExpanded = false;
   render();
 }
 
@@ -2140,6 +2196,10 @@ function renderSettings() {
     APP_VERSION +
     '</span></div><span class="setting-action" style="font-size:11px;font-family:var(--mono)">localStorage</span></div><div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
     t("share_app") +
+    '</span></div><span class="setting-action">›</span></div><div class="setting-item" onclick="toggleFocusMode()"><div class="setting-left"><span class="setting-emoji">' +
+    (state.focusMode ? "🎯" : "📋") +
+    '</span><span class="setting-label">' +
+    t(state.focusMode ? "focus_mode_on" : "focus_mode_off") +
     '</span></div><span class="setting-action">›</span></div><div class="setting-item" onclick="setConsent(' +
     !state.consentAnalytics +
     ')"><div class="setting-left"><span class="setting-emoji">' +
@@ -2253,6 +2313,7 @@ function resetData() {
     diary: {},
     profile: { name: "", age: "", sex: "male" },
     lang: state.lang,
+    focusMode: false,
   };
   save();
   location.reload();

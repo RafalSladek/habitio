@@ -86,6 +86,16 @@ const SUGGESTION_DATA = [
     ],
   },
   {
+    catKey: "cat_focus",
+    items: [
+      { nameKey: "sug_movement_break", emoji: "🚶", cadence: { type: "daily" } },
+      { nameKey: "sug_brain_dump", emoji: "📝", cadence: { type: "daily" } },
+      { nameKey: "sug_time_block", emoji: "⏱️", cadence: { type: "daily" } },
+      { nameKey: "sug_single_task", emoji: "🎯", cadence: { type: "daily" } },
+      { nameKey: "sug_daily_review", emoji: "✅", cadence: { type: "daily" } },
+    ],
+  },
+  {
     catKey: "cat_micro",
     items: [
       { nameKey: "sug_micro_vocab", emoji: "🔤", cadence: { type: "daily" } },
