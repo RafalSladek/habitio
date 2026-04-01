@@ -1,6 +1,7 @@
 name = "habitio-feedback"
 main = "feedback.js"
 compatibility_date = "2025-01-01"
+account_id = "f589de9fbea97ea0d801299fef71e446"
 
 # Deploy:  wrangler deploy
 # Set token: wrangler secret put GITHUB_TOKEN
