@@ -903,7 +903,7 @@ function sugPriority(nameKey, profile) {
 
     // ── Focus & Flow ───────────────────────────────────────────────
     // Movement breaks improve cognitive control and reduce restlessness at all ages
-    sug_movement_break: { teen: 2, young: 3, adult: 3, mid: 2 },
+    sug_movement_break: { teen: 2, young: 3, adult: 3, mid: 2, senior: 2 },
     // Brain dump externalises working memory; most valuable in high-demand years
     sug_brain_dump: { teen: 2, young: 3, adult: 3, mid: 1 },
     // Time-blocking aids task initiation; critical during peak career years
@@ -911,7 +911,7 @@ function sugPriority(nameKey, profile) {
     // Single-task focus counters modern multitasking habits
     sug_single_task: { teen: 1, young: 2, adult: 3, mid: 2 },
     // Daily review builds self-awareness and closes the planning loop
-    sug_daily_review: { teen: 1, young: 2, adult: 2, mid: 2 },
+    sug_daily_review: { teen: 1, young: 2, adult: 2, mid: 2, senior: 2 },
   };
   const p = P[nameKey] || {};
   return (
@@ -1125,25 +1125,27 @@ function renderHabits() {
   // Focus Mode: show checked habits + up to 3 unchecked; expand on demand
   const FOCUS_LIMIT = 3;
   const useFocus = state.focusMode && !focusModeExpanded && isToday(selectedDate);
-  let uncheckedShown = 0,
+  // First pass: count how many unchecked habits will be hidden
+  let uncheckedShownCount = 0,
     hiddenCount = 0;
   if (useFocus) {
     sorted.forEach((h) => {
       if (!ch[h.id]) {
-        if (uncheckedShown < FOCUS_LIMIT) uncheckedShown++;
+        if (uncheckedShownCount < FOCUS_LIMIT) uncheckedShownCount++;
         else hiddenCount++;
       }
     });
-    uncheckedShown = 0;
   }
+  // Second pass: render with limit applied
+  let uncheckedRendered = 0;
 
   let html = "",
     morningHeaderShown = false,
     restHeaderShown = false;
   sorted.forEach((h) => {
     if (useFocus && !ch[h.id]) {
-      if (uncheckedShown >= FOCUS_LIMIT) return;
-      uncheckedShown++;
+      if (uncheckedRendered >= FOCUS_LIMIT) return;
+      uncheckedRendered++;
     }
     if (h.morning && !morningHeaderShown) {
       html += '<div class="habit-section-label">☀️ ' + t("morning_routine") + "</div>";
