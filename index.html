@@ -53,7 +53,8 @@
     <meta name="msapplication-TileColor" content="#6c5ce7" />
     <script>
       // LCP: show welcome modal before CSS blocks for first-time visitors
-      if (!localStorage.getItem("habitio_v6")) document.documentElement.classList.add("new-user");
+      if (!localStorage.getItem("habitio_v7") && !localStorage.getItem("habitio_v6"))
+        document.documentElement.classList.add("new-user");
     </script>
     <link
       rel="preload"

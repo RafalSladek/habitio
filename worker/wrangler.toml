@@ -1,0 +1,9 @@
+name = "habitio-feedback"
+main = "feedback.js"
+compatibility_date = "2025-01-01"
+
+# Deploy:  wrangler deploy
+# Set token: wrangler secret put GITHUB_TOKEN
+#   (paste a fine-grained PAT with Issues: Read & Write on RafalSladek/habitio)
+#
+# After deploying, copy the worker URL into FEEDBACK_WORKER_URL in app.js.

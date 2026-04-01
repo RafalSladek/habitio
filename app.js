@@ -1,3 +1,7 @@
+const APP_VERSION = "v2.0";
+// Replace with your deployed worker URL after running: wrangler deploy
+const FEEDBACK_WORKER_URL = "https://habitio-feedback.YOUR_SUBDOMAIN.workers.dev";
+
 const GA_MEASUREMENT_ID = "G-V9TJW7N2VY";
 const GA_SCRIPT_SRC = "https://www.googletagmanager.com/gtag/js?id=" + GA_MEASUREMENT_ID;
 const GA_DISABLE_KEY = "ga-disable-" + GA_MEASUREMENT_ID;
@@ -592,12 +596,13 @@ function uid() {
     : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
 }
 function save() {
-  localStorage.setItem("habitio_v6", JSON.stringify(state));
+  localStorage.setItem("habitio_v7", JSON.stringify(state));
 }
 function load() {
   try {
     // Migration: read from older keys if current key is absent
     const raw =
+      localStorage.getItem("habitio_v7") ||
       localStorage.getItem("habitio_v6") ||
       localStorage.getItem("habitio_v5") ||
       localStorage.getItem("habitio_v4") ||
@@ -617,7 +622,8 @@ function load() {
       if (d.consentAnalytics === undefined) d.consentAnalytics = null;
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v6", JSON.stringify(state));
+      localStorage.setItem("habitio_v7", JSON.stringify(state));
+      localStorage.removeItem("habitio_v6");
       localStorage.removeItem("habitio_v5");
       localStorage.removeItem("habitio_v4");
       localStorage.removeItem("habitio_v3");
@@ -2138,7 +2144,87 @@ function renderSettings() {
     (state.consentAnalytics ? "📊" : "🚫") +
     '</span><span class="setting-label">' +
     t(state.consentAnalytics ? "analytics_on" : "analytics_off") +
-    '</span></div><span class="setting-action">›</span></div></div></div>';
+    '</span></div><span class="setting-action">›</span></div></div></div>' +
+    '<div class="settings-section"><div class="settings-title">' +
+    t("settings_feedback") +
+    '</div><div class="settings-list"><div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">' +
+    '<select id="feedback-type" class="lang-select">' +
+    '<option value="bug">' +
+    t("feedback_type_bug") +
+    "</option>" +
+    '<option value="wish">' +
+    t("feedback_type_wish") +
+    "</option>" +
+    '<option value="feature">' +
+    t("feedback_type_feature") +
+    "</option>" +
+    "</select>" +
+    '<div><div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">' +
+    t("feedback_rating") +
+    "</div>" +
+    '<div id="feedback-stars" style="display:flex;gap:6px">' +
+    [1, 2, 3, 4, 5]
+      .map(
+        (n) =>
+          '<button type="button" data-star="' +
+          n +
+          '" onclick="setFeedbackStar(' +
+          n +
+          ')" style="background:none;border:none;font-size:24px;cursor:pointer;padding:0;opacity:0.3" aria-label="' +
+          n +
+          ' star">★</button>'
+      )
+      .join("") +
+    "</div></div>" +
+    '<textarea id="feedback-msg" rows="4" placeholder="' +
+    t("feedback_placeholder") +
+    '" style="width:100%;box-sizing:border-box;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;font-family:inherit;resize:vertical"></textarea>' +
+    '<button id="feedback-submit" onclick="submitFeedback()" style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer">' +
+    t("feedback_submit") +
+    "</button></div></div></div>";
+}
+function setFeedbackStar(n) {
+  document.querySelectorAll("#feedback-stars button").forEach((btn) => {
+    btn.style.opacity = Number(btn.dataset.star) <= n ? "1" : "0.3";
+  });
+  const stars = document.getElementById("feedback-stars");
+  if (stars) stars.dataset.value = n;
+}
+async function submitFeedback() {
+  const typeEl = document.getElementById("feedback-type");
+  const msgEl = document.getElementById("feedback-msg");
+  const btnEl = document.getElementById("feedback-submit");
+  if (!typeEl || !msgEl || !btnEl) return;
+  const message = msgEl.value.trim();
+  if (message.length < 10) {
+    showToast(t("feedback_short"));
+    return;
+  }
+  const starsEl = document.getElementById("feedback-stars");
+  const rating = starsEl?.dataset.value ? Number(starsEl.dataset.value) : null;
+  btnEl.disabled = true;
+  btnEl.textContent = "…";
+  try {
+    const res = await fetch(FEEDBACK_WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: typeEl.value,
+        message,
+        rating,
+        version: APP_VERSION,
+        lang: state.lang,
+      }),
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    msgEl.value = "";
+    showToast(t("feedback_sent"));
+  } catch {
+    showToast(t("feedback_error"));
+  } finally {
+    btnEl.disabled = false;
+    btnEl.textContent = t("feedback_submit");
+  }
 }
 function delHabit(id) {
   if (!confirm(t("confirm_delete"))) return;
