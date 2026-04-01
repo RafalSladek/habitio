@@ -72,6 +72,9 @@ export default {
       "_Submitted via in-app feedback_",
     ].join("\n");
 
+    const labels = ["feedback", issueType];
+    if (rating) labels.push("rating-" + rating + "⭐");
+
     const ghRes = await fetch(`https://api.github.com/repos/${REPO}/issues`, {
       method: "POST",
       headers: {
@@ -79,7 +82,7 @@ export default {
         "Content-Type": "application/json",
         "User-Agent": "habitio-feedback-worker/1.0",
       },
-      body: JSON.stringify({ title, body: issueBody, labels: ["feedback"] }),
+      body: JSON.stringify({ title, body: issueBody, labels, assignees: ["RafalSladek"] }),
     });
 
     if (!ghRes.ok) {

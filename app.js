@@ -1,6 +1,6 @@
 const APP_VERSION = "v2.0";
 // Replace with your deployed worker URL after running: wrangler deploy
-const FEEDBACK_WORKER_URL = "https://habitio-feedback.YOUR_SUBDOMAIN.workers.dev";
+const FEEDBACK_WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
 
 const GA_MEASUREMENT_ID = "G-V9TJW7N2VY";
 const GA_SCRIPT_SRC = "https://www.googletagmanager.com/gtag/js?id=" + GA_MEASUREMENT_ID;
