@@ -132,6 +132,11 @@ Never change the storage key without migration — users must not lose their hab
    - No unexpected elements visible (e.g. glow from hidden components, z-index leaks)
    Fix any issues found before proceeding to commit.
 5. **Check PageSpeed**: download the latest Lighthouse artifact from the most recent CI run (`gh run download <run-id> --name lighthouse-results --dir /tmp/lh-results`) and verify no new audit regressions before committing
-6. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, `i18n.js`, or `index.html` changed, increment the version in both `app.js` localStorage key and `CACHE` in `sw.js` to the same value (e.g. both `habitio_v7` → `habitio_v8`), and add a migration read in `load()` for the old key
+6. **Bump version key**: if `app.js`, `styles.css`, `suggestions.js`, `i18n.js`, or `index.html` changed, increment the version in **three places** to keep them in sync:
+   - `localStorage` key in `save()` and `load()` in `app.js` (e.g. `habitio_v7` → `habitio_v8`)
+   - `CACHE` in `sw.js` (same value)
+   - `APP_VERSION` in `app.js` — follows `v2.<schema>` format, so `"v2.7"` → `"v2.8"`
+   - Add a migration read in `load()` for the old key
+   - The minor version always equals the data schema number (e.g. storage `v8` → display `v2.8`)
 7. **Update `TODO.md`**: add any new tasks completed in this session to `TODO.md` and include it in the same commit as the code changes
 8. **Update docs**: if the architecture, file list, i18n languages, or any dev instructions changed, update `CLAUDE.md` and `README.md` in the same commit

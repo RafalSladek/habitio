@@ -1,4 +1,4 @@
-const APP_VERSION = "v2.0";
+const APP_VERSION = "v2.7";
 // Replace with your deployed worker URL after running: wrangler deploy
 const FEEDBACK_WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
 
@@ -2136,7 +2136,9 @@ function renderSettings() {
     '</span></div><span class="setting-action">›</span></div></div></div>' +
     '<div class="settings-section"><div class="settings-title">' +
     t("settings_about") +
-    '</div><div class="settings-list"><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🌱</span><span class="setting-label">habit.io v2.0</span></div><span class="setting-action" style="font-size:11px;font-family:var(--mono)">localStorage</span></div><div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
+    '</div><div class="settings-list"><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🌱</span><span class="setting-label">habit.io ' +
+    APP_VERSION +
+    '</span></div><span class="setting-action" style="font-size:11px;font-family:var(--mono)">localStorage</span></div><div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
     t("share_app") +
     '</span></div><span class="setting-action">›</span></div><div class="setting-item" onclick="setConsent(' +
     !state.consentAnalytics +
