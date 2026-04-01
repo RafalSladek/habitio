@@ -114,6 +114,7 @@ Never change the storage key without migration — users must not lose their hab
 3. **Fix all issues immediately** — if SonarCloud reports bugs or code smells, fix them and re-scan. Do NOT push until issues are resolved.
 4. **Low coverage = blocking** — if a failed Quality Gate is caused by insufficient test coverage, generate the required unit/e2e tests. This is a blocking issue.
 5. **Only recommend pushing when the Quality Gate PASSES.**
+6. **New files → SonarCloud exclusion check** — for every new file added, decide whether it should be scanned or excluded. Check `sonar-project.properties` and add the file/pattern to `sonar.exclusions` if it is: a script (`scripts/**`), test fixture, generated output, tooling config, docs asset, or any file that is not application source code. Application source files (`app.js`, `styles.css`, `i18n.js`, `index.html`, etc.) must remain included.
 
 ## Pre-Commit Checklist
 
@@ -138,5 +139,7 @@ Never change the storage key without migration — users must not lose their hab
    - `APP_VERSION` in `app.js` — follows `v2.<schema>` format, so `"v2.7"` → `"v2.8"`
    - Add a migration read in `load()` for the old key
    - The minor version always equals the data schema number (e.g. storage `v8` → display `v2.8`)
-7. **Update `TODO.md`**: add any new tasks completed in this session to `TODO.md` and include it in the same commit as the code changes
-8. **Update docs**: if the architecture, file list, i18n languages, or any dev instructions changed, update `CLAUDE.md` and `README.md` in the same commit
+7. **New files → SonarCloud exclusion check**: for every new file added in this commit, verify whether it belongs in `sonar.exclusions` in `sonar-project.properties`. Scripts, fixtures, generated output, tooling configs, and docs assets must be excluded; application source files must not be.
+8. **Amend vs new commit**: if the staged changes are a direct fix or addendum to the immediately preceding commit (e.g. a format pass, a forgotten file, a typo fix), amend that commit instead of creating a new one — `git commit --amend`. Create a new commit when the change has independent meaning or the previous commit is already pushed and shared.
+9. **Update `TODO.md`**: add any new tasks completed in this session to `TODO.md` and include it in the same commit as the code changes
+10. **Update docs**: if the architecture, file list, i18n languages, or any dev instructions changed, update `CLAUDE.md` and `README.md` in the same commit

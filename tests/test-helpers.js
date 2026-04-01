@@ -74,7 +74,7 @@ async function resetToDefaultState(page, overrides = {}) {
   await page.goto("/");
   await page.evaluate((state) => {
     localStorage.clear();
-    localStorage.setItem("habitio_v8", JSON.stringify(state));
+    localStorage.setItem("habitio_v9", JSON.stringify(state));
   }, createState(overrides));
   await page.reload();
   await page.waitForLoadState("domcontentloaded");
@@ -210,7 +210,7 @@ async function seedConsented(page, extra = {}) {
   await mockGoogleAnalytics(page);
   await page.evaluate(
     (state) => {
-      localStorage.setItem("habitio_v8", JSON.stringify(state));
+      localStorage.setItem("habitio_v9", JSON.stringify(state));
     },
     createState({
       profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },

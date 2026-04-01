@@ -212,6 +212,10 @@
           </button>
         </div>
         <button class="modal-btn primary" id="modal-save-btn" onclick="saveHabit()"></button>
+        <button class="modal-done-bar" id="modal-done-bar" type="button" onclick="closeAddModal()">
+          <span id="modal-done-label"></span>
+          <span class="modal-done-arrow" data-t="start_tracking">Start tracking →</span>
+        </button>
         <button
           class="modal-btn secondary"
           id="modal-cancel-btn"
@@ -221,10 +225,6 @@
           Cancel
         </button>
       </div>
-      <button class="modal-done-bar" id="modal-done-bar" type="button" onclick="closeAddModal()">
-        <span id="modal-done-label"></span>
-        <span class="modal-done-arrow" data-t="start_tracking">Start tracking →</span>
-      </button>
     </div>
 
     <!-- WELCOME MODAL -->

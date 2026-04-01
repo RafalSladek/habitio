@@ -35,7 +35,7 @@ test.describe("consent banner", () => {
   test("accepting consent saves consentAnalytics:true to localStorage", async ({ page }) => {
     await page.locator(".consent-btn.accept").click();
     const saved = await page.evaluate(() => {
-      const raw = localStorage.getItem("habitio_v8");
+      const raw = localStorage.getItem("habitio_v9");
       return raw ? JSON.parse(raw) : null;
     });
     expect(saved?.consentAnalytics).toBe(true);
@@ -44,7 +44,7 @@ test.describe("consent banner", () => {
   test("declining consent saves consentAnalytics:false to localStorage", async ({ page }) => {
     await page.locator(".consent-btn.decline").click();
     const saved = await page.evaluate(() => {
-      const raw = localStorage.getItem("habitio_v8");
+      const raw = localStorage.getItem("habitio_v9");
       return raw ? JSON.parse(raw) : null;
     });
     expect(saved?.consentAnalytics).toBe(false);

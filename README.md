@@ -74,14 +74,15 @@ push to main → Playwright tests (desktop + mobile + tablet) → deploy to Page
 
 ## Performance
 
-Lighthouse scores (mobile, avg of 3 runs):
+Lighthouse CI scores (avg of 6 runs — 3 mobile + 3 desktop — per deploy):
 
-| Category       | Score |
-| -------------- | ----- |
-| Performance    | 80    |
-| Accessibility  | 92    |
-| Best Practices | 100   |
-| SEO            | 100   |
+| Measured at (UTC)   | Version | Commit                          | Perf | A11y | Best Practices | SEO |
+| ------------------- | ------- | ------------------------------- | ---- | ---- | -------------- | --- |
+| 2026-04-01 23:07    | v2.9    | fix(worker): allow all origin…  |   89 |   90 |             82 | 100 |
+| 2026-04-01 22:58    | v2.9    | feat(ui): v2.9 suggestions      |   90 |   90 |             82 | 100 |
+| 2026-04-01 21:38    | v2.7    | fix(ci): wrangler semver        |   87 |   90 |             82 | 100 |
+
+> Run `node scripts/update-pagespeed.js` to pull the latest CI run and prepend a new row.
 
 Key optimisations applied:
 
@@ -165,7 +166,7 @@ When UI changes (layout, colours, new screens, copy), regenerate all screenshots
 
 ```bash
 # 1. Start the local server
-npx serve . -p 3000 &
+npx serve . -p 3000
 
 # 2. Regenerate all screenshots (mobile 393×852, desktop 1280×800, tablet 820×1180)
 node scripts/take-screenshots.js
