@@ -122,7 +122,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           workingDirectory: worker
-          wranglerVersion: "4"
+          wranglerVersion: "4.79.0"
 
   deploy:
     name: Deploy to GitHub Pages
