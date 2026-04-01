@@ -74,7 +74,7 @@ async function resetToDefaultState(page, overrides = {}) {
   await page.goto("/");
   await page.evaluate((state) => {
     localStorage.clear();
-    localStorage.setItem("habitio_v6", JSON.stringify(state));
+    localStorage.setItem("habitio_v7", JSON.stringify(state));
   }, createState(overrides));
   await page.reload();
   await page.waitForLoadState("domcontentloaded");
@@ -99,7 +99,7 @@ async function completeOnboarding(page, name = "Test") {
 async function seedHabit(page, daysOld, checkedDaysBack = 0) {
   await page.evaluate(
     ({ daysOld, checkedDaysBack }) => {
-      localStorage.removeItem("habitio_v6");
+      localStorage.clear();
       const id = "test-habit-001";
 
       // Use a timestamp exactly daysOld * 86400000 ms ago so that
@@ -210,7 +210,7 @@ async function seedConsented(page, extra = {}) {
   await mockGoogleAnalytics(page);
   await page.evaluate(
     (state) => {
-      localStorage.setItem("habitio_v6", JSON.stringify(state));
+      localStorage.setItem("habitio_v7", JSON.stringify(state));
     },
     createState({
       profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },

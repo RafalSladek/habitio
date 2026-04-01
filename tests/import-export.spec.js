@@ -7,7 +7,7 @@ const { test, expect, createState, openClearedApp, goToSettings } = require("./t
 async function seedAndGoToSettings(page) {
   await page.evaluate(
     (state) => {
-      localStorage.setItem("habitio_v6", JSON.stringify(state));
+      localStorage.setItem("habitio_v7", JSON.stringify(state));
     },
     createState({
       habits: [
@@ -132,7 +132,7 @@ test.describe("export / import", () => {
     ]);
 
     await expect(page.locator("#import-modal")).not.toHaveClass(/show/);
-    const state = await page.evaluate(() => JSON.parse(localStorage.getItem("habitio_v6") || "{}"));
+    const state = await page.evaluate(() => JSON.parse(localStorage.getItem("habitio_v7") || "{}"));
 
     expect(state.habits).toHaveLength(3);
     expect(state.habits.map((habit) => habit.name)).toContain("Meditate");
@@ -183,7 +183,7 @@ test.describe("export / import", () => {
 
     await page.evaluate(
       (state) => {
-        localStorage.setItem("habitio_v6", JSON.stringify(state));
+        localStorage.setItem("habitio_v7", JSON.stringify(state));
       },
       createState({
         profile: { name: "Test", age: "30", ageGroup: "adult", sex: "male" },
@@ -213,7 +213,7 @@ test.describe("export / import", () => {
     ]);
 
     await expect(page.locator("#import-modal")).not.toHaveClass(/show/);
-    const state = await page.evaluate(() => JSON.parse(localStorage.getItem("habitio_v6") || "{}"));
+    const state = await page.evaluate(() => JSON.parse(localStorage.getItem("habitio_v7") || "{}"));
     expect(state.habits).toHaveLength(2);
     expect(state.habits.map((habit) => habit.name)).toContain("Drink Water");
     expect(Object.values(state.checks["2024-01-15"] || {}).some((value) => value)).toBe(true);
