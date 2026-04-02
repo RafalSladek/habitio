@@ -114,7 +114,17 @@
             <h1 id="h-title">habit.io</h1>
             <div id="h-greeting" class="header-greeting"></div>
           </div>
-          <div class="header-actions"></div>
+          <div class="header-actions">
+            <button
+              class="icon-btn tracker-add-btn visible"
+              id="fab-add"
+              onclick="openAddModal()"
+              aria-label="Add habit"
+              type="button"
+            >
+              +
+            </button>
+          </div>
         </div>
         <div class="week-nav">
           <button class="nav-btn" onclick="changeWeek(-1)">&lsaquo;</button
@@ -315,8 +325,6 @@
         </button>
       </div>
     </div>
-
-    <button class="fab" id="fab-add" onclick="openAddModal()" aria-label="Add habit">+</button>
 
     <div class="toast" id="toast"></div>
     <div id="tt" role="tooltip"></div>

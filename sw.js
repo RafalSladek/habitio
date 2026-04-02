@@ -36,9 +36,8 @@ globalThis.addEventListener("activate", (e) => {
 });
 
 // Fetch strategy:
-// - App shell (same-origin): cache-first, fall back to network
-// - Google Fonts CSS: network-first, fall back to cache
-// - Font files (.woff2): cache-first (long-lived)
+// - App shell (same-origin): stale-while-revalidate
+// - Google Fonts: bypass the service worker and let the browser cache them
 // - Everything else: network-first, fall back to cache
 globalThis.addEventListener("fetch", (e) => {
   const { request } = e;
@@ -47,35 +46,9 @@ globalThis.addEventListener("fetch", (e) => {
   // Skip non-GET and chrome-extension requests
   if (request.method !== "GET" || url.protocol === "chrome-extension:") return;
 
-  // Font files — cache-first (immutable)
-  if (url.hostname === "fonts.gstatic.com") {
-    e.respondWith(
-      caches.open(CACHE).then((c) =>
-        c.match(request).then(
-          (cached) =>
-            cached ||
-            fetch(request).then((res) => {
-              c.put(request, res.clone());
-              return res;
-            })
-        )
-      )
-    );
-    return;
-  }
-
-  // Google Fonts CSS — network-first, cache fallback
-  if (url.hostname === "fonts.googleapis.com") {
-    e.respondWith(
-      fetch(request)
-        .then((res) => {
-          // Clone synchronously before any async operation consumes the body
-          const clone = res.clone();
-          caches.open(CACHE).then((c) => c.put(request, clone));
-          return res;
-        })
-        .catch(() => caches.match(request))
-    );
+  // Let the browser handle Google Fonts directly. Firefox can surface noisy
+  // cross-origin failures when a service worker proxies font requests.
+  if (url.hostname === "fonts.gstatic.com" || url.hostname === "fonts.googleapis.com") {
     return;
   }
 

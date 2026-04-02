@@ -9,32 +9,6 @@ function dayOffset(days) {
 
 test.describe("ai coach", () => {
   test.beforeEach(async ({ page }) => {
-    await page.route(COACH_URL, async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          feedback: {
-            encouragement: "You already have real momentum.",
-            candid_feedback:
-              "Your progress is solid, but you are relying too much on streak energy.",
-            next_steps: [
-              "Protect one easy win tomorrow morning.",
-              "Shrink the hardest habit for two days.",
-              "Review your week on Sunday evening.",
-            ],
-          },
-          budget: {
-            requestsUsed: 1,
-            requestsLimit: 5,
-            estimatedTokensUsed: 650,
-            estimatedTokensLimit: 4500,
-          },
-          model: "@cf/meta/llama-3.1-8b-instruct-fast",
-        }),
-      });
-    });
-
     await resetToDefaultState(page, {
       profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
       habits: [
@@ -141,6 +115,7 @@ test.describe("ai coach", () => {
     await page.locator("#coach-include-diary").check();
     await page.locator("#coach-submit").click();
 
+    await expect(page.locator("#coach-result")).toBeVisible();
     expect(captured.summary.recent_journal).toHaveLength(1);
     expect(captured.summary.recent_journal[0].grateful).toContain("Sunny walk");
   });

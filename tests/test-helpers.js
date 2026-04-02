@@ -84,8 +84,7 @@ async function resetToDefaultState(page, overrides = {}) {
     localStorage.clear();
     localStorage.setItem("habitio_v9", JSON.stringify(state));
   }, createState(overrides));
-  await page.reload();
-  await page.waitForLoadState("domcontentloaded");
+  await page.reload({ waitUntil: "domcontentloaded" });
 }
 
 /**
@@ -146,8 +145,7 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
     { daysOld, checkedDaysBack }
   );
 
-  await page.reload();
-  await page.waitForLoadState("domcontentloaded");
+  await page.reload({ waitUntil: "domcontentloaded" });
 }
 
 /**
@@ -222,8 +220,7 @@ async function seedConsented(page, extra = {}) {
       ...extra,
     })
   );
-  await page.reload();
-  await page.waitForLoadState("domcontentloaded");
+  await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.locator("#fab-add")).toBeVisible();
 }
 

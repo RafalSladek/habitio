@@ -101,6 +101,15 @@ body {
   background: var(--surface-2);
   transform: scale(0.92);
 }
+.tracker-add-btn {
+  display: none;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+}
+.tracker-add-btn.visible {
+  display: flex;
+}
 .week-nav {
   padding: 0 20px 12px;
   display: flex;
@@ -2060,26 +2069,19 @@ body {
     padding: 16px 32px 32px;
   }
 
-  /* ── Habit cards: 2-column grid ── */
+  /* ── Habit cards: keep full-width rows on larger screens ── */
   .habits-scroll {
     padding: 0 32px 80px;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    align-content: start;
-  }
-  /* Section labels and CTA span full width */
-  .habit-section-label,
-  .habit-kit,
-  .habit-fact,
-  .first-habit-cta,
-  .onboarding,
-  .motiv-card {
-    grid-column: 1 / -1;
+    align-content: stretch;
   }
   .habit-card {
     margin-bottom: 0;
     padding: 18px 20px;
+    width: 100%;
+    box-sizing: border-box;
   }
   .habit-emoji {
     font-size: 28px;
@@ -2159,19 +2161,11 @@ body {
     justify-content: space-between;
     padding-top: 20px;
   }
-  /* On desktop, FAB sits in the right content column, not full-viewport center */
-  .fab {
-    left: calc(200px + (100vw - 200px) / 2);
-    bottom: 24px;
-  }
 }
 
 @media (min-width: 1200px) {
   #app {
     grid-template-columns: 240px 1fr;
-  }
-  .fab {
-    left: calc(240px + (100vw - 240px) / 2);
   }
   .modal-overlay {
     padding-left: 240px;
@@ -2182,39 +2176,6 @@ body {
   .page .header h1 {
     font-size: 28px;
   }
-}
-
-/* Floating action button */
-.fab {
-  position: fixed;
-  bottom: calc(72px + var(--safe-bottom) + 14px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  font-size: 28px;
-  line-height: 1;
-  font-weight: 300;
-  cursor: pointer;
-  z-index: 60;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 18px rgba(108, 92, 231, 0.45);
-  transition:
-    transform 0.15s,
-    box-shadow 0.15s;
-}
-.fab.visible {
-  display: flex;
-}
-.fab:active {
-  transform: translateX(-50%) scale(0.88);
-  box-shadow: 0 2px 8px rgba(108, 92, 231, 0.3);
 }
 
 /* Consent banner */

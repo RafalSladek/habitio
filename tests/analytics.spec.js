@@ -28,8 +28,7 @@ test.describe("GA4 event tracking", () => {
         consentAnalytics: null,
       })
     );
-    await page.reload();
-    await page.waitForLoadState("domcontentloaded");
+    await page.reload({ waitUntil: "domcontentloaded" });
     await expect(page.locator(".consent-banner")).toBeVisible();
     await expect(page.locator('script[src*="gtag/js?id="]')).toHaveCount(0);
 
@@ -50,8 +49,7 @@ test.describe("GA4 event tracking", () => {
       })
     );
 
-    await page.reload();
-    await page.waitForLoadState("domcontentloaded");
+    await page.reload({ waitUntil: "domcontentloaded" });
     await page.locator(".consent-btn.accept").click();
     await expect(page.locator('script[src*="gtag/js?id="]')).toHaveCount(1);
     await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "page_view");
@@ -176,8 +174,7 @@ test.describe("GA4 event tracking", () => {
       })
     );
 
-    await page.reload();
-    await page.waitForLoadState("domcontentloaded");
+    await page.reload({ waitUntil: "domcontentloaded" });
     await page.locator(".consent-btn.decline").click();
     await expect(page.locator(".consent-banner")).not.toBeVisible();
     await expect(page.locator('script[src*="gtag/js?id="]')).toHaveCount(0);

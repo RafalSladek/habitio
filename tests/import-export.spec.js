@@ -32,8 +32,7 @@ async function seedAndGoToSettings(page) {
     })
   );
 
-  await page.reload();
-  await page.waitForLoadState("domcontentloaded");
+  await page.reload({ waitUntil: "domcontentloaded" });
   await goToSettings(page);
 }
 
@@ -190,8 +189,7 @@ test.describe("export / import", () => {
       })
     );
 
-    await page.reload();
-    await page.waitForLoadState("domcontentloaded");
+    await page.reload({ waitUntil: "domcontentloaded" });
     await goToSettings(page);
     await page
       .locator(".setting-item", {

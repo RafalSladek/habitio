@@ -27,8 +27,7 @@ test.describe("consent banner", () => {
 
   test("consent banner does not reappear after choice is made", async ({ page }) => {
     await page.locator(".consent-btn.decline").click();
-    await page.reload();
-    await page.waitForLoadState("domcontentloaded");
+    await page.reload({ waitUntil: "domcontentloaded" });
     await expect(page.locator(".consent-banner")).not.toBeVisible();
   });
 

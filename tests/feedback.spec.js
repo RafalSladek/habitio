@@ -2,11 +2,19 @@
 const { test, expect, resetToDefaultState } = require("./test-helpers");
 
 const WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
+const WORKER_ROUTE = "**habitio-feedback.kryptoroger.workers.dev**";
 
 test.describe("feedback form", () => {
+  /** @type {Array<Record<string, any>>} */
+  let feedbackRequests = [];
+
   test.beforeEach(async ({ page }) => {
+    feedbackRequests = [];
+
     // Intercept worker requests so tests run offline and don't create real issues
-    await page.route(WORKER_URL, async (route) => {
+    await page.route(WORKER_ROUTE, async (route) => {
+      const payload = route.request().postData();
+      if (payload) feedbackRequests.push(JSON.parse(payload));
       await route.fulfill({
         status: 201,
         contentType: "application/json",
@@ -57,22 +65,15 @@ test.describe("feedback form", () => {
   });
 
   test("POSTs correct payload to worker", async ({ page }) => {
-    let captured;
-    await page.route(WORKER_URL, async (route) => {
-      captured = JSON.parse(route.request().postData() || "{}");
-      await route.fulfill({
-        status: 201,
-        contentType: "application/json",
-        body: JSON.stringify({ url: "https://github.com/RafalSladek/habitio/issues/2", number: 2 }),
-      });
-    });
-
     await page.locator("#feedback-type").selectOption("wish");
     await page.locator('#feedback-stars button[data-star="5"]').click();
     await page.locator("#feedback-msg").fill("I wish there was a dark mode option for the app.");
     await page.locator("#feedback-submit").click();
 
     await expect(page.locator(".toast")).toBeVisible();
+    await expect.poll(() => feedbackRequests.length).toBe(1);
+
+    const [captured] = feedbackRequests;
     expect(captured.type).toBe("wish");
     expect(captured.rating).toBe(5);
     expect(captured.message).toContain("dark mode");
@@ -81,7 +82,8 @@ test.describe("feedback form", () => {
   });
 
   test("shows error toast when worker returns error", async ({ page }) => {
-    await page.route(WORKER_URL, async (route) => {
+    await page.unroute(WORKER_ROUTE);
+    await page.route(WORKER_ROUTE, async (route) => {
       await route.fulfill({ status: 502, body: "Bad Gateway" });
     });
 

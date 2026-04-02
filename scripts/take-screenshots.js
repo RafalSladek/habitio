@@ -107,6 +107,15 @@ async function loadWithState(page, state) {
   await page.waitForTimeout(600);
 }
 
+async function focusCoachSection(page) {
+  await page.waitForSelector("#coach-submit", { timeout: 3000 }).catch(() => {});
+  await page.evaluate(() => {
+    const coach = document.getElementById("coach-submit");
+    if (coach) coach.scrollIntoView({ behavior: "instant", block: "center" });
+  });
+  await page.waitForTimeout(350);
+}
+
 async function main() {
   const browser = await chromium.launch({ headless: true });
 
@@ -182,6 +191,7 @@ async function main() {
     await loadWithState(mobile, SEED_STATE);
     await mobile.locator(".nav-tab").nth(3).click();
     await mobile.waitForTimeout(600);
+    await focusCoachSection(mobile);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-settings.png") });
 
     // 8. Consent banner — seeded with consentAnalytics: null so the banner appears
@@ -229,6 +239,7 @@ async function main() {
     await loadWithState(desktop, SEED_STATE);
     await desktop.locator(".nav-tab").nth(3).click();
     await desktop.waitForTimeout(600);
+    await focusCoachSection(desktop);
     await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-settings.png") });
 
     // 12. Desktop modal (add habit open)
