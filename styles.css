@@ -908,6 +908,20 @@ body {
   flex-direction: column;
   gap: 12px;
 }
+.coach-panel-journal {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 20px;
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.coach-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
 .coach-note,
 .coach-empty-note {
   margin: 0;
@@ -976,7 +990,6 @@ body {
 .coach-budget {
   font-size: 11px;
   color: var(--text-muted);
-  font-family: var(--mono);
 }
 .coach-block {
   display: flex;

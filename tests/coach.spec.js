@@ -7,6 +7,11 @@ function dayOffset(days) {
   return new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
 }
 
+async function openJournalSummary(page) {
+  await page.getByRole("button", { name: /Journal/ }).click();
+  await expect(page.locator(".diary-summary")).toBeVisible();
+}
+
 test.describe("ai coach", () => {
   test.beforeEach(async ({ page }) => {
     await resetToDefaultState(page, {
@@ -44,13 +49,46 @@ test.describe("ai coach", () => {
       },
     });
 
-    await page.getByRole("button", { name: /Settings/ }).click();
+    await openJournalSummary(page);
   });
 
-  test("ai coach section is visible in settings", async ({ page }) => {
+  test("coach reflection appears on the journal summary after 3 tracked days", async ({ page }) => {
     await expect(page.locator("#coach-focus")).toBeVisible();
     await expect(page.locator("#coach-include-diary")).toBeVisible();
     await expect(page.locator("#coach-submit")).toBeVisible();
+  });
+
+  test("coach reflection stays locked before 3 tracked days", async ({ page }) => {
+    await resetToDefaultState(page, {
+      profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
+      habits: [
+        {
+          id: "habit-1",
+          name: "Walk 20 minutes",
+          emoji: "🚶",
+          cadence: { type: "daily" },
+          morning: true,
+          createdAt: dayOffset(5),
+        },
+      ],
+      checks: {
+        [dayOffset(0)]: { "habit-1": true },
+        [dayOffset(1)]: { "habit-1": true },
+      },
+      diary: {
+        [dayOffset(0)]: {
+          grateful: "A calm start.",
+          affirm: "I can keep it simple.",
+          good: "I went for a walk.",
+          better: "I want to keep evenings lighter.",
+        },
+      },
+    });
+
+    await openJournalSummary(page);
+
+    await expect(page.locator("#coach-submit")).toHaveCount(0);
+    await expect(page.getByText(/After 3 tracked days/i)).toBeVisible();
   });
 
   test("posts a compact summary without diary entries by default", async ({ page }) => {
@@ -120,7 +158,7 @@ test.describe("ai coach", () => {
     expect(captured.summary.recent_journal[0].grateful).toContain("Sunny walk");
   });
 
-  test("shows a toast when the worker budget is exhausted", async ({ page }) => {
+  test("shows a toast when the daily coach limit is reached", async ({ page }) => {
     await page.route(COACH_URL, async (route) => {
       await route.fulfill({
         status: 429,
@@ -140,6 +178,6 @@ test.describe("ai coach", () => {
     await page.locator("#coach-submit").click();
 
     await expect(page.locator(".toast")).toBeVisible();
-    await expect(page.locator("#coach-submit")).toHaveText(/Ask AI Coach/i);
+    await expect(page.locator("#coach-submit")).toHaveText(/Get coach reflection/i);
   });
 });

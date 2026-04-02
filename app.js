@@ -1625,6 +1625,7 @@ function renderDiary() {
             .join("") +
           "</div>"
         : "") +
+      renderCoachPanel() +
       '<button class="diary-edit-btn" onclick="diaryStep=0;renderDiary()">← ' +
       t("diary_edit") +
       "</button>" +
@@ -1843,12 +1844,34 @@ function calcProgressWindow(days) {
   };
 }
 
+function hasDiaryContent(entry) {
+  return DIARY_FIELDS.some((field) => String(entry?.[field] || "").trim().length > 0);
+}
+
+function getTrackedDayCount() {
+  const trackedDays = new Set();
+
+  Object.entries(state.checks || {}).forEach(([date, checks]) => {
+    if (checks && Object.values(checks).some(Boolean)) trackedDays.add(date);
+  });
+
+  Object.entries(state.diary || {}).forEach(([date, entry]) => {
+    if (hasDiaryContent(entry)) trackedDays.add(date);
+  });
+
+  return trackedDays.size;
+}
+
+function isCoachUnlocked() {
+  return getTrackedDayCount() >= 3;
+}
+
 function getCoachDiarySummary() {
   if (!state.aiCoach?.includeDiary) return [];
   return Object.keys(state.diary || {})
     .sort((a, b) => b.localeCompare(a))
     .map((date) => ({ date, ...state.diary[date] }))
-    .filter((entry) => DIARY_FIELDS.some((field) => String(entry[field] || "").trim().length > 0))
+    .filter((entry) => hasDiaryContent(entry))
     .slice(0, 3)
     .map((entry) => ({
       date: entry.date,
@@ -1958,12 +1981,6 @@ function formatCoachTimestamp(iso) {
 function renderCoachResultCard() {
   const feedback = state.aiCoach?.lastFeedback;
   if (!feedback) return "";
-  const budget = state.aiCoach.lastBudget;
-  const budgetText = budget
-    ? t("coach_budget_status")
-        .replace("{used}", String(budget.requestsUsed))
-        .replace("{limit}", String(budget.requestsLimit))
-    : "";
   return (
     '<div id="coach-result" class="coach-result">' +
     '<div class="coach-result-header"><div class="coach-result-title">' +
@@ -1986,12 +2003,45 @@ function renderCoachResultCard() {
     '</div><ul class="coach-list">' +
     feedback.next_steps.map((step) => "<li>" + esc(step) + "</li>").join("") +
     "</ul></div>" +
-    (budgetText
-      ? '<div class="coach-budget">' +
-        esc(budgetText) +
-        (state.aiCoach.lastModel ? " · " + esc(state.aiCoach.lastModel) : "") +
-        "</div>"
-      : "") +
+    "</div>"
+  );
+}
+
+function renderCoachPanel() {
+  if (!isCoachUnlocked()) {
+    return (
+      '<div class="coach-panel coach-panel-journal">' +
+      '<div class="coach-section-title">' +
+      t("settings_ai_coach") +
+      "</div>" +
+      '<p class="coach-empty-note">' +
+      t("coach_unlock_note") +
+      "</p></div>"
+    );
+  }
+
+  return (
+    '<div class="coach-panel coach-panel-journal">' +
+    '<div class="coach-section-title">' +
+    t("settings_ai_coach") +
+    "</div>" +
+    '<p class="coach-note">' +
+    t("coach_privacy_note") +
+    "</p>" +
+    '<textarea id="coach-focus" rows="3" placeholder="' +
+    t("coach_focus_placeholder") +
+    '" class="coach-textarea">' +
+    esc(state.aiCoach?.lastFocus || "") +
+    "</textarea>" +
+    '<label class="coach-check"><input id="coach-include-diary" type="checkbox" onchange="setCoachDiaryPreference(this.checked)"' +
+    (state.aiCoach?.includeDiary ? " checked" : "") +
+    "><span>" +
+    t("coach_include_diary") +
+    "</span></label>" +
+    '<button id="coach-submit" onclick="requestCoachFeedback()" class="coach-submit">' +
+    t("coach_submit") +
+    "</button>" +
+    renderCoachResultCard() +
     "</div>"
   );
 }
@@ -2340,7 +2390,9 @@ function renderSettings() {
     t("settings_about") +
     '</div><div class="settings-list"><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🌱</span><span class="setting-label">habit.io ' +
     APP_VERSION +
-    '</span></div><span class="setting-action" style="font-size:11px;font-family:var(--mono)">localStorage</span></div><div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
+    '</span></div><span class="setting-action">' +
+    t("about_on_device") +
+    '</span></div><div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
     t("share_app") +
     '</span></div><span class="setting-action">›</span></div><div class="setting-item" onclick="setConsent(' +
     !state.consentAnalytics +
@@ -2349,32 +2401,6 @@ function renderSettings() {
     '</span><span class="setting-label">' +
     t(state.consentAnalytics ? "analytics_on" : "analytics_off") +
     '</span></div><span class="setting-action">›</span></div></div></div>' +
-    '<div class="settings-section"><div class="settings-title">' +
-    t("settings_ai_coach") +
-    '</div><div class="settings-list"><div class="coach-panel">' +
-    '<p class="coach-note">' +
-    t("coach_privacy_note") +
-    "</p>" +
-    '<textarea id="coach-focus" rows="3" placeholder="' +
-    t("coach_focus_placeholder") +
-    '" class="coach-textarea">' +
-    esc(state.aiCoach?.lastFocus || "") +
-    "</textarea>" +
-    '<label class="coach-check"><input id="coach-include-diary" type="checkbox" onchange="setCoachDiaryPreference(this.checked)"' +
-    (state.aiCoach?.includeDiary ? " checked" : "") +
-    "><span>" +
-    t("coach_include_diary") +
-    "</span></label>" +
-    (!state.habits.length
-      ? '<div class="coach-empty-note">' + t("coach_needs_habit") + "</div>"
-      : "") +
-    '<button id="coach-submit" onclick="requestCoachFeedback()" class="coach-submit"' +
-    (!state.habits.length ? " disabled" : "") +
-    ">" +
-    t("coach_submit") +
-    "</button>" +
-    renderCoachResultCard() +
-    "</div></div></div>" +
     '<div class="settings-section"><div class="settings-title">' +
     t("settings_feedback") +
     '</div><div class="settings-list"><div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">' +
@@ -2464,8 +2490,8 @@ async function requestCoachFeedback() {
   const focusEl = document.getElementById("coach-focus");
   const btnEl = document.getElementById("coach-submit");
   if (!focusEl || !btnEl) return;
-  if (!state.habits.length) {
-    showToast(t("coach_needs_habit"));
+  if (!isCoachUnlocked()) {
+    showToast(t("coach_unlock_toast"));
     return;
   }
 
@@ -2489,7 +2515,7 @@ async function requestCoachFeedback() {
       if (data?.budget) {
         state.aiCoach.lastBudget = data.budget;
         save();
-        renderSettings();
+        renderDiary();
       }
       throw new Error(data?.code || "HTTP_" + res.status);
     }
@@ -2499,7 +2525,7 @@ async function requestCoachFeedback() {
     state.aiCoach.lastModel = data.model || "";
     state.aiCoach.lastRequestedAt = new Date().toISOString();
     save();
-    renderSettings();
+    renderDiary();
     showToast(t("coach_done"));
     trackEvent("ai_coach_success", {
       include_diary: state.aiCoach.includeDiary,
@@ -2515,7 +2541,7 @@ async function requestCoachFeedback() {
   } finally {
     const liveButton = document.getElementById("coach-submit");
     if (liveButton) {
-      liveButton.disabled = !state.habits.length;
+      liveButton.disabled = !isCoachUnlocked();
       liveButton.textContent = t("coach_submit");
     }
   }
