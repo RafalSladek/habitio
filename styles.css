@@ -893,6 +893,110 @@ body {
   color: var(--text-muted);
   font-size: 16px;
 }
+.coach-panel {
+  padding: 14px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.coach-note,
+.coach-empty-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+.coach-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 92px;
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+.coach-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+  cursor: pointer;
+}
+.coach-check input {
+  margin-top: 2px;
+}
+.coach-submit {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2, #4ea8ff));
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.coach-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.coach-result {
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.coach-result-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+.coach-result-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.coach-result-meta,
+.coach-budget {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+}
+.coach-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.coach-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.coach-copy {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text);
+}
+.coach-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+}
 .habit-edit-item {
   display: flex;
   align-items: center;

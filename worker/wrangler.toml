@@ -3,8 +3,27 @@ main = "feedback.js"
 compatibility_date = "2025-01-01"
 account_id = "f589de9fbea97ea0d801299fef71e446"
 
+[ai]
+binding = "AI"
+
+# Optional durable daily coach budgets.
+# Uncomment and replace the IDs after creating the namespace:
+#
+# [[kv_namespaces]]
+# binding = "COACH_BUDGETS"
+# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+# preview_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+[vars]
+COACH_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast"
+COACH_MAX_DAILY_REQUESTS = "5"
+COACH_MAX_DAILY_ESTIMATED_TOKENS = "4500"
+COACH_MAX_INPUT_CHARS = "4000"
+COACH_MAX_OUTPUT_TOKENS = "220"
+
 # Deploy:  wrangler deploy
 # Set token: wrangler secret put GITHUB_TOKEN
 #   (paste a fine-grained PAT with Issues: Read & Write on RafalSladek/habitio)
 #
 # Worker URL: https://habitio-feedback.kryptoroger.workers.dev
+# Coach endpoint: POST https://habitio-feedback.kryptoroger.workers.dev/coach

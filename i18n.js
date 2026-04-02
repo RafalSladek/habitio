@@ -277,6 +277,23 @@ const T = {
     feedback_error: "Failed to send. Please try again.",
     feedback_short: "Please write at least 10 characters.",
     feedback_rating: "How would you rate the app?",
+    settings_ai_coach: "AI Coach",
+    coach_privacy_note:
+      "Your habits stay local by default. AI feedback is only generated when you ask for it, and only the summary below is sent to the worker.",
+    coach_focus_placeholder:
+      "Optional: ask about consistency, mornings, slipping habits, or where to focus next.",
+    coach_include_diary: "Include my 3 most recent journal entries in this request",
+    coach_needs_habit: "Add at least one habit before asking for AI feedback.",
+    coach_submit: "Ask AI Coach",
+    coach_loading: "Thinking…",
+    coach_done: "Fresh coach feedback is ready.",
+    coach_error: "AI coach is unavailable right now. Please try again.",
+    coach_limit: "Today's AI coach budget is used up. Please try again tomorrow.",
+    coach_result_title: "Latest coach feedback",
+    coach_result_encouragement: "Encouragement",
+    coach_result_candid: "Candid feedback",
+    coach_result_next: "Next steps",
+    coach_budget_status: "{used} / {limit} AI coach requests used today",
   },
   de: {
     nav_today: "Heute",

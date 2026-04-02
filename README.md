@@ -34,6 +34,7 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 - **Journal** — daily prompts: gratitude, affirmations, wins, reflection
 - **Stats** — streaks, weekly progress, 28-day heatmap, 30-day performance per habit
 - **Offline-first PWA** — installs on home screen, works without internet
+- **Optional AI coach** — on-demand encouraging but candid feedback via Cloudflare Worker + Workers AI, with compact summaries and daily budget caps
 - **Export / Import** — JSON backup for cross-device migration
 - **Multilingual** — 12 languages: English, Deutsch, Polski, Português, Français, Русский, हिन्दी, Українська, عربي مصري, Shqip, Srpski, Bayrisch
 - **Prefer not to say** — sex option in onboarding and settings for inclusive personalisation
@@ -52,15 +53,27 @@ Files are split for clarity; no build step required.
 | `sw.js`          | Service worker — full offline caching (cache: `habitio_v6`)     |
 | `manifest.json`  | PWA manifest                                                    |
 | `icons/`         | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG    |
+| `worker/`        | Cloudflare Worker for feedback issues + optional AI coach       |
 
 ## Data Storage
 
-All data is stored **client-side only** using the browser's `localStorage` API.
+Core tracking data is stored **client-side** using the browser's `localStorage` API.
 
-- Storage key: `habitio_v6`, format: JSON
-- No backend, no server, no database — works fully offline
+- Storage key: `habitio_v9`, format: JSON
+- Habits, checks, journal, and settings stay local to the device/browser
+- The app works fully offline for tracking, journaling, stats, import, and export
 - Habit IDs use `crypto.randomUUID()` for collision-free tracking
 - Data is local to the device/browser; clearing browser storage deletes all data
+
+### Optional AI Coach
+
+The AI coach is **opt-in and on-demand**:
+
+- No habit data is sent anywhere until the user presses the AI Coach button
+- The browser sends a compact progress summary, not raw `localStorage`
+- Journal text is excluded by default and only sent if the user explicitly enables it
+- The Cloudflare Worker enforces daily request and token-style budget caps before calling Workers AI
+- AI responses are stored only in the user's local browser state unless they export a backup
 
 **Backup & restore:** Export button downloads a JSON file. Import on any device to restore or migrate.
 
@@ -76,11 +89,11 @@ push to main → Playwright tests (desktop + mobile + tablet) → deploy to Page
 
 Lighthouse CI scores (avg of 6 runs — 3 mobile + 3 desktop — per deploy):
 
-| Measured at (UTC)   | Version | Commit                          | Perf | A11y | Best Practices | SEO |
-| ------------------- | ------- | ------------------------------- | ---- | ---- | -------------- | --- |
-| 2026-04-01 23:07    | v2.9    | fix(worker): allow all origin…  |   89 |   90 |             82 | 100 |
-| 2026-04-01 22:58    | v2.9    | feat(ui): v2.9 suggestions      |   90 |   90 |             82 | 100 |
-| 2026-04-01 21:38    | v2.7    | fix(ci): wrangler semver        |   87 |   90 |             82 | 100 |
+| Measured at (UTC) | Version | Commit                         | Perf | A11y | Best Practices | SEO |
+| ----------------- | ------- | ------------------------------ | ---- | ---- | -------------- | --- |
+| 2026-04-01 23:07  | v2.9    | fix(worker): allow all origin… | 89   | 90   | 82             | 100 |
+| 2026-04-01 22:58  | v2.9    | feat(ui): v2.9 suggestions     | 90   | 90   | 82             | 100 |
+| 2026-04-01 21:38  | v2.7    | fix(ci): wrangler semver       | 87   | 90   | 82             | 100 |
 
 > Run `node scripts/update-pagespeed.js` to pull the latest CI run and prepend a new row.
 
@@ -152,13 +165,27 @@ yarn format
 
 Deploy by pushing to `main` — GitHub Actions tests then deploys automatically.
 
+### Cloudflare Worker Setup
+
+The Worker now has two responsibilities:
+
+- `POST /` or `POST /feedback` creates a GitHub issue from in-app feedback
+- `POST /coach` generates AI coach feedback through Workers AI
+
+Required configuration in `worker/wrangler.toml`:
+
+- `GITHUB_TOKEN` secret for feedback issue creation
+- `[ai] binding = "AI"` for Workers AI
+- optional `COACH_BUDGETS` KV namespace for durable daily budget tracking
+- optional coach vars like `COACH_MAX_DAILY_REQUESTS` and `COACH_MAX_OUTPUT_TOKENS`
+
 ### Scripts
 
-| Script | Purpose | Requirements |
-| --- | --- | --- |
-| `node scripts/take-screenshots.js` | Regenerate all `docs/` screenshots (mobile, desktop, tablet) | Local server on `:3000` + Playwright |
-| `node scripts/generate-gif.js` | Create `docs/user-journey.gif` from mobile screenshots | ffmpeg + screenshots already in `docs/` |
-| `node scripts/generate-badges.js` | Update `badges/tests.json` with active test count | — |
+| Script                             | Purpose                                                      | Requirements                            |
+| ---------------------------------- | ------------------------------------------------------------ | --------------------------------------- |
+| `node scripts/take-screenshots.js` | Regenerate all `docs/` screenshots (mobile, desktop, tablet) | Local server on `:3000` + Playwright    |
+| `node scripts/generate-gif.js`     | Create `docs/user-journey.gif` from mobile screenshots       | ffmpeg + screenshots already in `docs/` |
+| `node scripts/generate-badges.js`  | Update `badges/tests.json` with active test count            | —                                       |
 
 ### Regenerating Images & GIF
 

@@ -1,6 +1,9 @@
 const APP_VERSION = "v2.9";
 // Replace with your deployed worker URL after running: wrangler deploy
-const FEEDBACK_WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
+const WORKER_BASE_URL = "https://habitio-feedback.kryptoroger.workers.dev";
+const FEEDBACK_WORKER_URL = WORKER_BASE_URL;
+const COACH_WORKER_URL = WORKER_BASE_URL + "/coach";
+const COACH_DEVICE_KEY = "habitio_ai_device";
 
 const GA_MEASUREMENT_ID = "G-V9TJW7N2VY";
 const GA_SCRIPT_SRC = "https://www.googletagmanager.com/gtag/js?id=" + GA_MEASUREMENT_ID;
@@ -595,6 +598,26 @@ function uid() {
     ? crypto.randomUUID()
     : "h_" + Date.now() + "_" + Math.random().toString(36).slice(2, 9);
 }
+function defaultCoachState() {
+  return {
+    includeDiary: false,
+    lastFocus: "",
+    lastFeedback: null,
+    lastBudget: null,
+    lastModel: "",
+    lastRequestedAt: "",
+  };
+}
+function getCoachDeviceId() {
+  let id = localStorage.getItem(COACH_DEVICE_KEY);
+  if (!id) {
+    id = uid()
+      .replace(/[^a-zA-Z0-9_-]/g, "")
+      .slice(0, 32);
+    localStorage.setItem(COACH_DEVICE_KEY, id);
+  }
+  return id;
+}
 function save() {
   localStorage.setItem("habitio_v9", JSON.stringify(state));
 }
@@ -622,6 +645,7 @@ function load() {
       if (!d.lang) d.lang = "en";
       if (!d.kitsDismissed) d.kitsDismissed = {};
       if (d.consentAnalytics === undefined) d.consentAnalytics = null;
+      d.aiCoach = { ...defaultCoachState(), ...(d.aiCoach || {}) };
       state = d;
       // Persist under new key and clean up old keys
       localStorage.setItem("habitio_v9", JSON.stringify(state));
@@ -645,6 +669,7 @@ function load() {
     lang: "en",
     kitsDismissed: {},
     consentAnalytics: null,
+    aiCoach: defaultCoachState(),
   };
 }
 
@@ -1798,6 +1823,179 @@ function exportData() {
   showToast(t("exported"));
   trackEvent("data_export", {});
 }
+
+function calcProgressWindow(days) {
+  let completed = 0,
+    planned = 0;
+  for (let i = 0; i < days; i++) {
+    const day = addD(new Date(), -i);
+    state.habits.forEach((habit) => {
+      if (habit.createdAt && day < new Date(habit.createdAt)) return;
+      if (!isScheduled(habit, day)) return;
+      planned++;
+      if (state.checks[fmt(day)]?.[habit.id]) completed++;
+    });
+  }
+  return {
+    completed,
+    planned,
+    pct: planned ? Math.round((completed / planned) * 100) : 0,
+  };
+}
+
+function getCoachDiarySummary() {
+  if (!state.aiCoach?.includeDiary) return [];
+  return Object.keys(state.diary || {})
+    .sort((a, b) => b.localeCompare(a))
+    .map((date) => ({ date, ...state.diary[date] }))
+    .filter((entry) => DIARY_FIELDS.some((field) => String(entry[field] || "").trim().length > 0))
+    .slice(0, 3)
+    .map((entry) => ({
+      date: entry.date,
+      grateful: String(entry.grateful || "")
+        .trim()
+        .slice(0, 180),
+      affirm: String(entry.affirm || "")
+        .trim()
+        .slice(0, 180),
+      good: String(entry.good || "")
+        .trim()
+        .slice(0, 180),
+      better: String(entry.better || "")
+        .trim()
+        .slice(0, 180),
+    }));
+}
+
+function coachLanguageLabel(code) {
+  const labels = {
+    en: "English",
+    de: "German",
+    pl: "Polish",
+    pt: "Portuguese",
+    ru: "Russian",
+    fr: "French",
+    hi: "Hindi",
+    uk: "Ukrainian",
+    ar: "Arabic",
+    sq: "Albanian",
+    sr: "Serbian",
+    bar: "Bavarian",
+  };
+  return labels[code] || "English";
+}
+
+function buildCoachPayload(focus) {
+  const todayKey = fmt(new Date());
+  const todayPlanned = state.habits.filter((habit) => {
+    if (habit.createdAt && new Date() < new Date(habit.createdAt)) return false;
+    return isScheduled(habit, new Date());
+  }).length;
+  const todayCompleted = state.habits.filter((habit) => state.checks[todayKey]?.[habit.id]).length;
+  const habits = state.habits
+    .map((habit) => {
+      const stats = calcHabitStats(habit);
+      const phase = getFormationPhase(habit);
+      return {
+        name: habit.name,
+        emoji: habit.emoji,
+        cadence: cadenceLabel(habit.cadence) || "daily",
+        morning: !!habit.morning,
+        streak: stats.streak,
+        completion_30d_pct: stats.pct,
+        scheduled_30d: stats.exp,
+        phase: phase ? phase.key.replace("phase_", "") : "unknown",
+        days_since_created: phase?.days ?? 0,
+      };
+    })
+    .sort((a, b) => a.completion_30d_pct - b.completion_30d_pct)
+    .slice(0, 8);
+  const bestHabit = [...habits].sort(
+    (a, b) => b.completion_30d_pct - a.completion_30d_pct || b.streak - a.streak
+  )[0];
+  const toughestHabit = [...habits].sort(
+    (a, b) => a.completion_30d_pct - b.completion_30d_pct || a.streak - b.streak
+  )[0];
+
+  return {
+    deviceId: getCoachDeviceId(),
+    focus: (focus || "").trim().slice(0, 280),
+    summary: {
+      ui_language: state.lang,
+      reply_language: coachLanguageLabel(state.lang),
+      app_version: APP_VERSION,
+      profile: {
+        age_group: state.profile.ageGroup || "unknown",
+        sex: state.profile.sex || "unknown",
+      },
+      totals: {
+        habits: state.habits.length,
+        today_completed: todayCompleted,
+        today_planned: todayPlanned,
+      },
+      last_7_days: calcProgressWindow(7),
+      last_30_days: calcProgressWindow(30),
+      best_habit: bestHabit || null,
+      toughest_habit: toughestHabit || null,
+      habits,
+      recent_journal: getCoachDiarySummary(),
+    },
+  };
+}
+
+function formatCoachTimestamp(iso) {
+  if (!iso) return "";
+  try {
+    return new Intl.DateTimeFormat(state.lang || "en", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+}
+
+function renderCoachResultCard() {
+  const feedback = state.aiCoach?.lastFeedback;
+  if (!feedback) return "";
+  const budget = state.aiCoach.lastBudget;
+  const budgetText = budget
+    ? t("coach_budget_status")
+        .replace("{used}", String(budget.requestsUsed))
+        .replace("{limit}", String(budget.requestsLimit))
+    : "";
+  return (
+    '<div id="coach-result" class="coach-result">' +
+    '<div class="coach-result-header"><div class="coach-result-title">' +
+    t("coach_result_title") +
+    '</div><div class="coach-result-meta">' +
+    esc(formatCoachTimestamp(state.aiCoach.lastRequestedAt)) +
+    "</div></div>" +
+    '<div class="coach-block"><div class="coach-label">' +
+    t("coach_result_encouragement") +
+    '</div><p class="coach-copy">' +
+    esc(feedback.encouragement) +
+    "</p></div>" +
+    '<div class="coach-block"><div class="coach-label">' +
+    t("coach_result_candid") +
+    '</div><p class="coach-copy">' +
+    esc(feedback.candid_feedback) +
+    "</p></div>" +
+    '<div class="coach-block"><div class="coach-label">' +
+    t("coach_result_next") +
+    '</div><ul class="coach-list">' +
+    feedback.next_steps.map((step) => "<li>" + esc(step) + "</li>").join("") +
+    "</ul></div>" +
+    (budgetText
+      ? '<div class="coach-budget">' +
+        esc(budgetText) +
+        (state.aiCoach.lastModel ? " · " + esc(state.aiCoach.lastModel) : "") +
+        "</div>"
+      : "") +
+    "</div>"
+  );
+}
+
 function shareApp() {
   const url = "https://habitio.rafal-sladek.com/";
   if (navigator.share) {
@@ -2152,6 +2350,32 @@ function renderSettings() {
     t(state.consentAnalytics ? "analytics_on" : "analytics_off") +
     '</span></div><span class="setting-action">›</span></div></div></div>' +
     '<div class="settings-section"><div class="settings-title">' +
+    t("settings_ai_coach") +
+    '</div><div class="settings-list"><div class="coach-panel">' +
+    '<p class="coach-note">' +
+    t("coach_privacy_note") +
+    "</p>" +
+    '<textarea id="coach-focus" rows="3" placeholder="' +
+    t("coach_focus_placeholder") +
+    '" class="coach-textarea">' +
+    esc(state.aiCoach?.lastFocus || "") +
+    "</textarea>" +
+    '<label class="coach-check"><input id="coach-include-diary" type="checkbox" onchange="setCoachDiaryPreference(this.checked)"' +
+    (state.aiCoach?.includeDiary ? " checked" : "") +
+    "><span>" +
+    t("coach_include_diary") +
+    "</span></label>" +
+    (!state.habits.length
+      ? '<div class="coach-empty-note">' + t("coach_needs_habit") + "</div>"
+      : "") +
+    '<button id="coach-submit" onclick="requestCoachFeedback()" class="coach-submit"' +
+    (!state.habits.length ? " disabled" : "") +
+    ">" +
+    t("coach_submit") +
+    "</button>" +
+    renderCoachResultCard() +
+    "</div></div></div>" +
+    '<div class="settings-section"><div class="settings-title">' +
     t("settings_feedback") +
     '</div><div class="settings-list"><div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">' +
     '<select id="feedback-type" class="lang-select">' +
@@ -2232,6 +2456,70 @@ async function submitFeedback() {
     btnEl.textContent = t("feedback_submit");
   }
 }
+function setCoachDiaryPreference(checked) {
+  state.aiCoach.includeDiary = !!checked;
+  save();
+}
+async function requestCoachFeedback() {
+  const focusEl = document.getElementById("coach-focus");
+  const btnEl = document.getElementById("coach-submit");
+  if (!focusEl || !btnEl) return;
+  if (!state.habits.length) {
+    showToast(t("coach_needs_habit"));
+    return;
+  }
+
+  const focus = (focusEl.value || "").trim();
+  state.aiCoach.lastFocus = focus;
+  save();
+
+  btnEl.disabled = true;
+  btnEl.textContent = t("coach_loading");
+
+  try {
+    const payload = buildCoachPayload(focus);
+    const res = await fetch(COACH_WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      if (data?.budget) {
+        state.aiCoach.lastBudget = data.budget;
+        save();
+        renderSettings();
+      }
+      throw new Error(data?.code || "HTTP_" + res.status);
+    }
+
+    state.aiCoach.lastFeedback = data.feedback;
+    state.aiCoach.lastBudget = data.budget || null;
+    state.aiCoach.lastModel = data.model || "";
+    state.aiCoach.lastRequestedAt = new Date().toISOString();
+    save();
+    renderSettings();
+    showToast(t("coach_done"));
+    trackEvent("ai_coach_success", {
+      include_diary: state.aiCoach.includeDiary,
+      habits_count: state.habits.length,
+    });
+  } catch (error) {
+    const message = String(error?.message || "");
+    showToast(message.includes("daily_") ? t("coach_limit") : t("coach_error"));
+    trackEvent("ai_coach_error", {
+      include_diary: state.aiCoach.includeDiary,
+      habits_count: state.habits.length,
+    });
+  } finally {
+    const liveButton = document.getElementById("coach-submit");
+    if (liveButton) {
+      liveButton.disabled = !state.habits.length;
+      liveButton.textContent = t("coach_submit");
+    }
+  }
+}
 function delHabit(id) {
   if (!confirm(t("confirm_delete"))) return;
   const dh = state.habits.find((h) => h.id === id);
@@ -2257,6 +2545,9 @@ function resetData() {
     diary: {},
     profile: { name: "", age: "", sex: "male" },
     lang: state.lang,
+    kitsDismissed: {},
+    consentAnalytics: state.consentAnalytics,
+    aiCoach: defaultCoachState(),
   };
   save();
   location.reload();

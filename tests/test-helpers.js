@@ -33,6 +33,14 @@ function createState(overrides = {}) {
     lang: "en",
     kitsDismissed: {},
     consentAnalytics: false,
+    aiCoach: {
+      includeDiary: false,
+      lastFocus: "",
+      lastFeedback: null,
+      lastBudget: null,
+      lastModel: "",
+      lastRequestedAt: "",
+    },
   };
 
   return {
@@ -104,16 +112,12 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
 
       // Use a timestamp exactly daysOld * 86400000 ms ago so that
       // Math.floor((Date.now() - new Date(createdAt)) / 86400000) === daysOld
-      const createdAt = new Date(Date.now() - daysOld * 86400000)
-        .toISOString()
-        .slice(0, 10);
+      const createdAt = new Date(Date.now() - daysOld * 86400000).toISOString().slice(0, 10);
 
       /** @type {Record<string, Record<string, boolean>>} */
       const checks = {};
       for (let i = 0; i < checkedDaysBack; i++) {
-        const key = new Date(Date.now() - i * 86400000)
-          .toISOString()
-          .slice(0, 10);
+        const key = new Date(Date.now() - i * 86400000).toISOString().slice(0, 10);
         checks[key] = { [id]: true };
       }
 
