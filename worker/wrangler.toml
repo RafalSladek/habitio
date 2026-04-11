@@ -1,7 +1,7 @@
 name = "habitio-feedback"
 main = "feedback.js"
 compatibility_date = "2025-01-01"
-account_id = "f589de9fbea97ea0d801299fef71e446"
+account_id = "ec54fc24baed2216d78fece71a99d28f"
 
 [ai]
 binding = "AI"
@@ -25,5 +25,5 @@ COACH_MAX_OUTPUT_TOKENS = "220"
 # Set token: wrangler secret put GITHUB_TOKEN
 #   (paste a fine-grained PAT with Issues: Read & Write on RafalSladek/habitio)
 #
-# Worker URL: https://habitio-feedback.kryptoroger.workers.dev
-# Coach endpoint: POST https://habitio-feedback.kryptoroger.workers.dev/coach
+# Worker URL: https://habitio-feedback.rafal-sladek.workers.dev
+# Coach endpoint: POST https://habitio-feedback.rafal-sladek.workers.dev/coach

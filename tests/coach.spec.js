@@ -1,7 +1,7 @@
 // @ts-check
 const { test, expect, resetToDefaultState } = require("./test-helpers");
 
-const COACH_URL = "https://habitio-feedback.kryptoroger.workers.dev/coach";
+const COACH_URL = "https://habitio-feedback.rafal-sladek.workers.dev/coach";
 
 function dayOffset(days) {
   return new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);

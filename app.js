@@ -1,6 +1,6 @@
 const APP_VERSION = "v2.9";
 // Replace with your deployed worker URL after running: wrangler deploy
-const WORKER_BASE_URL = "https://habitio-feedback.kryptoroger.workers.dev";
+const WORKER_BASE_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
 const FEEDBACK_WORKER_URL = WORKER_BASE_URL;
 const COACH_WORKER_URL = WORKER_BASE_URL + "/coach";
 const COACH_DEVICE_KEY = "habitio_ai_device";

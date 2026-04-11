@@ -1,8 +1,8 @@
 // @ts-check
 const { test, expect, resetToDefaultState } = require("./test-helpers");
 
-const WORKER_URL = "https://habitio-feedback.kryptoroger.workers.dev";
-const WORKER_ROUTE = "**habitio-feedback.kryptoroger.workers.dev**";
+const WORKER_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
+const WORKER_ROUTE = "**habitio-feedback.rafal-sladek.workers.dev**";
 
 test.describe("feedback form", () => {
   /** @type {Array<Record<string, any>>} */
