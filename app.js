@@ -1100,7 +1100,8 @@ function buildHabitHtml(h, ch) {
 function renderHabits() {
   const c = document.getElementById("habits-list");
   if (!state.habits.length) {
-    const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+    const langQuotes = T[state.lang]?.quotes || T.en.quotes;
+    const q = langQuotes[Math.floor(Math.random() * langQuotes.length)];
     c.innerHTML =
       '<div class="onboarding"><div class="onb-icon">🌱</div><div class="onb-title">' +
       t("onb_title") +
@@ -1245,9 +1246,17 @@ function showWelcome() {
   setTimeout(() => document.getElementById("welcome-name").focus(), 300);
 }
 function setWelcomeLang(l) {
+  const savedName = document.getElementById("welcome-name").value;
+  const savedAgeGroup = welcomeAgeGroup;
+  const savedSex = state.profile.sex;
   state.lang = l;
   save();
   showWelcome();
+  document.getElementById("welcome-name").value = savedName;
+  welcomeAgeGroup = savedAgeGroup;
+  renderAgeChips();
+  setSex(savedSex);
+  validateWelcomeForm();
   render();
 }
 function setSex(val) {
