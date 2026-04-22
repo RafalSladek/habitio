@@ -146,6 +146,9 @@ jobs:
       - name: Generate badge endpoints
         run: node scripts/generate-badges.js
 
+      - name: Inject build SHA
+        run: sed -i "s/__BUILD_SHA__/${GITHUB_SHA:0:7}/" app.js
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 

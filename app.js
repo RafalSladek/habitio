@@ -1,4 +1,5 @@
 const APP_VERSION = "v2.9";
+const BUILD_SHA = "__BUILD_SHA__";
 // Replace with your deployed worker URL after running: wrangler deploy
 const WORKER_BASE_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
 const FEEDBACK_WORKER_URL = WORKER_BASE_URL;
@@ -2415,6 +2416,8 @@ function renderSettings() {
     APP_VERSION +
     '</span></div><span class="setting-action">' +
     t("about_on_device") +
+    '</span></div><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🔨</span><span class="setting-label">Build</span></div><span class="setting-action" style="font-family:monospace;font-size:12px">' +
+    (BUILD_SHA.startsWith("__") ? "dev" : BUILD_SHA) +
     '</span></div><div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
     t("share_app") +
     '</span></div><span class="setting-action">›</span></div><div class="setting-item" onclick="setConsent(' +
