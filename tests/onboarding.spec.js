@@ -31,7 +31,7 @@ test.describe("onboarding", () => {
   test("onboarding shows language dropdown with all languages", async ({ page }) => {
     const sel = page.locator(".lang-select").first();
     await expect(sel).toBeVisible();
-    for (const lang of ["en", "de", "pl", "pt", "fr", "ru", "hi", "es", "it", "ro", "nl", "tr", "el", "hr"]) {
+    for (const lang of ["en", "de", "pl", "pt", "fr", "ru", "hi", "es", "it", "ro", "nl", "tr", "el", "hr", "ca"]) {
       await expect(sel.locator(`option[value="${lang}"]`)).toHaveCount(1);
     }
   });

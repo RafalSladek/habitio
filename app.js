@@ -1215,6 +1215,7 @@ function showWelcome() {
   const LANGS = {
     ar: "🇪🇬 عربي مصري",
     bar: "🏔️ Bayrisch",
+    ca: "🏴󠁥󠁳󠁣󠁴󠁿 Català",
     de: "🇩🇪 Deutsch",
     el: "🇬🇷 Ελληνικά",
     en: "🇬🇧 English",
@@ -2344,6 +2345,7 @@ function renderSettings() {
     [
       ["ar", "🇪🇬 عربي مصري"],
       ["bar", "🏔️ Bayrisch"],
+      ["ca", "🏴󠁥󠁳󠁣󠁴󠁿 Català"],
       ["de", "🇩🇪 Deutsch"],
       ["el", "🇬🇷 Ελληνικά"],
       ["en", "🇬🇧 English"],

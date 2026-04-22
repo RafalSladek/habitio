@@ -15,6 +15,7 @@ test.describe("language switching", () => {
     { code: "tr", nav: "Bugün" },
     { code: "el", nav: "Σήμερα" },
     { code: "hr", nav: "Danas" },
+    { code: "ca", nav: "Avui" },
   ];
 
   for (const { code, nav } of NEW_LANGS) {
