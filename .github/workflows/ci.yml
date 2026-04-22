@@ -197,7 +197,6 @@ jobs:
         with:
           urls: |
             https://habitio.rafal-sladek.com/
-            https://rafalsladek.github.io/habitio/
           uploadArtifacts: true
           temporaryPublicStorage: true
           runs: 3

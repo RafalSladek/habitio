@@ -2,7 +2,7 @@
 
 An offline-first PWA habit tracker — personalised by age group and sex, grounded in habit formation science. No account, no backend, no tracking.
 
-**Live app:** https://habitio.rafal-sladek.com/ · [mirror](https://rafalsladek.github.io/habitio/)
+**Live app:** https://habitio.rafal-sladek.com/
 
 [![CI / CD](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/tests.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
