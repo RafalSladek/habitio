@@ -187,3 +187,18 @@ Tests run on 3 projects:
 4. **Missing screenshots:** UI changes require updating screenshots in `docs/`
 5. **Skipping Quality Gate:** Do NOT push if SonarCloud fails
 6. **Wrong date format:** Always use `fmt(d)` for dates, not manual string formatting
+
+## Post-Push: CI Build Check (MANDATORY)
+
+**After every `git push`, wait for the CI build to finish and verify it passes before declaring the task done.**
+
+```bash
+# Watch the run until it completes (Ctrl-C safe — just polls)
+gh run watch $(gh run list --limit 1 --json databaseId -q '.[0].databaseId')
+```
+
+**If the build fails:** 
+- Check the failed job logs in GitHub Actions UI
+- For test failures: run `yarn test` locally, fix the issue, and re-push
+- For SonarCloud Quality Gate failures: run `sonar-scanner` locally, fix issues, and re-push
+- For deploy failures: check the CI logs for details and contact maintainer if needed

@@ -156,9 +156,8 @@ Never change the storage key without migration — users must not lose their hab
 # Watch the run until it completes (Ctrl-C safe — just polls)
 gh run watch $(gh run list --limit 1 --json databaseId -q '.[0].databaseId')
 
-# Then inspect results
-gh run view $(gh run list --limit 1 --json databaseId -q '.[0].databaseId') --json jobs \
-  | python -c "import sys,json; jobs=json.load(sys.stdin)['jobs']; [print(j['name'], j['conclusion'], [s['name'] for s in j['steps'] if s['conclusion']=='failure']) for j in jobs]"
+# Then inspect results (optional — check GitHub Actions UI instead)
+gh run view $(gh run list --limit 1 --json databaseId -q '.[0].databaseId') --json jobs
 ```
 
 **If any job fails:**
