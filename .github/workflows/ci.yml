@@ -83,7 +83,9 @@ jobs:
           path: coverage-artifacts
 
       - name: Merge coverage reports
-        run: cat coverage-artifacts/coverage-lcov-*/lcov.info > coverage/lcov.info
+        run: |
+          mkdir -p coverage
+          cat coverage-artifacts/coverage-lcov-*/lcov.info > coverage/lcov.info
 
       - name: Compute deploy version
         id: version
