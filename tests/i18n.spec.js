@@ -40,3 +40,23 @@ test("coach translations exist for every locale", async () => {
 
   expect(missingByLocale).toEqual({});
 });
+
+test("every locale defines every english translation key", async () => {
+  const source = fs.readFileSync(path.join(__dirname, "..", "i18n.js"), "utf8");
+  const sandbox = {};
+  vm.runInNewContext(source + "\nthis.__translations = T;", sandbox);
+
+  const translations = /** @type {Record<string, Record<string, unknown>>} */ (sandbox.__translations);
+  const englishKeys = Object.keys(translations.en);
+  const incompleteByLocale = Object.fromEntries(
+    Object.entries(translations)
+      .filter(([locale]) => locale !== "en")
+      .map(([locale, strings]) => [
+        locale,
+        englishKeys.filter((key) => !(key in strings) || strings[key] === undefined),
+      ])
+      .filter(([, missing]) => missing.length)
+  );
+
+  expect(incompleteByLocale).toEqual({});
+});
