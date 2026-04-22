@@ -2730,3 +2730,83 @@ if (state.consentAnalytics === null) {
   trackPageView("habit.io", location.href);
 }
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+
+function initPullToRefresh() {
+  const THRESHOLD = 65;
+  let startY = 0;
+  let pulling = false;
+
+  const el = document.createElement("div");
+  el.className = "ptr-indicator";
+  el.textContent = "↓";
+  document.body.appendChild(el);
+
+  function getScrollContainer() {
+    return Array.from(document.querySelectorAll(".habits-scroll, .page-scroll")).find(
+      (c) => c.offsetParent !== null
+    );
+  }
+
+  function setTranslate(dy) {
+    const clamped = Math.min(dy, THRESHOLD + 20);
+    el.style.transform = `translateX(-50%) translateY(${clamped - 64}px)`;
+  }
+
+  document.addEventListener(
+    "touchstart",
+    (e) => {
+      const sc = getScrollContainer();
+      if (!sc || sc.scrollTop > 0) return;
+      startY = e.touches[0].clientY;
+      pulling = true;
+    },
+    { passive: true }
+  );
+
+  document.addEventListener(
+    "touchmove",
+    (e) => {
+      if (!pulling) return;
+      const dy = e.touches[0].clientY - startY;
+      if (dy <= 0) {
+        pulling = false;
+        setTranslate(0);
+        return;
+      }
+      setTranslate(dy);
+    },
+    { passive: true }
+  );
+
+  document.addEventListener("touchend", () => {
+    if (!pulling) return;
+    pulling = false;
+
+    const currentTransform = el.style.transform;
+    const match = currentTransform.match(/translateY\(([^p]+)px\)/);
+    const currentOffset = match ? parseFloat(match[1]) : -64;
+    const dy = currentOffset + 64;
+
+    if (dy >= THRESHOLD) {
+      el.textContent = "↻";
+      el.classList.add("ptr-spinning");
+      el.style.transform = "translateX(-50%) translateY(0)";
+      setTimeout(() => {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.getRegistration().then((reg) => {
+            if (reg) reg.update();
+          });
+        }
+        location.reload();
+      }, 1000);
+    } else {
+      el.style.transition = "transform 0.3s ease";
+      setTranslate(0);
+      setTimeout(() => {
+        el.style.transition = "";
+      }, 300);
+    }
+  });
+}
+
+initPullToRefresh();
