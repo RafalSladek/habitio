@@ -20,6 +20,8 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 
 ## User Journey
 
+Improve your life with science-backed habits — personalised, private, and offline-first. No account needed.
+
 <p align="center">
   <img src="docs/user-journey.gif" alt="habit.io user journey — onboarding, consent, tracker, add habit, journal, stats, settings" width="393">
 </p>
