@@ -67,7 +67,7 @@ test.describe("feedback form", () => {
   test("POSTs correct payload to worker", async ({ page }, testInfo) => {
     // Skip on iPhone 12 due to route interception issues on smaller viewports
     if (testInfo.project.name === "iPhone 12") {
-      test.skip();
+      testInfo.skip();
     }
 
     await page.locator("#feedback-type").selectOption("wish");

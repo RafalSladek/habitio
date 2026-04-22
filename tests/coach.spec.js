@@ -91,10 +91,10 @@ test.describe("ai coach", () => {
     await expect(page.getByText(/After 3 tracked days/i)).toBeVisible();
   });
 
-  test("posts a compact summary without diary entries by default", async ({ page, browserName }, testInfo) => {
+  test("posts a compact summary without diary entries by default", async ({ page }, testInfo) => {
     // Skip on iPhone 12 due to route interception issues on smaller viewports
     if (testInfo.project.name === "iPhone 12") {
-      test.skip();
+      testInfo.skip();
     }
 
     let captured;
@@ -134,7 +134,7 @@ test.describe("ai coach", () => {
   test("includes recent journal entries when requested", async ({ page }, testInfo) => {
     // Skip on iPhone 12 due to route interception issues on smaller viewports
     if (testInfo.project.name === "iPhone 12") {
-      test.skip();
+      testInfo.skip();
     }
 
     let captured;
