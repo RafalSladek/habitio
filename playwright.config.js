@@ -35,5 +35,9 @@ module.exports = defineConfig({
         viewport: { width: 768, height: 1024 },
       },
     },
+    {
+      name: "iPhone 12",
+      use: { ...devices["iPhone 12"] },
+    },
   ],
 });

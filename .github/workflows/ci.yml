@@ -17,11 +17,13 @@ jobs:
   test:
     name: Playwright Tests - ${{ matrix.project }}
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.40.0-jammy
     permissions:
       contents: read
     strategy:
       matrix:
-        project: ["Desktop Chrome", "Mobile Chrome", "Tablet"]
+        project: ["Desktop Chrome", "Mobile Chrome", "Tablet", "iPhone 12"]
     steps:
       - uses: actions/checkout@v4
 
@@ -34,9 +36,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox
 
       - name: Run tests - ${{ matrix.project }}
         run: npx playwright test --project="${{ matrix.project }}"
