@@ -38,7 +38,7 @@ Improve your life with science-backed habits — personalised, private, and offl
 - **Offline-first PWA** — installs on home screen, works without internet
 - **Optional AI coach** — on-demand encouraging but candid feedback via Cloudflare Worker + Workers AI, with compact summaries and daily budget caps
 - **Export / Import** — JSON backup for cross-device migration
-- **Multilingual** — 12 languages: English, Deutsch, Polski, Português, Français, Русский, हिन्दी, Українська, عربي مصري, Shqip, Srpski, Bayrisch
+- **Multilingual** — 20 languages: English, Deutsch, Polski, Português, Français, Русский, हिन्दी, Українська, عربي مصري, Shqip, Srpski, Bayrisch, Español, Italiano, Română, Nederlands, Türkçe, Ελληνικά, Hrvatski, Català
 - **Prefer not to say** — sex option in onboarding and settings for inclusive personalisation
 
 ## Architecture
@@ -49,7 +49,7 @@ Files are split for clarity; no build step required.
 | ---------------- | --------------------------------------------------------------------------------------- |
 | `index.html`     | App shell and markup                                                                    |
 | `styles.css`     | All styles                                                                              |
-| `i18n.js`        | All translations (12 languages) + `t()`, `DN()`, `MN()` helpers                         |
+| `i18n.js`        | All translations (20 languages) + `t()`, `DN()`, `MN()` helpers                         |
 | `app.js`         | All application logic                                                                   |
 | `suggestions.js` | Habit suggestion data with demographic scoring                                          |
 | `sw.js`          | Service worker — network-first app shell + offline cache fallback (cache: `habitio_v9`) |

@@ -6,7 +6,7 @@
 
 - **Live app:** https://habitio.rafal-sladek.com/ 
 - **Deploy:** Push to `main` → GitHub Actions tests → auto-deploy to GitHub Pages
-- **Languages:** 12 languages supported in i18n.js
+- **Languages:** 20 languages supported in i18n.js
 
 ## Build, Test, and Lint Commands
 
@@ -63,7 +63,7 @@ npx serve . -p 3000
 | `index.html` | App shell and markup | ~278 |
 | `app.js` | All application logic | ~2,084 |
 | `styles.css` | All styles (single file) | ~2,138 |
-| `i18n.js` | Translations for 12 languages | ~2,883 |
+| `i18n.js` | Translations for 20 languages | ~2,883 |
 | `suggestions.js` | Habit suggestions with demographic scoring | ~500 |
 | `sw.js` | Service worker (stale-while-revalidate caching) | ~50 |
 

@@ -11,7 +11,7 @@ A **zero-dependency, offline-first Progressive Web App** for habit tracking. No 
 ```
 index.html          -> App shell + meta tags + structured data
 +-- styles.css      -> All styles (dark-only theme, CSS variables)
-+-- i18n.js         -> Translation object (12 languages, ~200 keys each)
++-- i18n.js         -> Translation object (20 languages, ~200 keys each)
 +-- suggestions.js  -> Habit suggestion data with demographic scoring
 +-- app.js          -> All application logic (~2,700 lines)
 +-- sw.js           -> Service worker (offline caching)
@@ -92,7 +92,7 @@ Habits flagged `morning: true` are visually separated and grouped at the top of 
 
 ## 5. Internationalization (i18n)
 
-A single `T` object in `i18n.js` holds all translations for **12 languages**: en, de, pl, pt, ru, fr, hi, uk, ar, sq, sr, bar (Bavarian).
+A single `T` object in `i18n.js` holds all translations for **20 languages**: en, de, pl, pt, ru, fr, hi, uk, ar, sq, sr, bar (Bavarian), es, it, ro, nl, tr, el, hr, ca (Catalan).
 
 ```javascript
 t("nav_today")  // -> looks up T[state.lang]["nav_today"]
@@ -195,7 +195,7 @@ Auto-generates sequential deploy tags (`deploy-001`, `deploy-002`, ...) with cha
 | Network-first app shell          | Fresh deploys appear on first reload while staying offline-capable |
 | Evidence-based suggestions       | Differentiation --- not just random habits           |
 | 66-day formation arc             | Science-backed motivation mechanic                   |
-| 12 languages                     | Broad accessibility without a library                |
+| 20 languages                     | Broad accessibility without a library                |
 | Dark-only theme                  | Simpler CSS, matches habit-tracking UX patterns      |
 | Consent-gated analytics          | GDPR compliance, privacy respect                     |
 

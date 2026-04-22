@@ -16,7 +16,7 @@ Files are split for clarity; no build step required:
 | ---------------- | -------------------------------------------------------------------------------------------- |
 | `index.html`     | App shell and markup (~240 lines)                                                            |
 | `styles.css`     | All styles                                                                                   |
-| `i18n.js`        | All translations (`T` object, 12 languages) + `t()`, `DN()`, `MN()` helpers                  |
+| `i18n.js`        | All translations (`T` object, 20 languages) + `t()`, `DN()`, `MN()` helpers                  |
 | `app.js`         | All application logic (~1 800 lines)                                                         |
 | `suggestions.js` | Habit suggestion data with demographic scoring                                               |
 | `sw.js`          | Service worker — network-first app shell + offline cache fallback (cache name: `habitio_v9`) |
