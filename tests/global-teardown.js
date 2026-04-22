@@ -34,7 +34,7 @@ module.exports = async function globalTeardown() {
   const files = fs.readdirSync(nycOutput).filter((f) => f.endsWith(".json"));
   if (!files.length) return;
 
-  const SOURCE_FILES = new Set(["app.js", "suggestions.js"]);
+  const SOURCE_FILES = new Set(["app.js", "suggestions.js", "i18n.js"]);
   const coverageMap = libCoverage.createCoverageMap({});
 
   for (const file of files) {
