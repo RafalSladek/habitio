@@ -179,6 +179,49 @@ Tests run on 3 projects:
 - Mobile Chrome (Pixel 5, 393×851)
 - Tablet (768×1024)
 
+## Adding New Language Support
+
+To add a new language (e.g., Spanish `es`):
+
+1. **Add translation object to `i18n.js`**:
+   - Copy the entire English (`en`) object as a template
+   - Rename it to the language code (e.g., `es`)
+   - Translate every key to the target language
+   - Ensure 100% key parity with English — missing keys will break functionality
+   - Update all motivational messages, habit suggestions, day/month abbreviations, and tooltips
+
+2. **Update language selector in `app.js`**:
+   - Find `const LANGUAGES = [...]` and add your language: `{ key: "es", name: "🇪🇸 Español" }`
+   - Keep languages alphabetically ordered by name within their region grouping
+   - Include flag emoji for visual recognition
+
+3. **Update `sitemap.xml` for SEO**:
+   - Add a new `<xhtml:link rel="alternate" hreflang="es" href="https://habitio.rafal-sladek.com/"/>` entry
+   - Keep entries alphabetically ordered by hreflang code
+   - This helps search engines understand language variants and improves SEO
+
+4. **Update `manifest.json` if needed**:
+   - Review the `name`, `short_name`, and `description` fields
+   - If they're in English, consider adding localized versions if supported by the PWA spec, or leave as-is for universal recognition
+
+5. **Test thoroughly**:
+   - Manually switch to the new language in the app (Settings → Language)
+   - Verify all UI elements render correctly (no text overflow, emoji displays properly)
+   - Check that habit suggestions work with the new language
+   - Verify translations are contextually appropriate (test on mobile, tablet, and desktop)
+   - Test language persistence across page reloads (localStorage saves selection)
+
+6. **Update documentation**:
+   - Update `CLAUDE.md` to list the new language count (e.g., "12 languages" → "13 languages")
+   - Update `README.md` if language count is mentioned
+   - Update `.github/copilot-instructions.md` if it references language count
+
+7. **Commit with version bump**:
+   - No localStorage schema change needed — just new translation strings
+   - However, if new UI copy was added, may need version bump for cache invalidation
+   - Run `yarn test` to ensure all tests still pass with the new language
+   - Run `sonar-scanner` to verify code quality
+
 ## Common Pitfalls
 
 1. **Forgetting to bump SW cache:** When localStorage version changes, SW cache must also change
