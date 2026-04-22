@@ -12,23 +12,23 @@
 
 Files are split for clarity; no build step required:
 
-| File | Purpose |
-|---|---|
-| `index.html` | App shell and markup (~240 lines) |
-| `styles.css` | All styles |
-| `i18n.js` | All translations (`T` object, 12 languages) + `t()`, `DN()`, `MN()` helpers |
-| `app.js` | All application logic (~1 800 lines) |
-| `suggestions.js` | Habit suggestion data with demographic scoring |
-| `sw.js` | Service worker — full offline caching (cache name: `habitio_v7`) |
-| `manifest.json` | PWA manifest |
-| `icons/` | Favicon, app icons (16, 32, 192, 512px + SVG), hero-onboarding.webp/png |
+| File             | Purpose                                                                                      |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| `index.html`     | App shell and markup (~240 lines)                                                            |
+| `styles.css`     | All styles                                                                                   |
+| `i18n.js`        | All translations (`T` object, 12 languages) + `t()`, `DN()`, `MN()` helpers                  |
+| `app.js`         | All application logic (~1 800 lines)                                                         |
+| `suggestions.js` | Habit suggestion data with demographic scoring                                               |
+| `sw.js`          | Service worker — network-first app shell + offline cache fallback (cache name: `habitio_v9`) |
+| `manifest.json`  | PWA manifest                                                                                 |
+| `icons/`         | Favicon, app icons (16, 32, 192, 512px + SVG), hero-onboarding.webp/png                      |
 
 ## Data Storage
 
 All user data is stored **client-side only**:
 
 - API: `localStorage`
-- Key: `habitio_v7`
+- Key: `habitio_v9`
 - Format: JSON-serialized state object: `{ habits[], checks{}, diary{}, profile{name,age,ageGroup,sex}, lang, kitsDismissed{}, consentAnalytics }`
 - No backend, no sync, no accounts
 
@@ -48,6 +48,7 @@ Export/import via JSON file is the only cross-device migration path. Do not intr
 ## CI / CD
 
 GitHub Actions (`.github/workflows/ci.yml`):
+
 - `test` job: Playwright e2e tests (Desktop Chrome + Pixel 5 mobile + iPad tablet)
 - `sonar` job: SonarCloud quality gate (needs: test)
 - `deploy` job: deploys to GitHub Pages only if `test` + `sonar` pass
@@ -63,7 +64,7 @@ GitHub Actions (`.github/workflows/ci.yml`):
 - **No cache** — stateless compute, no invalidation needed after deploy
 - **Manual deploy**: `cd worker && npx wrangler deploy`
 - **Set/rotate token**: `cd worker && npx wrangler secret put GITHUB_TOKEN`
-- **GitHub secret required**: add `CLOUDFLARE_API_TOKEN` (Cloudflare dashboard → My Profile → API Tokens → create token with *Cloudflare Workers Scripts: Edit* permission) to repo secrets for CI auto-deploy
+- **GitHub secret required**: add `CLOUDFLARE_API_TOKEN` (Cloudflare dashboard → My Profile → API Tokens → create token with _Cloudflare Workers Scripts: Edit_ permission) to repo secrets for CI auto-deploy
 
 ## Performance / Accessibility Notes
 
@@ -82,23 +83,26 @@ GitHub Actions (`.github/workflows/ci.yml`):
 
 ## Service Worker & Caching
 
-The SW uses **stale-while-revalidate** for all same-origin app shell files (`app.js`, `styles.css`, `index.html`, etc.):
-- Cache is served immediately (fast, works offline)
-- Network fetch always runs in background to refresh the cache
-- Result: users see the new version on the **next** page load after a deploy (one reload lag)
+The SW uses **network-first** for same-origin app shell files (`index.html`, `app.js`, `i18n.js`, `suggestions.js`, `styles.css`, manifest, and core icons):
 
-**SW cache name must always match the localStorage key** (`CACHE` in `sw.js` = `habitio_v7`).
-- When the localStorage key is bumped (e.g. `habitio_v7` → `habitio_v8`), update `CACHE` in `sw.js` to the same value
+- When online, the latest deployed file is returned on the first reload
+- When offline, the cached shell is used so the app still works
+- Other same-origin assets still use stale-while-revalidate for a good offline/perf balance
+
+**SW cache name must always match the localStorage key** (`CACHE` in `sw.js` = `habitio_v9`).
+
+- When the localStorage key is bumped (e.g. `habitio_v9` → `habitio_v10`), update `CACHE` in `sw.js` to the same value
 - This keeps a single version number across both systems — one bump covers both the data schema migration and the asset cache bust
 - Without bumping, users who haven't visited since the last SW version change will keep getting old cached files
 
-**Why not instant updates?**
+**Why not instant no-reload updates?**
 GitHub Pages sets `Cache-Control: max-age=600` (10 min) — nothing can be done about that.
-Without asset fingerprinting (e.g. `app.a1b2c3.js`) there is no way to achieve zero-reload updates. One reload is the best achievable without a build tool.
+Without asset fingerprinting (e.g. `app.a1b2c3.js`) there is no way to guarantee truly live updates in an already-open tab. First reload is the best achievable without a build tool.
 
 ## Data Migration
 
-When bumping the localStorage version key (e.g. `habitio_v7` → `habitio_v8`), always implement a migration layer in `app.js` that:
+When bumping the localStorage version key (e.g. `habitio_v9` → `habitio_v10`), always implement a migration layer in `app.js` that:
+
 1. Reads any older version keys on startup
 2. Migrates the data shape to the new format
 3. Saves under the new key and deletes the old one
@@ -158,6 +162,7 @@ gh run view $(gh run list --limit 1 --json databaseId -q '.[0].databaseId') --js
 ```
 
 **If any job fails:**
+
 1. Read the failure log: `gh run view <run-id> --log 2>&1 | grep -A 20 "<failed-step-name>"`
 2. For SonarCloud Quality Gate failures — check which condition failed:
    - **Coverage < 80% on new code**: identify uncovered file via `mcp__sonarqube__search_files_by_coverage` + `mcp__sonarqube__get_file_coverage_details`, then either add the file to `SOURCE_FILES` in `tests/global-teardown.js` or add tests that exercise the new code

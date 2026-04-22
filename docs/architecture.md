@@ -104,15 +104,16 @@ HTML elements use `data-t="key"` attributes for automatic translation. Motivatio
 
 ## 6. Offline-First with Service Worker
 
-`sw.js` implements **stale-while-revalidate** for app shell assets:
+`sw.js` uses **network-first** for app shell assets and **stale-while-revalidate** for other same-origin assets:
 
-1. **Install**: Pre-caches 16 assets (HTML, CSS, JS, icons)
-2. **Fetch**: Serves from cache immediately, fetches network in background to update cache
-3. **Activate**: Cleans up old cache versions
+1. **Install**: Pre-caches the core HTML, CSS, JS, manifest, and icon assets
+2. **Fetch (app shell)**: Tries the network first so deploys show up on the first reload, then falls back to cache offline
+3. **Fetch (other same-origin assets)**: Serves cache immediately and refreshes in background
+4. **Activate**: Cleans up old cache versions
 
 User data lives in `localStorage` (not the SW cache), so it is always available offline. The cache name (`habitio_v9`) is kept in sync with the localStorage key --- bumping one bumps both.
 
-**Trade-off**: Users see the new version on the *second* visit after a deploy (one-reload lag). This is the best achievable without a build step and asset fingerprinting.
+**Trade-off**: Users still need a reload to pick up new code that was deployed after the page was already open. Without a build step and asset fingerprinting, first reload is the best achievable behavior.
 
 ---
 
@@ -191,7 +192,7 @@ Auto-generates sequential deploy tags (`deploy-001`, `deploy-002`, ...) with cha
 | No framework                     | Simplicity, no build step, instant deploys           |
 | No backend (except worker)       | Privacy, offline-first, zero ops                     |
 | localStorage over IndexedDB      | Simpler API, sufficient for habit data               |
-| Stale-while-revalidate           | Best offline UX without asset fingerprinting         |
+| Network-first app shell          | Fresh deploys appear on first reload while staying offline-capable |
 | Evidence-based suggestions       | Differentiation --- not just random habits           |
 | 66-day formation arc             | Science-backed motivation mechanic                   |
 | 12 languages                     | Broad accessibility without a library                |

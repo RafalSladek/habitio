@@ -9,6 +9,8 @@ const PRECACHE = [
   "./i18n.js",
   "./manifest.json",
   "./favicon.ico",
+  "./icons/icon-16.png",
+  "./icons/icon-32.png",
   "./icons/icon.svg",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
@@ -18,6 +20,33 @@ const PRECACHE = [
   "./icons/flags/de.svg",
   "./icons/flags/pl.svg",
 ];
+
+const APP_SHELL_PATHS = [
+  "/index.html",
+  "/styles.css",
+  "/app.js",
+  "/suggestions.js",
+  "/i18n.js",
+  "/manifest.json",
+  "/favicon.ico",
+  "/icons/icon-16.png",
+  "/icons/icon-32.png",
+  "/icons/icon.svg",
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/icons/hero-onboarding.webp",
+  "/icons/hero-onboarding.png",
+];
+
+function matchesPath(pathname, suffix) {
+  return pathname === suffix || pathname.endsWith(suffix);
+}
+
+function isAppShellRequest(request, url) {
+  if (url.origin !== globalThis.location.origin) return false;
+  if (request.mode === "navigate") return true;
+  return APP_SHELL_PATHS.some((suffix) => matchesPath(url.pathname, suffix));
+}
 
 // Install: pre-cache all app shell assets
 globalThis.addEventListener("install", (e) => {
@@ -36,9 +65,10 @@ globalThis.addEventListener("activate", (e) => {
 });
 
 // Fetch strategy:
-// - App shell (same-origin): stale-while-revalidate
+// - App shell (same-origin): network-first with cache fallback
 // - Google Fonts: bypass the service worker and let the browser cache them
-// - Everything else: network-first, fall back to cache
+// - Other same-origin assets: stale-while-revalidate
+// - Everything else: network with cache fallback
 globalThis.addEventListener("fetch", (e) => {
   const { request } = e;
   const url = new URL(request.url);
@@ -52,9 +82,31 @@ globalThis.addEventListener("fetch", (e) => {
     return;
   }
 
-  // App shell (same-origin) — stale-while-revalidate
-  // Serve from cache immediately for speed/offline, but always fetch in
-  // background so the cache is refreshed and the next load is up-to-date.
+  // App shell (same-origin) — network-first
+  // Users should see freshly deployed HTML/JS/translations on the first reload,
+  // while cached files still keep the app working offline.
+  if (isAppShellRequest(request, url)) {
+    e.respondWith(
+      caches.open(CACHE).then(async (c) => {
+        try {
+          const res = await fetch(request);
+          if (res.ok) await c.put(request, res.clone());
+          return res;
+        } catch (err) {
+          const cached = await c.match(request);
+          if (cached) return cached;
+          if (request.mode === "navigate") {
+            const fallback = (await c.match("./")) || (await c.match("./index.html"));
+            if (fallback) return fallback;
+          }
+          throw err;
+        }
+      })
+    );
+    return;
+  }
+
+  // Other same-origin assets — stale-while-revalidate
   if (url.origin === globalThis.location.origin) {
     e.respondWith(
       caches.open(CACHE).then((c) =>
@@ -63,6 +115,7 @@ globalThis.addEventListener("fetch", (e) => {
             if (res.ok) c.put(request, res.clone());
             return res;
           });
+          e.waitUntil(networkFetch.catch(() => {}));
           return cached || networkFetch;
         })
       )

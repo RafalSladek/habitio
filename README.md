@@ -45,17 +45,17 @@ Improve your life with science-backed habits — personalised, private, and offl
 
 Files are split for clarity; no build step required.
 
-| File             | Purpose                                                         |
-| ---------------- | --------------------------------------------------------------- |
-| `index.html`     | App shell and markup                                            |
-| `styles.css`     | All styles                                                      |
-| `i18n.js`        | All translations (12 languages) + `t()`, `DN()`, `MN()` helpers |
-| `app.js`         | All application logic                                           |
-| `suggestions.js` | Habit suggestion data with demographic scoring                  |
-| `sw.js`          | Service worker — full offline caching (cache: `habitio_v6`)     |
-| `manifest.json`  | PWA manifest                                                    |
-| `icons/`         | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG    |
-| `worker/`        | Cloudflare Worker for feedback issues + optional AI coach       |
+| File             | Purpose                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| `index.html`     | App shell and markup                                                                    |
+| `styles.css`     | All styles                                                                              |
+| `i18n.js`        | All translations (12 languages) + `t()`, `DN()`, `MN()` helpers                         |
+| `app.js`         | All application logic                                                                   |
+| `suggestions.js` | Habit suggestion data with demographic scoring                                          |
+| `sw.js`          | Service worker — network-first app shell + offline cache fallback (cache: `habitio_v9`) |
+| `manifest.json`  | PWA manifest                                                                            |
+| `icons/`         | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG                            |
+| `worker/`        | Cloudflare Worker for feedback issues + optional AI coach                               |
 
 ## Data Storage
 

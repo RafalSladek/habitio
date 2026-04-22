@@ -33,3 +33,4 @@
 - [x] **Version bump habitio_v5 → v6** — localStorage key and SW cache name bumped; migration reads v5 and removes old key on first load.
 - [x] **Consent banner i18n** — 5 new keys (`consent_title`, `consent_text`, `consent_note`, `consent_accept`, `consent_decline`) added to all 12 languages. Banner buttons use translated text instead of hardcoded English.
 - [x] **Test GA4 mock** — `mockGoogleAnalytics()` helper added to `test-helpers.js` to intercept gtag network requests in tests. All test storage references updated to `habitio_v6`.
+- [x] **Service worker network-first fetch strategy** — SW changed from stale-while-revalidate to network-first for app shell (`index.html`, `app.js`, `i18n.js`, `suggestions.js`, `styles.css`, manifest, icons) to ensure fresh deploys are seen on first reload while maintaining offline fallback. Created `tests/sw.spec.js` with comprehensive service worker tests. Updated CLAUDE.md and docs to reflect the new caching strategy.
