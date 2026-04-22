@@ -143,3 +143,24 @@ Never change the storage key without migration — users must not lose their hab
 8. **Amend vs new commit**: if the staged changes are a direct fix or addendum to the immediately preceding commit (e.g. a format pass, a forgotten file, a typo fix), amend that commit instead of creating a new one — `git commit --amend`. Create a new commit when the change has independent meaning or the previous commit is already pushed and shared.
 9. **Update `TODO.md`**: add any new tasks completed in this session to `TODO.md` and include it in the same commit as the code changes
 10. **Update docs**: if the architecture, file list, i18n languages, or any dev instructions changed, update `CLAUDE.md` and `README.md` in the same commit
+
+## Post-Push: CI Build Check (MANDATORY)
+
+**After every `git push`, wait for the CI build to finish and verify it passes before declaring the task done.**
+
+```bash
+# Watch the run until it completes (Ctrl-C safe — just polls)
+gh run watch $(gh run list --limit 1 --json databaseId -q '.[0].databaseId')
+
+# Then inspect results
+gh run view $(gh run list --limit 1 --json databaseId -q '.[0].databaseId') --json jobs \
+  | python -c "import sys,json; jobs=json.load(sys.stdin)['jobs']; [print(j['name'], j['conclusion'], [s['name'] for s in j['steps'] if s['conclusion']=='failure']) for j in jobs]"
+```
+
+**If any job fails:**
+1. Read the failure log: `gh run view <run-id> --log 2>&1 | grep -A 20 "<failed-step-name>"`
+2. For SonarCloud Quality Gate failures — check which condition failed:
+   - **Coverage < 80% on new code**: identify uncovered file via `mcp__sonarqube__search_files_by_coverage` + `mcp__sonarqube__get_file_coverage_details`, then either add the file to `SOURCE_FILES` in `tests/global-teardown.js` or add tests that exercise the new code
+   - **Security hotspot unreviewed**: use `mcp__sonarqube__change_security_hotspot_status` to mark SAFE with justification
+   - **Bugs/smells**: fix in code, re-run `yarn test`, push fix
+3. Fix and push. Repeat CI check until all jobs pass.
