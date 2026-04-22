@@ -31,13 +31,21 @@ test.describe("onboarding", () => {
   test("onboarding shows language dropdown with all languages", async ({ page }) => {
     const sel = page.locator(".lang-select").first();
     await expect(sel).toBeVisible();
-    await expect(sel.locator('option[value="en"]')).toHaveCount(1);
-    await expect(sel.locator('option[value="de"]')).toHaveCount(1);
-    await expect(sel.locator('option[value="pl"]')).toHaveCount(1);
-    await expect(sel.locator('option[value="pt"]')).toHaveCount(1);
-    await expect(sel.locator('option[value="fr"]')).toHaveCount(1);
-    await expect(sel.locator('option[value="ru"]')).toHaveCount(1);
-    await expect(sel.locator('option[value="hi"]')).toHaveCount(1);
+    for (const lang of ["en", "de", "pl", "pt", "fr", "ru", "hi", "es", "it", "ro", "nl", "tr", "el", "hr"]) {
+      await expect(sel.locator(`option[value="${lang}"]`)).toHaveCount(1);
+    }
+  });
+
+  test("onboarding language selector is a scrollable listbox", async ({ page }) => {
+    const sel = page.locator(".lang-select").first();
+    await expect(sel).toHaveAttribute("size", "5");
+    await expect(sel).toBeVisible();
+  });
+
+  test("onboarding language change updates UI language", async ({ page }) => {
+    const sel = page.locator(".lang-select").first();
+    await sel.selectOption("de");
+    await expect(page.locator("#wl-name-label")).toHaveText("Dein Vorname");
   });
 
   test("onboarding sets personalised greeting", async ({ page }) => {

@@ -1104,6 +1104,14 @@ body {
   background: var(--surface-2);
   color: var(--text);
 }
+.lang-list {
+  appearance: auto;
+  -webkit-appearance: auto;
+  background: var(--surface-2);
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 4px 8px;
+}
 /* Habit kit card */
 .habit-kit {
   margin: 2px 0 10px;

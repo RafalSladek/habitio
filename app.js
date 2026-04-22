@@ -1233,7 +1233,7 @@ function showWelcome() {
     uk: "🇺🇦 Українська",
   };
   lc.innerHTML =
-    '<select class="lang-select" onchange="setWelcomeLang(this.value)">' +
+    '<select class="lang-select lang-list" size="5" onchange="setWelcomeLang(this.value)">' +
     Object.keys(LANGS)
       .map(
         (l) =>
@@ -2339,7 +2339,7 @@ function renderSettings() {
         )
       : "") +
     '</span><span class="setting-action" style="margin-left:auto">›</span></div><div style="width:100%;padding-left:32px;padding-top:6px">' +
-    '<select class="lang-select" onclick="event.stopPropagation()" onchange="event.stopPropagation();changeLang(this.value)">' +
+    '<select class="lang-select lang-list" size="5" onclick="event.stopPropagation()" onchange="event.stopPropagation();changeLang(this.value)">' +
     [
       ["ar", "🇪🇬 عربي مصري"],
       ["bar", "🏔️ Bayrisch"],
