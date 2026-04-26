@@ -37,7 +37,7 @@ The app supports **20 languages** across 19+ countries:
 
 | Habit | Cadence | Partner | Price | Commission | Rules | Country | Ideas & Starting Points |
 |-------|---------|---------|-------|------------|-------|---------|------------------------|
-| ⏰ Wake Up Early | Daily | [Amazon: The 5 AM Club](https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21) | $12–15 | 5% | Links on book page only | US, UK, CA, DE, FR, ES, IT | **1. Read the book** → [Amazon affiliate](https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21) (US, UK, CA, DE, FR, ES, IT) |
+| ⏰ Wake Up Early | Daily | [Amazon: The 5 AM Club (US/Global)](https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21) | $12–15 | 5% | Links on book page only | US, UK, CA, DE, FR, ES, IT | **1. Read the book** → [US/Global link](https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21) or [Germany link](https://amzn.to/4vMORFP) |
 | | | | | | | | **2. Use phone alarm + calendar reminder** → Worldwide (free) |
 | | | | | | | | **3. Join accountability group** → Worldwide (no affiliate) |
 | 🏃 Morning Workout | Daily | Nike | Free–$300 | 5–8% | Affiliate disclosure required; no direct links on paid ads | US, UK, CA, EU | **1. Get workout gear** → Nike, Adidas (US, UK, CA, EU, AU) |

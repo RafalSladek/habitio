@@ -6,14 +6,15 @@
 
 **✅ LIVE:** 6 product links active in [docs/affiliate.md](affiliate.md)
 
-| Habit | Product | Link |
-|-------|---------|------|
-| ⏰ Wake Up Early | The 5 AM Club | https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21 |
-| 🚫 No Alcohol | This Naked Mind | https://www.amazon.com/dp/B00YFR7C3A?tag=habitio-21 |
-| 🛏️ Sleep by 11pm | Why We Sleep | https://www.amazon.com/dp/B06X9GF5F2?tag=habitio-21 |
-| 🧠 Deep Work Session | Deep Work | https://www.amazon.com/dp/B00X47ZVXM?tag=habitio-21 |
-| 🌙 Screen-Free Evening | Blue Light Glasses | https://www.amazon.com/s?k=blue+light+glasses&tag=habitio-21 |
-| ✍️ Journal / Reflect | Bullet Journal | https://www.amazon.com/s?k=bullet+journal&tag=habitio-21 |
+| Habit | Product | Link | Market |
+|-------|---------|------|--------|
+| ⏰ Wake Up Early | The 5 AM Club | https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21 | Global (US, UK, CA, etc.) |
+| ⏰ Wake Up Early | The 5 AM Club | https://amzn.to/4vMORFP | Germany (DE) |
+| 🚫 No Alcohol | This Naked Mind | https://www.amazon.com/dp/B00YFR7C3A?tag=habitio-21 | Global |
+| 🛏️ Sleep by 11pm | Why We Sleep | https://www.amazon.com/dp/B06X9GF5F2?tag=habitio-21 | Global |
+| 🧠 Deep Work Session | Deep Work | https://www.amazon.com/dp/B00X47ZVXM?tag=habitio-21 | Global |
+| 🌙 Screen-Free Evening | Blue Light Glasses | https://www.amazon.com/s?k=blue+light+glasses&tag=habitio-21 | Global |
+| ✍️ Journal / Reflect | Bullet Journal | https://www.amazon.com/s?k=bullet+journal&tag=habitio-21 | Global |
 
 **Commission:** 5% on books, 5–8% on accessories
 
