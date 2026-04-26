@@ -7,6 +7,12 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 [![CI / CD](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml)
 [![Tests](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/tests.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
 
+**Device Coverage:**
+[![Desktop](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/device-desktop.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+[![Mobile](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/device-pixel-5.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+[![Tablet](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/device-tablet.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+[![iPhone](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/device-iphone-12.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=coverage)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=bugs)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
