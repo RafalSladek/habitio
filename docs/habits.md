@@ -4,6 +4,77 @@ All available habits organized by category with recommended cadence.
 
 ---
 
+## Personalization: Demographics & Habit Scoring
+
+Habit recommendations in **habit.io** are **personalized based on your age group and biological sex**. This means:
+
+- Users see **different habit suggestions** ranked in a different order
+- Each habit has a **priority score** based on your demographic profile
+- Habits are sorted by **relevance** — most important for your age/sex appears first
+
+### Age Groups & Personalization
+
+Your age determines which habits are prioritized:
+
+| Age Group | Range | Examples |
+|-----------|-------|----------|
+| 🧒 Teen | 13–17 | Sleep prioritized; social media detox critical; focus on education |
+| 👨 Young Adult | 18–29 | Savings & compound interest; career building; fitness peaks |
+| 👔 Adult | 30–49 | Protein & metabolism; family time; financial planning |
+| 👴 Midlife | 50–64 | Balance & fall prevention; brain training; volunteering |
+| 🏛️ Senior | 65+ | Social connection (loneliness = 15 cigarettes/day); walking; cognitive engagement |
+
+**Source:** AGE_GROUPS defined in app.js, based on habit formation and longevity research
+
+### Sex-Based Personalization
+
+Biological sex also influences habit priorities:
+
+| Habit Category | Male Priority | Female Priority |
+|---|---|---|
+| Strength Training | Higher | Lower (yoga/flexibility instead) |
+| Protein & Muscle | Higher urgency | — |
+| Coding & STEM | Slightly higher | — |
+| Social Media Detox | — | Much higher (esp. teens) |
+| Evening Routines | — | Slightly higher (metabolism/late eating) |
+
+**Source:** Research by Haidt (2023) on teen girls & social media; Layne Norton on sarcopenia prevention; sex-differentiated habit formation studies
+
+### Scoring Examples
+
+Here's how habits are scored based on demographics:
+
+#### Example 1: Teen Girl
+- **No Social Media**: Score = 7 (teen: 4 + female: 3) → *Ranked #1*
+- **Sleep by 11pm**: Score = 4 → *Ranked #2*
+- **Cold Shower**: Score = 2 → *Lower priority*
+
+#### Example 2: Senior Man
+- **Call a Friend**: Score = 4 (senior: 4) → *High priority* (prevents isolation-related mortality)
+- **Walking (30 min)**: Score = 4 (senior: 4) → *High priority* (#1 longevity habit 65+)
+- **Balance Exercise**: Score = 4 (senior: 4) → *Fall prevention*
+- **No Alcohol**: Score = 2 (not sex-modified) → *Lower priority*
+
+#### Example 3: Young Adult Male
+- **Savings**: Score = 4 (young: 4) → *Critical* (compound interest window is narrowest in 20s-30s)
+- **Strength Training**: Score = 3 + 1 (male bonus) → *High priority*
+- **Yoga**: Score = 0 (female-biased, not male-scored)
+
+### Research Behind Demographic Scoring
+
+The scoring algorithm uses evidence-based research:
+
+| Research | Finding | How It Affects Scoring |
+|---|---|---|
+| **Haidt (2023)** | Social media harms teen girls most | Teen girls get +3 on "No Social Media" |
+| **Holt-Lunstad (2010, 2015)** | Social isolation = 15 cigarettes/day mortality impact; seniors most at-risk | Seniors get +4 on "Call a Friend" & "Volunteer" |
+| **Layne Norton (Sarcopenia)** | Muscle loss accelerates 30+; peak urgency 50+ | Adults/Midlife get +3 on "Strength Training" |
+| **Harvard Study of Adult Development** | Quality relationships predict longevity across all ages | Relationship habits scored for all ages |
+| **Lally et al. (2010)** | 66-day habit formation curve independent of age | Base habit scores not age-modulated; only specific habits are |
+| **Walker (2017)** | Teen sleep needs differ (8–10 hrs); critical for development | Teens get +4 on "Sleep by 11pm" |
+
+---
+
 ## Health & Body
 
 | Emoji | Habit | Cadence | Description | Affiliate Resources |
@@ -107,6 +178,101 @@ All available habits organized by category with recommended cadence.
 ---
 
 ## Research & Science
+
+### Habit Formation & Personalization Algorithm
+
+**The Complete Scoring Table**
+
+Every habit in habit.io has a demographic score defined in the `sugPriority()` function in [app.js](https://github.com/RafalSladek/habitio/blob/main/app.js#L818-L930). Here's the full scoring matrix:
+
+**Legend:**
+- Score of **4** = Critical priority for that demographic
+- Score of **3** = High priority
+- Score of **2** = Moderate priority
+- Score of **1** = Bonus points (sex-specific modifiers)
+- Score of **0** = Not recommended for that demographic
+
+| Habit | Teen | Young | Adult | Mid | Senior | M | F |
+|-------|------|-------|-------|-----|--------|---|---|
+| **HEALTH & BODY** | | | | | | | |
+| Wake Up Early | 1 | 2 | 2 | — | — | — | — |
+| Morning Workout | 2 | 3 | 2 | — | — | — | 1 |
+| Cold Shower | 2 | 3 | — | — | — | 2 | — |
+| Drink 2L Water | 2 | 2 | 2 | 2 | 2 | — | — |
+| Gym | 1 | 3 | 2 | — | — | 2 | — |
+| **Strength Training** | — | — | **3** | **4** | **3** | **1** | — |
+| Yoga / Stretch | — | — | — | 2 | 2 | — | 2 |
+| **Balance Exercise** | — | — | — | **2** | **4** | — | — |
+| No Alcohol | **4** | **3** | 2 | 2 | — | 2 | — |
+| No Sweets | — | 2 | 2 | 2 | — | — | — |
+| No Food After 8pm | — | — | 2 | **3** | — | — | 2 |
+| Take Vitamins | — | — | — | 2 | **3** | — | 2 |
+| High-Protein Meal | — | — | 2 | **3** | **3** | 1 | — |
+| **Sleep by 11pm** | **4** | **3** | 1 | — | — | — | — |
+| Morning Sunlight | 2 | 1 | 2 | 2 | **3** | — | — |
+| Walk 10k Steps | — | — | 1 | 2 | **3** | — | — |
+| **Walk 30 min** | — | — | — | 2 | **4** | — | 1 |
+| Healthy Meal Prep | — | **3** | 2 | — | — | 2 | — |
+| **MIND & FOCUS** | | | | | | | |
+| Read 30 min | **3** | 2 | — | 1 | 2 | — | — |
+| Meditate | — | 2 | **3** | 2 | — | — | 2 |
+| Journal / Reflect | 2 | 2 | — | — | — | — | **3** |
+| Deep Work Session | — | **3** | 2 | — | — | — | — |
+| Breathwork | — | 2 | **3** | 2 | — | — | 2 |
+| Learn Something New | 2 | 2 | 1 | — | 2 | — | — |
+| Brain Training Game | — | — | — | **3** | **4** | — | — |
+| No Coffee Before 10am | **3** | 1 | — | — | — | — | — |
+| Practice Gratitude | 2 | — | 1 | 2 | 2 | — | 2 |
+| **No Porn** | **4** | 2 | — | — | — | **3** | — |
+| **DIGITAL DETOX** | | | | | | | |
+| **No Scrolling** | **4** | 2 | — | — | — | — | **3** |
+| **Offline Day** | **3** | 2 | — | — | — | — | 2 |
+| **No Social Media** | **4** | 2 | — | — | — | — | **3** |
+| Screen-Free Evening | **3** | 1 | 1 | — | — | — | 2 |
+| Phone in Another Room | **3** | — | 1 | — | — | — | — |
+| **RELATIONSHIPS** | | | | | | | |
+| **Call a Friend** | — | 1 | 1 | 2 | **4** | — | — |
+| Play with Kids | — | — | **3** | — | — | — | — |
+| Hug Someone | — | — | 2 | 1 | 2 | — | 1 |
+| Date Night | — | — | 2 | 1 | — | — | — |
+| Write a Thank You | — | — | 1 | 2 | 2 | — | — |
+| Cook for Family | — | 2 | 2 | — | — | 1 | — |
+| **Volunteer / Give Back** | — | — | — | **3** | **4** | — | — |
+| **PRODUCTIVITY** | | | | | | | |
+| Plan Tomorrow | 2 | **3** | 2 | — | — | — | — |
+| Job Search | 1 | **3** | — | — | — | — | — |
+| Side Project | — | **3** | 2 | — | — | — | — |
+| Review Finances | — | — | **3** | 2 | — | — | — |
+| **Transfer to Savings** | — | **4** | **3** | — | — | — | — |
+| Clean / Organize | 1 | 1 | 1 | — | — | — | — |
+| Inbox Zero | — | 2 | 2 | — | — | — | — |
+| Practice Foreign Language | **3** | **3** | 1 | — | — | — | — |
+| Practice Driving | **3** | 1 | — | — | — | — | — |
+| Watch Movie in Foreign Language | 2 | 2 | — | — | — | — | — |
+| **MICRO LEARNING** | | | | | | | |
+| Learn 5 New Words | **3** | 2 | — | — | 1 | — | — |
+| Listen to Podcast | — | 2 | 2 | 2 | — | — | — |
+| Review Flashcards | **4** | 2 | — | — | — | — | — |
+| Practice Typing Speed | 2 | 1 | — | — | — | — | — |
+| Mental Math | 2 | 1 | — | — | 2 | — | — |
+| Watch TED Talk | — | 2 | 2 | 1 | — | — | — |
+| Read Wikipedia | — | — | 1 | 1 | 2 | — | — |
+| **Code for 15 min** | **3** | **3** | — | — | — | 1 | — |
+| Sketch or Doodle | 2 | — | — | 1 | 2 | — | — |
+| Practice Instrument | 2 | — | — | — | **3** | — | — |
+
+**Key Insights from Scoring:**
+- **Teens** heavily prioritize: No Alcohol (4), No Porn (4), No Social Media (4), Sleep (4)
+- **Young Adults** prioritize: Savings (4), Morning Workout (3), Career Building (3)
+- **Adults** prioritize: Strength Training (3), Breathwork (3), Finances (3)
+- **Midlife** prioritize: Strength Training (4), Brain Training (3), Volunteering (3)
+- **Seniors** prioritize: Walking (4), Balance (4), Brain Training (4), Social Connection (4)
+- **Females** score higher on: No Social Media, Screen Detox, Journal
+- **Males** score higher on: Strength Training, Protein, Coding
+
+**Source Code:** [app.js lines 818–930](https://github.com/RafalSladek/habitio/blob/main/app.js#L818-L930)
+
+---
 
 ### Habit Formation
 
