@@ -5,7 +5,12 @@ An offline-first PWA habit tracker — personalised by age group and sex, ground
 **Live app:** https://habitio.rafal-sladek.com/
 
 [![CI / CD](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml/badge.svg)](https://github.com/RafalSladek/habitio/actions/workflows/ci.yml)
-[![Tests](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/tests.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+
+**Test Coverage by Device:**
+[![Desktop](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/device-desktop.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+[![Mobile](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/device-pixel-5.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+[![Tablet](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/device-tablet.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
+[![iPhone](https://img.shields.io/endpoint?url=https://habitio.rafal-sladek.com/badges/device-iphone-12.json)](https://github.com/RafalSladek/habitio/tree/main/tests)
 
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=RafalSladek_habitio&metric=coverage)](https://sonarcloud.io/summary/new_code?id=RafalSladek_habitio)
@@ -86,6 +91,21 @@ GitHub Actions runs Playwright e2e tests on Desktop, Mobile (Pixel 5), and Table
 ```
 push to main → Playwright tests (desktop + mobile + tablet) → deploy to Pages → Lighthouse CI
 ```
+
+### Updating Test Badges
+
+When you add or modify tests, regenerate the badges with:
+
+```bash
+node scripts/generate-badges.js
+```
+
+This will update:
+- Overall test count badge
+- Device-specific badges (Desktop, Mobile, Tablet, iPhone)
+- Individual test category badges
+
+Commit the generated badge files in `badges/` with your test changes.
 
 ## Performance
 
