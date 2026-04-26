@@ -6,7 +6,7 @@ module.exports = defineConfig({
   workers: process.env.CI ? 4 : 8,
   timeout: 30000,
   reporter: process.env.CI
-    ? [["html", { open: "never" }], ["list"]]
+    ? [["html", { open: "never" }], ["list"], ["json", { outputFile: "test-results-summary.json" }]]
     : [["list"], ["json", { outputFile: "test-results-summary.json" }]],
   globalTeardown: "./tests/global-teardown.js",
   use: {
