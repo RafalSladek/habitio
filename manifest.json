@@ -1,7 +1,7 @@
 {
   "name": "habit.io",
   "short_name": "habit.io",
-  "description": "Offline-first habit tracker",
+  "description": "Improve your life with science-backed habits — personalised, private, and offline-first. No account needed.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

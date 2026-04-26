@@ -9,7 +9,7 @@ test.describe("Open Graph & Twitter Card meta tags", () => {
   const OG_IMAGE = "https://habitio.rafal-sladek.com/docs/desktop-preview.png";
   const TITLE = "habit.io — habit tracker";
   const DESCRIPTION =
-    "Build habits with science-backed formation arcs, personalised suggestions, and a daily journal. Offline-first, no account, privacy-first.";
+    "Improve your life with science-backed habits — personalised, private, and offline-first. No account needed.";
 
   test("og:type is website", async ({ page }) => {
     await expect(page.locator('meta[property="og:type"]')).toHaveAttribute("content", "website");
