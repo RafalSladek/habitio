@@ -60,19 +60,6 @@ Here's how habits are scored based on demographics:
 - **Strength Training**: Score = 3 + 1 (male bonus) → *High priority*
 - **Yoga**: Score = 0 (female-biased, not male-scored)
 
-### Research Behind Demographic Scoring
-
-The scoring algorithm uses evidence-based research:
-
-| Research | Finding | How It Affects Scoring |
-|---|---|---|
-| **Haidt (2023)** | Social media harms teen girls most | Teen girls get +3 on "No Social Media" |
-| **Holt-Lunstad (2010, 2015)** | Social isolation = 15 cigarettes/day mortality impact; seniors most at-risk | Seniors get +4 on "Call a Friend" & "Volunteer" |
-| **Layne Norton (Sarcopenia)** | Muscle loss accelerates 30+; peak urgency 50+ | Adults/Midlife get +3 on "Strength Training" |
-| **Harvard Study of Adult Development** | Quality relationships predict longevity across all ages | Relationship habits scored for all ages |
-| **Lally et al. (2010)** | 66-day habit formation curve independent of age | Base habit scores not age-modulated; only specific habits are |
-| **Walker (2017)** | Teen sleep needs differ (8–10 hrs); critical for development | Teens get +4 on "Sleep by 11pm" |
-
 ---
 
 ## Health & Body
@@ -177,13 +164,11 @@ The scoring algorithm uses evidence-based research:
 
 ---
 
-## Research & Science
+## How Habit Scoring Works (App Logic)
 
-### Habit Formation & Personalization Algorithm
+Every habit in **habit.io** gets a **demographic priority score** calculated by the `sugPriority()` function in [app.js lines 818–930](https://github.com/RafalSladek/habitio/blob/main/app.js#L818-L930). Here's how the scoring system works:
 
-**The Complete Scoring Table**
-
-Every habit in habit.io has a demographic score defined in the `sugPriority()` function in [app.js](https://github.com/RafalSladek/habitio/blob/main/app.js#L818-L930). Here's the full scoring matrix:
+### The Complete Scoring Table
 
 **Legend:**
 - Score of **4** = Critical priority for that demographic
@@ -261,7 +246,8 @@ Every habit in habit.io has a demographic score defined in the `sugPriority()` f
 | Sketch or Doodle | 2 | — | — | 1 | 2 | — | — |
 | Practice Instrument | 2 | — | — | — | **3** | — | — |
 
-**Key Insights from Scoring:**
+### Key Insights from Scoring
+
 - **Teens** heavily prioritize: No Alcohol (4), No Porn (4), No Social Media (4), Sleep (4)
 - **Young Adults** prioritize: Savings (4), Morning Workout (3), Career Building (3)
 - **Adults** prioritize: Strength Training (3), Breathwork (3), Finances (3)
@@ -270,9 +256,21 @@ Every habit in habit.io has a demographic score defined in the `sugPriority()` f
 - **Females** score higher on: No Social Media, Screen Detox, Journal
 - **Males** score higher on: Strength Training, Protein, Coding
 
-**Source Code:** [app.js lines 818–930](https://github.com/RafalSladek/habitio/blob/main/app.js#L818-L930)
+### Why These Scores?
+
+The scoring weights are based on scientific research and longevity studies:
+
+| Scoring Decision | Research Basis | Example |
+|---|---|---|
+| Teens get +4 on "No Social Media" | Haidt (2023): Social media harms teen girls most | Girls seeing #1 ranked digital detox habits |
+| Seniors get +4 on "Social Connection" | Holt-Lunstad (2010, 2015): Isolation = 15 cigarettes/day mortality | "Call a Friend" becomes urgent priority for 65+ |
+| Adults/Midlife get +3 on "Strength Training" | Layne Norton: Sarcopenia (muscle loss) accelerates at 30+, peaks at 50+ | Users 50–64 see strength training as critical |
+| Teens get +4 on "Sleep by 11pm" | Walker (2017): Teen sleep deprivation harms cognitive development | Sleep habits ranked highest for ages 13–17 |
+| Young Adults get +4 on "Savings" | Compound interest window narrowest in 20s–30s | Financial habits prioritized for ages 18–29 |
 
 ---
+
+## Research & Science
 
 ### Habit Formation
 
