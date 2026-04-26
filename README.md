@@ -128,6 +128,29 @@ Personalisation logic and habit formation features are grounded in published res
 - **Mental health**: women more proactive (therapy, mindfulness); men 30+ show lower distress — [ScienceDirect](https://sciencedirect.com)
 - **Reading gap**: 23% of Americans haven't read a book in a year; men less likely than women
 
+## Setup
+
+First-time setup installs Node.js dependencies and Playwright test browsers.
+
+**Option A — Windows 11 (PowerShell):**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup.ps1
+```
+
+**Option B — macOS / Linux (Bash):**
+
+```bash
+bash scripts/setup.sh
+```
+
+**Manual setup (all platforms):**
+
+```bash
+yarn install                    # Install Node.js dependencies
+npx playwright install          # Install Playwright browsers (Chromium, Firefox, WebKit)
+```
+
 ## Running Locally
 
 No build step needed — serve the files with any static server.

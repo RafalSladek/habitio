@@ -25,7 +25,7 @@ jobs:
       contents: read
     strategy:
       matrix:
-        project: ["Desktop Chrome", "Mobile Chrome", "Tablet", "iPhone 12"]
+        project: ["Desktop Chromium", "Pixel 5 Chromium", "Tablet Firefox", "iPhone 12 Safari"]
     steps:
       - uses: actions/checkout@v4
 

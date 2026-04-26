@@ -15,7 +15,7 @@
 yarn install
 npx playwright install chromium
 
-# Run all tests (Desktop Chrome + Pixel 5 Mobile + Tablet)
+# Run all tests (Desktop Chromium + Pixel 5 Chromium + Tablet Firefox + iPhone 12 Safari)
 yarn test
 
 # Run tests in UI mode for debugging
@@ -41,8 +41,10 @@ npx playwright test tests/habitio.spec.js
 # Run specific test by name
 npx playwright test -g "should complete onboarding"
 
-# Run specific project (Desktop/Mobile/Tablet)
-npx playwright test --project="Mobile Chrome"
+# Run specific project (by browser engine)
+npx playwright test --project="Pixel 5 Chromium"
+npx playwright test --project="Tablet Firefox"
+npx playwright test --project="iPhone 12 Safari"
 ```
 
 ### Local Development Server
@@ -72,7 +74,7 @@ npx serve . -p 3000
 ## CI / CD
 
 GitHub Actions (`.github/workflows/ci.yml`):
-- `test` job: Playwright e2e tests (Desktop Chrome + Pixel 5 mobile + Tablet 768×1024)
+- `test` job: Playwright e2e tests (Desktop Chromium + Pixel 5 Chromium + Tablet Firefox + iPhone 12 Safari)
 - `sonar` job: SonarCloud analysis with Quality Gate check
 - `deploy` job: deploys to GitHub Pages only if both `test` and `sonar` pass (`needs: [test, sonar]`)
 - `pagespeed` job: Lighthouse CI after deploy (3 runs, budget: `.github/lighthouse-budget.json`)
@@ -174,10 +176,11 @@ Playwright tests use:
 - `seedHabit(page, daysOld, checkedDaysBack)` — seeds localStorage with test data
 - V8 coverage collection for SonarCloud LCOV report (Chromium only)
 
-Tests run on 3 projects:
-- Desktop Chrome (1280×720)
-- Mobile Chrome (Pixel 5, 393×851)
-- Tablet (768×1024)
+Tests run on 4 projects:
+- Desktop Chromium (1280×720)
+- Pixel 5 Chromium (Pixel 5, 393×851)
+- Tablet Firefox (768×1024)
+- iPhone 12 Safari (390×844)
 
 ## Adding New Language Support
 

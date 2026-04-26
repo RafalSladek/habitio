@@ -3,9 +3,11 @@ const { defineConfig, devices } = require("@playwright/test");
 
 module.exports = defineConfig({
   testDir: "./tests",
-  workers: process.env.CI ? 4 : undefined,
+  workers: process.env.CI ? 4 : 8,
   timeout: 30000,
-  reporter: process.env.CI ? [["html", { open: "never" }], ["list"]] : "list",
+  reporter: process.env.CI
+    ? [["html", { open: "never" }], ["list"]]
+    : [["list"], ["json", { outputFile: "test-results-summary.json" }]],
   globalTeardown: "./tests/global-teardown.js",
   use: {
     baseURL: "http://localhost:3000",
@@ -21,22 +23,22 @@ module.exports = defineConfig({
   },
   projects: [
     {
-      name: "Desktop Chrome",
+      name: "Desktop Chromium",
       use: { ...devices["Desktop Chrome"] },
     },
     {
-      name: "Mobile Chrome",
+      name: "Pixel 5 Chromium",
       use: { ...devices["Pixel 5"] },
     },
     {
-      name: "Tablet",
+      name: "Tablet Firefox",
       use: {
         ...devices["Desktop Firefox"],
         viewport: { width: 768, height: 1024 },
       },
     },
     {
-      name: "iPhone 12",
+      name: "iPhone 12 Safari",
       use: { ...devices["iPhone 12"] },
     },
   ],

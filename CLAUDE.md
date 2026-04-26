@@ -78,8 +78,59 @@ GitHub Actions (`.github/workflows/ci.yml`):
 - No build tooling — edit files directly, changes are immediately deployable
 - Deploy by pushing to `main` (GitHub Pages auto-builds from GitHub Actions)
 - Do not use `git push --force` on main
-- To run tests locally: `yarn test` (starts local server via `npx serve`)
 - To convert images to WebP: `ffmpeg -i input.png -c:v libwebp -quality 82 output.webp`
+
+### Running Tests
+
+**Workflow (efficient testing without watching output):**
+
+1. Start test suite in background:
+   ```bash
+   yarn test 2>&1 | tee test-output.log
+   ```
+   - Tests run with all projects (Desktop, Mobile, Tablet, iPhone)
+   - Do NOT watch the terminal while tests execute
+
+2. After tests complete, check the summary in test output:
+   ```powershell
+   # Show failed tests (marked with ✘)
+   Get-Content test-output.log | Select-String "✘"
+   
+   # Show skipped tests (marked with -)  
+   Get-Content test-output.log | Select-String "^  -"
+   ```
+   - This quickly identifies which tests are broken or skipped
+   - Skipped tests may indicate environment/timing issues
+
+3. For any failing test, run it individually to debug:
+   ```bash
+   npx playwright test -g "test name" --headed
+   ```
+
+4. Fix the issue and re-run tests
+
+**For running specific tests:**
+```bash
+# Run specific test file
+npx playwright test tests/habitio.spec.js
+
+# Run tests matching a pattern
+npx playwright test -g "should complete onboarding"
+
+# Run specific project (by browser engine)
+npx playwright test --project="Pixel 5 Chromium"
+npx playwright test --project="Tablet Firefox"
+npx playwright test --project="iPhone 12 Safari"
+```
+
+**For detailed debugging:**
+```bash
+# Run in headed mode (see browser)
+npx playwright test --headed
+
+# Run with UI mode (interactive debugging)
+yarn test:ui
+```
 
 ## Service Worker & Caching
 

@@ -1,6 +1,7 @@
 node_modules/
 test-results/
 playwright-report/
+test-results-summary.json
 .playwright-mcp/
 .claude/
 .nyc_output/
