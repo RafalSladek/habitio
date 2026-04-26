@@ -506,5 +506,125 @@ These quotes are shown randomly during onboarding and appear as motivational enc
 
 ---
 
+## Recommended Reading
+
+### Habit Science: Mechanical How-To Books
+
+These books explain **how habits actually work** and provide practical, actionable frameworks.
+
+#### 🔵 **Atomic Habits** ⭐ Must Read
+- **Author:** James Clear
+- **Year:** 2018
+- **Focus:** Habit formation mechanics, stacking, environmental design, 1% improvements
+- **Why:** Foundation of habit.io — all 8 motivational quotes come from this book
+- **Best for:** Understanding the *why* behind every habit-stacking example in this guide
+- **Link:** [atomichabits.com](https://atomichabits.com)
+
+#### 🔵 **Deep Work: Rules for Focused Success**
+- **Author:** Cal Newport
+- **Year:** 2016
+- **Focus:** Building deep focus habits, eliminating distraction, productivity systems
+- **Why:** Backs up habit.io's "Deep Work Session" and "No Scrolling" habits
+- **Best for:** Adults trying to stack productivity habits; fighting digital distraction
+- **Quote:** "The ability to perform deep work is becoming increasingly rare at the same time it is becoming increasingly valuable"
+
+#### 🔵 **Why We Sleep: Unlocking the Power of Sleep and Dreams**
+- **Author:** Matthew Walker (sleep scientist)
+- **Year:** 2017
+- **Focus:** Sleep neuroscience, circadian rhythms, sleep architecture
+- **Why:** Scientific basis for habit.io's "Sleep by 11pm" and "Morning Sunlight" habits (scores for all ages)
+- **Best for:** Understanding why sleep habits are ranked 4 (critical) for teens; why early sleep is non-negotiable
+- **Key Finding:** Sleep deprivation has same cognitive impact as alcohol intoxication
+
+#### 🔵 **The 5 AM Club: Own Your Morning, Elevate Your Life**
+- **Author:** Robin Sharma
+- **Year:** 2018
+- **Focus:** Morning routines, early waking, circadian optimization
+- **Why:** Practical guide to anchoring morning stacking chains (first habit of the day)
+- **Best for:** Young adults building morning productivity stacks; establishing anchors
+- **Formula:** The 20/20/20 Rule (20 min exercise, 20 min reflection, 20 min planning)
+
+#### 🔵 **This Naked Mind: Find Freedom from Alcohol & Discover the Life You've Always Wanted**
+- **Author:** Annie Grace
+- **Year:** 2015
+- **Focus:** Breaking habits through understanding (not willpower), habit reversal psychology
+- **Why:** Basis for "No Alcohol" habit stack and understanding why habits persist
+- **Best for:** Breaking negative habits; understanding the neuroscience of craving & habit loops
+- **Applies to:** Any "No X" habit (no sweets, no social media, no porn, no coffee before 10am)
+
+#### 🔵 **The Anxious Generation: How the Great Risk Shift is Harming Kids**
+- **Author:** Jonathan Haidt
+- **Year:** 2023
+- **Focus:** Screen time effects on teen development, social media harm, especially to girls
+- **Why:** Scientific basis for habit.io's **teen girls getting +3 on "No Social Media"** scoring
+- **Best for:** Parents, teens, and young adults understanding digital detox urgency
+- **Key Research:** Social media harms teen girls more than teen boys; peaks age 13–17
+
+---
+
+### Life Philosophy: Broader Self-Improvement Frameworks
+
+These books provide **philosophical & psychological context** for why discipline & self-care habits matter.
+
+#### 🟣 **12 Rules for Life: An Antidote to Chaos**
+- **Author:** Jordan B. Peterson
+- **Year:** 2018
+- **Focus:** Personal responsibility, self-discipline, meaning-making, psychological resilience
+- **Why:** Philosophical framework for *why* habits matter (not *how* to build them mechanically)
+- **Best for:** Understanding the deeper purpose behind daily habits; building discipline mindset
+- **Relevant Rules:**
+  - Rule 1: "Stand up straight with your shoulders back" → physical habits (posture, exercise, strength training)
+  - Rule 2: "Treat yourself like someone you are responsible for helping" → self-care habits (sleep, nutrition, vitamins)
+  - Rule 4: "Compare yourself to who you were yesterday, not to who someone else is today" → habit.io's trajectory tracking
+  - Rule 6: "Set your house in order before you criticize the world" → "Clean / Organize" habits (environmental design)
+
+#### 🟣 **Beyond Order: 12 More Rules for Life**
+- **Author:** Jordan B. Peterson
+- **Year:** 2021
+- **Focus:** Psychological complexity, humility, practical life advice
+- **Why:** Follow-up to *12 Rules* with more actionable guidance for daily life
+- **Best for:** Going deeper into the philosophy of self-discipline & long-term habit stacking
+- **Relevant to:** Understanding motivation, overcoming obstacles, resilience through habit
+
+#### 🟣 **The Good Life: Lessons from the World's Longest Scientific Study of Happiness**
+- **Author:** Robert Waldinger & Marc Schulz
+- **Year:** 2023
+- **Focus:** 80-year Harvard Study of Adult Development; what actually makes a good life
+- **Why:** Scientific backing for habit.io's relationship & social connection habits (esp. seniors)
+- **Best for:** Understanding why "Call a Friend" and "Volunteer" habits are ranked 4 (critical) for seniors
+- **Key Finding:** Quality relationships = longevity; isolation = 15 cigarettes/day mortality risk
+
+#### 🟣 **Range: Why Generalists Triumph in a Specialized World**
+- **Author:** David Epstein
+- **Year:** 2019
+- **Focus:** Learning breadth over depth, experimenting with different habits, avoiding early specialization
+- **Why:** Philosophical support for habit.io's "Micro Learning" category (multiple small habits better than one deep one)
+- **Best for:** Young adults experimenting with various habits; understanding why 68 habits exist across 6 categories
+
+#### 🟣 **Sapiens: A Brief History of Humankind**
+- **Author:** Yuval Noah Harari
+- **Year:** 2014
+- **Focus:** Human nature, behavioral evolution, social structures, meaning
+- **Why:** Contextualizes *why* humans form habits (evolutionary advantage, social bonding, survival)
+- **Best for:** Philosophical understanding of habit as fundamental to human nature
+- **Connection:** Explains why habits are so deeply embedded in us — they're evolutionary survival mechanisms
+
+---
+
+### Quick Reference: Which Book for Which Habit?
+
+| Habit Category | **Book** | Focus |
+|---|---|---|
+| Sleep, Health | *Why We Sleep* | Science of sleep cycles & circadian rhythm |
+| Productivity, Focus | *Deep Work* | Eliminating distractions, building focus stacks |
+| Morning Routines | *The 5 AM Club* | Anchoring chains with early wake |
+| Breaking "No X" Habits | *This Naked Mind* | Psychology of habit reversal & cravings |
+| Teen Digital Detox | *The Anxious Generation* | Why screen time is urgent for 13–17 age group |
+| Social Connection | *The Good Life* | Why relationships predict longevity (65+) |
+| Discipline Mindset | *12 Rules for Life* | Philosophical *why* behind daily habits |
+| Experimenting | *Range* | Why trying multiple habits beats specializing |
+
+---
+
 **Total Habits:** 68 suggestions across 6 categories
 
