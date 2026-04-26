@@ -51,7 +51,7 @@
 ## In Progress / Planned
 
 - [ ] **Complete "Ideas & Starting Points" columns** for Digital Detox (5 habits), Relationships (7 habits), Productivity (10 habits), Micro Learning (10 habits) in `docs/affiliate.md`
-- [ ] **Activate Amazon Associates** — Apply, receive Associate ID, add 5–10 fitness wearable links to habits documentation
+- [x] **Activate Amazon Associates affiliate links** — Registered Store ID: `habitio-21`. Added 6 live product links to docs/affiliate.md (The 5 AM Club, This Naked Mind, Why We Sleep, Deep Work, Blue Light Glasses, Bullet Journal) with direct ASIN-based affiliate URLs. Updated docs/affiliate-strategy.md with active partner tracking section.
 - [ ] **Apply for Babbel affiliate program** — Register via Impact, receive affiliate ID, generate links for all language learning habits (target 6+ languages)
 - [ ] **Apply for Rosetta Stone affiliate program** — Register via FlexOffers, create country-specific links (US, UK, DE, BR)
 - [ ] **Register for Headspace CPA program** — Receive $15/trial confirmation, add to Mind & Focus + Sleep habit sections
