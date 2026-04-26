@@ -12,6 +12,7 @@ on:
 
 jobs:
   claude-review:
+    if: false  # Disabled - Claude code review burns too many tokens
     # Optional: Filter by PR author
     # if: |
     #   github.event.pull_request.user.login == 'external-contributor' ||
