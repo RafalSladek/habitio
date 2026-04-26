@@ -62,6 +62,12 @@ Files are split for clarity; no build step required.
 | `icons/`         | Favicon, app icons (16, 32, 192, 512px + SVG), hero WebP/PNG                            |
 | `worker/`        | Cloudflare Worker for feedback issues + optional AI coach                               |
 
+## Habits Reference
+
+All 68 suggested habits organized by category with descriptions and recommended cadence:
+
+**[→ View full habits list](docs/habits.md)** — Health & Body · Mind & Focus · Digital Detox · Relationships · Productivity · Micro Learning
+
 ## Data Storage
 
 Core tracking data is stored **client-side** using the browser's `localStorage` API.
