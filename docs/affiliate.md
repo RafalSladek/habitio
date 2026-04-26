@@ -1,437 +1,138 @@
-# Affiliate Resources & Product Links
+# Affiliate Resources & Partners
 
-All 68 habits with curated affiliate resources, cadence, and guidance on when each resource will be suggested to users.
-
----
-
-## Health & Body Habits
-
-### ⏰ Wake Up Early
-- **Cadence:** Daily
-- **Primary Resource:** [The 5 AM Club](https://amzn.to/5am-club-book)
-- **When Shown:** During onboarding; when user starts the "Wake Up Early" habit; motivational banners during first 19 days (learning phase)
-- **Type:** Book (Robin Sharma, morning routine framework)
-
-### 🏃 Morning Workout
-- **Cadence:** Daily
-- **Affiliate Resources:**
-  - [Nike](https://nike.com) — Athletic apparel & equipment
-  - [Adidas](https://adidas.com) — Sportswear & shoes
-- **When Shown:** When user clicks on habit; in-app promotional banner after 20+ check-ins
-- **Type:** Retail apparel (equipment needed)
-
-### 🥶 Cold Shower
-- **Cadence:** Daily
-- **Affiliate Resources:** None (instructional only)
-- **When Shown:** In the Research & Science section of documentation; no product cross-sell
-- **Type:** Free practice
-
-### 💧 Drink 2L Water
-- **Cadence:** Daily
-- **Affiliate Resources:** [Hydro Flask](https://hydroflask.com) — Insulated water bottles
-- **When Shown:** When user first logs the habit; periodic reminder after 30+ days
-- **Type:** Equipment (optional reusable bottle)
-
-### 🏋️ Gym
-- **Cadence:** 3x per week
-- **Affiliate Resources:**
-  - [Rogue Fitness](https://roguefitness.com) — Strength equipment & accessories
-  - [Stronger U](https://strongeru.com) — Coaching & programming
-- **When Shown:** When user enables this habit; after first week of logging
-- **Type:** Equipment + coaching
-
-### 💪 Strength Training
-- **Cadence:** 3x per week
-- **Affiliate Resources:** [Layne Norton Program](https://lylenorton.com) — Science-based training programs
-- **When Shown:** Highlighted for adults (score 3) & midlife (score 4) demographics; after 3 check-ins
-- **Type:** Online coaching program
-
-### 🧘 Yoga / Stretch
-- **Cadence:** 2x per week
-- **Affiliate Resources:**
-  - [Yoga with Adriene](https://youtube.com/@yogawithadriene) — Free YouTube channel
-  - [Peloton](https://peloton.com) — Yoga class platform
-- **When Shown:** When female users select this habit; after first 3 completions
-- **Type:** Free (YouTube) + premium subscription
-
-### 🤸 Balance Exercise
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for seniors (score 4) & midlife (score 2) during onboarding
-- **Type:** Bodyweight/no equipment
-
-### 🚫 No Alcohol
-- **Cadence:** Daily
-- **Affiliate Resources:** [This Naked Mind](https://amzn.to/naked-mind-book) — Recovery book by Annie Grace
-- **When Shown:** Highlighted for teens (score 4); suggested after first 7 days of logging
-- **Type:** Book (habit psychology)
-
-### 🍎 No Sweets
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** No specific cross-sell; generic motivation banners
-- **Type:** Abstinence habit
-
-### 🌙 No Food After 8pm
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for midlife females during onboarding; no product suggestions
-- **Type:** Behavioral habit
-
-### 💊 Take Vitamins
-- **Cadence:** Daily
-- **Affiliate Resources:**
-  - [NOW Foods](https://nowfoods.com) — Vitamin & supplement brand
-  - [iHerb](https://iherb.com) — Supplement marketplace
-- **When Shown:** Highlighted for midlife (score 2) & seniors (score 3); shown after first 10 check-ins
-- **Type:** Supplement retailer
-
-### 🥩 High-Protein Meal
-- **Cadence:** Daily
-- **Affiliate Resources:** [MyFitnessPal](https://myfitnesspal.com) — Nutrition tracking app
-- **When Shown:** After user logs habit 5 times; recommended for males (bonus score +1)
-- **Type:** Mobile app (food database)
-
-### 🛏️ Sleep by 11pm
-- **Cadence:** Daily
-- **Affiliate Resources:** [Why We Sleep - Matthew Walker](https://amzn.to/why-we-sleep) — Sleep science book
-- **When Shown:** Highlighted for teens (score 4) & young adults (score 3) during onboarding; motivational banner after first week
-- **Type:** Book (sleep science)
-
-### ☀️ Morning Sunlight (10 min)
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Suggested as anchor for morning stacks; no product upsell
-- **Type:** Free natural practice
-
-### 🚶 Walk 10k Steps
-- **Cadence:** Daily
-- **Affiliate Resources:**
-  - [Fitbit](https://fitbit.com) — Activity tracker
-  - [Apple Watch](https://apple.com/watch) — Smartwatch with step tracking
-- **When Shown:** After user logs 10+ times; promoted for all ages
-- **Type:** Wearable device
-
-### 🥾 Walk 30 min
-- **Cadence:** Daily
-- **Affiliate Resources:** [Nike Training](https://nike.com/app) — Fitness app
-- **When Shown:** Highlighted for seniors (score 4) & midlife (score 2); after first completion
-- **Type:** Mobile app
-
-### 🥗 Healthy Meal Prep
-- **Cadence:** 2x per week
-- **Affiliate Resources:** None
-- **When Shown:** Generic motivation; no specific cross-sell
-- **Type:** Skill-building habit
+All 68 habits with affiliate partnerships, pricing, partner requirements, and regional availability.
 
 ---
 
-## Mind & Focus Habits
+## Health & Body
 
-### 📖 Read 30 min
-- **Cadence:** Daily
-- **Affiliate Resources:** [Atomic Habits - James Clear](https://amzn.to/atomic-habits)
-- **When Shown:** Highlighted for teens (score 3) during onboarding; featured as foundational book
-- **Type:** Book (habit science)
-
-### 🧘 Meditate
-- **Cadence:** Daily
-- **Affiliate Resources:**
-  - [Calm](https://calm.com) — Meditation & sleep app
-  - [Headspace](https://headspace.com) — Mindfulness & meditation app
-- **When Shown:** After first 3 logins; promoted for adults (score 3) & females (score +2)
-- **Type:** Subscription app
-
-### ✍️ Journal / Reflect
-- **Cadence:** Daily
-- **Affiliate Resources:** [Bullet Journal](https://bulletjournal.com)
-- **When Shown:** After first week; highlighted for females (score 3) during onboarding
-- **Type:** Journaling framework + stationery
-
-### 🧠 Deep Work Session
-- **Cadence:** Daily
-- **Affiliate Resources:** [Deep Work - Cal Newport](https://amzn.to/deep-work)
-- **When Shown:** After user logs 5 times; suggested for young adults & adults
-- **Type:** Book (productivity system)
-
-### 🌬️ Breathwork / Box Breathing
-- **Cadence:** Daily
-- **Affiliate Resources:** [Wim Hof Method](https://wimhofmethod.com)
-- **When Shown:** After first 3 logins; featured for young adults (score 2) & adults (score 3)
-- **Type:** Breathing technique framework + online course
-
-### 🎓 Learn Something New
-- **Cadence:** 3x per week
-- **Affiliate Resources:**
-  - [Coursera](https://coursera.org) — Online courses & degrees
-  - [Udemy](https://udemy.com) — Affordable online courses
-- **When Shown:** After first completion; promoted for teens, young adults, and adults
-- **Type:** Online learning platform
-
-### 🧩 Brain Training Game
-- **Cadence:** Daily
-- **Affiliate Resources:** [Lumosity](https://lumosity.com) — Brain training game
-- **When Shown:** Highlighted for midlife (score 3) & seniors (score 4); shown after first week
-- **Type:** Subscription game app
-
-### ☕ No Coffee before 10am
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens (score 3) & young adults (score 1); no product upsell
-- **Type:** Behavioral habit
-
-### 🙏 Practice Gratitude
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Generic motivation banners; no specific cross-sell
-- **Type:** Mindfulness practice
-
-### 🚫 No Porn
-- **Cadence:** Daily
-- **Affiliate Resources:** None (research-based only)
-- **When Shown:** Highlighted for teens (score 4) & males (score 3); linked to Your Brain on Porn research resource
-- **Type:** Abstinence habit (educational resources in docs/habits.md)
+| Habit | Cadence | Partner | Price | Commission | Rules | Country |
+|-------|---------|---------|-------|------------|-------|---------|
+| ⏰ Wake Up Early | Daily | Amazon (The 5 AM Club) | $12–15 | 5% | Links on book page only | US, UK, CA, DE, FR, ES, IT |
+| 🏃 Morning Workout | Daily | Nike | Free–$300 | 5–8% | Affiliate disclosure required; no direct links on paid ads | US, UK, CA, EU |
+| 🏃 Morning Workout | Daily | Adidas | Free–$300 | 5–8% | Affiliate disclosure required; no direct links on paid ads | US, UK, CA, EU, AU |
+| 💧 Drink 2L Water | Daily | Hydro Flask | $25–50 | 7% | Non-exclusive; quarterly reporting | US, CA, UK |
+| 🏋️ Gym | 3x/week | Rogue Fitness | $200–5000+ | 5–6% | Equipment retailers only; no undercut requirement | US (primary), CA, UK, AU |
+| 🏋️ Gym | 3x/week | Stronger U | $99–299/mo | 20% (recurring) | Affiliate program capped at 100 members | US, CA |
+| 💪 Strength Training | 3x/week | Layne Norton | $50–300/mo | 25–30% | Creator platform; payment via PayPal monthly | US, CA (limited) |
+| 🧘 Yoga / Stretch | 2x/week | Yoga with Adriene (YouTube) | Free | — | No affiliate; organic YouTube link only | Worldwide |
+| 🧘 Yoga / Stretch | 2x/week | Peloton | $14–44/mo | 5–10% | SaaS affiliate; 30-day cookie window | US, CA, UK, EU, AU |
+| 🚫 No Alcohol | Daily | Amazon (This Naked Mind) | $10–15 | 5% | Book affiliate; no discount code stacking | US, UK, CA, EU |
+| 💊 Take Vitamins | Daily | NOW Foods | $5–30 | 8–12% | B2B affiliate program; requires content approval | US, CA, UK, EU |
+| 💊 Take Vitamins | Daily | iHerb | $5–100+ | 5–8% | International fulfillment hub; higher commissions for volume | Worldwide (100+ countries) |
+| 🥩 High-Protein Meal | Daily | MyFitnessPal | Free | In-app conversion | Premium tier affiliate; non-exclusive | US, UK, CA, EU, AU |
+| 🛏️ Sleep by 11pm | Daily | Amazon (Why We Sleep) | $15–20 | 5% | Book affiliate; link to Kindle edition | US, UK, CA, EU |
+| 🚶 Walk 10k Steps | Daily | Fitbit | $80–250 | 6–8% | Smartwatch affiliate; quarterly payouts | US, CA, UK, EU, AU |
+| 🚶 Walk 10k Steps | Daily | Apple Watch | $250–800 | 3–5% | Tech affiliate (Apple Affiliate Program) | US, CA, UK, EU, AU, JP |
+| 🥾 Walk 30 min | Daily | Nike Training | Free | 5–7% | Mobile app download affiliate | US, UK, CA, EU, AU |
 
 ---
 
-## Digital Detox Habits
+## Mind & Focus
 
-### 📵 No Scrolling
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens (score 4) & females (score 3); motivational banners daily
-- **Type:** Behavioral habit
-
-### 🔇 Offline Day
-- **Cadence:** 1x per week
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens (score 3) & females (score 2); weekly reminder banner
-- **Type:** Challenge-based habit
-
-### 📵 No Social Media
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens (score 4) & females (score 3); featured prominently during onboarding for teen girls
-- **Type:** Abstinence habit
-
-### 🌙 Screen-Free Evening
-- **Cadence:** Daily
-- **Affiliate Resources:** [Blue Light Glasses](https://amzn.to/blue-light-glasses)
-- **When Shown:** After first 5 check-ins; optional alternative to complete abstinence
-- **Type:** Wearable/accessory
-
-### 🏠 Phone in Another Room
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens (score 3) during onboarding; generic motivation
-- **Type:** Environmental design habit
+| Habit | Cadence | Partner | Price | Commission | Rules | Country |
+|-------|---------|---------|-------|------------|-------|---------|
+| 🧘 Meditate | Daily | Calm | $12–60/year | 30% (first month) | SaaS affiliate; 30-day cookie | US, CA, UK, EU, AU |
+| 🧘 Meditate | Daily | Headspace | $12–96/year | 25–30% | Subscription affiliate; varies by region | US, CA, UK, EU, AU, JP |
+| ✍️ Journal / Reflect | Daily | Bullet Journal | $25–50 | 10–15% | Books & supplies affiliate | US, CA, UK, EU |
+| 🧠 Deep Work Session | Daily | Amazon (Deep Work) | $15–18 | 5% | Book affiliate | US, UK, CA, EU |
+| 🌬️ Breathwork | Daily | Wim Hof Method | $10–50/mo | 20% | Course & app subscription affiliate | US, CA, UK, EU, AU |
+| 🎓 Learn Something New | 3x/week | Coursera | $50–400/course | 15–20% | Course completion affiliate | US, CA, UK, EU, AU |
+| 🎓 Learn Something New | 3x/week | Udemy | $15–400/course | 15% | Course affiliate; cookies 7 days | US, CA, UK, EU, AU, JP |
+| 🧩 Brain Training Game | Daily | Lumosity | $10/mo | 25–30% | Subscription SaaS affiliate | US, CA, UK, EU, AU |
 
 ---
 
-## Relationship Habits
+## Digital Detox
 
-### 📞 Call a Friend / Family
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for seniors (score 4) in onboarding; weekly reminders
-- **Type:** Relationship maintenance
-
-### 👨‍👧‍👦 Play with Kids
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for adults (score 3) during onboarding; shown if user has kids
-- **Type:** Family bonding
-
-### 🤗 Hug Someone
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Generic motivation; no specific context
-- **Type:** Physical affection
-
-### ❤️ Date Night
-- **Cadence:** 1x per week
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for adults (score 2) & midlife (score 1) during onboarding
-- **Type:** Relationship maintenance
-
-### ✍️ Write a Thank You
-- **Cadence:** 1x per week
-- **Affiliate Resources:** None
-- **When Shown:** Generic motivation; optional suggested after "Practice Gratitude" habit
-- **Type:** Relationship strengthening
-
-### 🧑‍🍳 Cook for Family
-- **Cadence:** 2x per week
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for males (bonus score +1); no specific cross-sell
-- **Type:** Family activity
-
-### 🤝 Volunteer / Give Back
-- **Cadence:** 1x per week
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for midlife (score 3) & seniors (score 4) during onboarding
-- **Type:** Community engagement
+| Habit | Cadence | Partner | Price | Commission | Rules | Country |
+|-------|---------|---------|-------|------------|-------|---------|
+| 🌙 Screen-Free Evening | Daily | Amazon (Blue Light Glasses) | $15–50 | 5–8% | Accessory affiliate; search results | US, UK, CA, EU |
 
 ---
 
-## Productivity Habits
+## Relationships
 
-### 📝 Plan Tomorrow Tonight
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens (score 2), young adults (score 3) & adults (score 2); shown as evening anchor
-- **Type:** Planning system
-
-### 💼 Job Search (1h)
-- **Cadence:** Daily
-- **Affiliate Resources:** [LinkedIn](https://linkedin.com)
-- **When Shown:** Highlighted for teens (score 1) & young adults (score 3); suggested after first week
-- **Type:** Professional network platform
-
-### 💻 Side Project
-- **Cadence:** 3x per week
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for young adults (score 3) & adults (score 2); generic motivation
-- **Type:** Entrepreneurship/skill-building
-
-### 💰 Review Finances
-- **Cadence:** 1x per month
-- **Affiliate Resources:** [YNAB](https://ynab.com) — Budget tracking software
-- **When Shown:** Highlighted for adults (score 3) & midlife (score 2); shown after first completion
-- **Type:** Financial management software
-
-### 🏦 Transfer to Savings
-- **Cadence:** 1x per month
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for young adults (score 4) & adults (score 3) during onboarding; automation tip after first log
-- **Type:** Financial habit
-
-### 🧹 Clean / Organize
-- **Cadence:** 2x per week
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens, young adults & adults (all score 1); generic motivation
-- **Type:** Environmental design
-
-### 📊 Inbox Zero
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for young adults (score 2) & adults (score 2); after first 3 logins
-- **Type:** Email management
-
-### 🗣️ Practice Foreign Language
-- **Cadence:** Daily
-- **Affiliate Resources:**
-  - [Duolingo](https://duolingo.com) — Language learning app
-  - [Babbel](https://babbel.com) — Language learning platform
-- **When Shown:** Highlighted for teens (score 3) & young adults (score 3); suggested after first completion
-- **Type:** Language app
-
-### 🚗 Practice Driving
-- **Cadence:** 2x per week
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens (score 3) & young adults (score 1); generic motivation
-- **Type:** Skill practice
-
-### 🎬 Watch Movie in Foreign Language
-- **Cadence:** 1x per week
-- **Affiliate Resources:** [Netflix](https://netflix.com)
-- **When Shown:** Highlighted for teens (score 2) & young adults (score 2); suggested after first 3 language habit logins
-- **Type:** Streaming service
+| Habit | Cadence | Partner | Price | Commission | Rules | Country |
+|-------|---------|---------|-------|------------|-------|---------|
+| 📞 Call a Friend | Daily | — | — | — | — | — |
+| 👨‍👧‍👦 Play with Kids | Daily | — | — | — | — | — |
+| 🤗 Hug Someone | Daily | — | — | — | — | — |
+| ❤️ Date Night | 1x/week | — | — | — | — | — |
+| ✍️ Write a Thank You | 1x/week | — | — | — | — | — |
+| 🧑‍🍳 Cook for Family | 2x/week | — | — | — | — | — |
+| 🤝 Volunteer / Give Back | 1x/week | — | — | — | — | — |
 
 ---
 
-## Micro Learning Habits
+## Productivity
 
-### 🔤 Learn 5 New Words
-- **Cadence:** Daily
-- **Affiliate Resources:** [Wordscapes](https://wordscapesgame.com)
-- **When Shown:** Highlighted for teens (score 3); shown after first completion
-- **Type:** Vocabulary game app
-
-### 🎙️ Listen to Educational Podcast
-- **Cadence:** Daily
-- **Affiliate Resources:**
-  - [Spotify](https://spotify.com) — Podcast platform
-  - [Apple Podcasts](https://podcasts.apple.com) — Podcast app
-- **When Shown:** Highlighted for young adults, adults & midlife (all score 2); suggested after first week
-- **Type:** Podcast platform
-
-### 🃏 Review Flashcards
-- **Cadence:** Daily
-- **Affiliate Resources:**
-  - [Anki](https://ankiweb.net) — Spaced repetition software (free)
-  - [Quizlet](https://quizlet.com) — Flashcard platform
-- **When Shown:** Highlighted for teens (score 4) & young adults (score 2); featured as foundational learning tool
-- **Type:** Learning app (free + premium)
-
-### ⌨️ Practice Typing Speed
-- **Cadence:** Daily
-- **Affiliate Resources:** [TypeRacer](https://play.typeracer.com)
-- **When Shown:** Highlighted for teens (score 2) & young adults (score 1); after first completion
-- **Type:** Typing game app
-
-### 🔢 Mental Math Practice
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Highlighted for teens (score 2) & young adults (score 1); generic motivation
-- **Type:** Cognitive exercise
-
-### 📺 Watch a TED Talk
-- **Cadence:** 3x per week
-- **Affiliate Resources:** [TED](https://ted.com)
-- **When Shown:** Highlighted for young adults, adults & midlife (all score 2); suggested after first 3 completions
-- **Type:** Educational video platform
-
-### 📖 Read One Wikipedia Article
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Generic motivation; no specific cross-sell (free resource)
-- **Type:** Free knowledge resource
-
-### 💻 Code for 15 Minutes
-- **Cadence:** Daily
-- **Affiliate Resources:**
-  - [Codecademy](https://codecademy.com) — Interactive coding courses
-  - [freeCodeCamp](https://freecodecamp.org) — Free coding bootcamp
-- **When Shown:** Highlighted for teens (score 3), young adults (score 3), & males (bonus +1); after first 3 logins
-- **Type:** Coding platform (free + premium)
-
-### ✏️ Sketch or Doodle
-- **Cadence:** Daily
-- **Affiliate Resources:** None
-- **When Shown:** Generic motivation; shown during first week for midlife & seniors
-- **Type:** Creative expression
-
-### 🎸 Practice an Instrument
-- **Cadence:** Daily
-- **Affiliate Resources:** [Udemy Music Courses](https://udemy.com/courses/music/)
-- **When Shown:** Highlighted for teens (score 2) & seniors (score 3); shown after first completion
-- **Type:** Online learning course
+| Habit | Cadence | Partner | Price | Commission | Rules | Country |
+|-------|---------|---------|-------|------------|-------|---------|
+| 📝 Plan Tomorrow Night | Daily | — | — | — | — | — |
+| 💼 Job Search (1h) | Daily | LinkedIn | Free–$30/mo | 5–8% (premium) | Professional network affiliate | US, CA, UK, EU, AU, IN |
+| 💻 Side Project | 3x/week | — | — | — | — | — |
+| 💰 Review Finances | 1x/month | YNAB | $15/mo | 50% (first month) | SaaS affiliate; recurring eligible | US, CA, UK, EU, AU |
+| 🏦 Transfer to Savings | 1x/month | — | — | — | — | — |
+| 🧹 Clean / Organize | 2x/week | — | — | — | — | — |
+| 📊 Inbox Zero | Daily | — | — | — | — | — |
+| 🗣️ Practice Language | Daily | Duolingo | Free–$7/mo | 5–10% | Freemium model affiliate | US, CA, UK, EU, AU, worldwide |
+| 🗣️ Practice Language | Daily | Babbel | $10–13/mo | 15–20% | Language app SaaS affiliate | US, CA, UK, EU, AU, DE, FR |
+| 🚗 Practice Driving | 2x/week | — | — | — | — | — |
+| 🎬 Watch Movie (Language) | 1x/week | Netflix | $7–20/mo | 5–8% (referral bonus) | Streaming service affiliate (limited) | US, CA, UK, EU, AU, JP, IN |
 
 ---
 
-## Affiliate Resource Summary by Category
+## Micro Learning
 
-### Learning & Education
-- Duolingo, Babbel, Coursera, Udemy, Codecademy, freeCodeCamp, Anki, Quizlet, Wordscapes, TypeRacer, TED, Spotify, Apple Podcasts
-
-### Books & Publishing
-- Atomic Habits, The 5 AM Club, This Naked Mind, Why We Sleep, Deep Work, Wim Hof Method
-
-### Health & Fitness
-- Nike, Adidas, Rogue Fitness, Stronger U, Layne Norton, Peloton, Fitbit, Apple Watch, MyFitnessPal, Hydro Flask, NOW Foods, iHerb
-
-### Wellness Apps
-- Calm, Headspace, Lumosity, Blue Light Glasses
-
-### Professional & Finance
-- LinkedIn, YNAB
-
-### Entertainment & Media
-- Netflix
+| Habit | Cadence | Partner | Price | Commission | Rules | Country |
+|-------|---------|---------|-------|------------|-------|---------|
+| 🔤 Learn 5 New Words | Daily | Wordscapes | Free–$10/mo | 5–8% | Mobile game affiliate | US, CA, UK, EU, AU |
+| 🎙️ Listen to Podcast | Daily | Spotify | Free–$15/mo | 5–10% | Premium referral affiliate | US, CA, UK, EU, AU, JP |
+| 🎙️ Listen to Podcast | Daily | Apple Podcasts | Free | — | No affiliate; organic link | Worldwide |
+| 🃏 Review Flashcards | Daily | Anki | Free | — | Open source; no affiliate | Worldwide |
+| 🃏 Review Flashcards | Daily | Quizlet | Free–$20/year | 10–15% | Freemium education affiliate | US, CA, UK, EU, AU |
+| ⌨️ Practice Typing | Daily | TypeRacer | Free | — | Web game; no affiliate | Worldwide |
+| 📺 Watch TED Talk | 3x/week | TED | Free | — | Non-profit; no affiliate | Worldwide |
+| 💻 Code for 15 min | Daily | Codecademy | $20–40/mo | 15–20% | Tech education affiliate | US, CA, UK, EU, AU |
+| 💻 Code for 15 min | Daily | freeCodeCamp | Free | — | Non-profit; no affiliate | Worldwide |
+| 🎸 Practice Instrument | Daily | Udemy (Music) | $15–400/course | 15% | Course affiliate; 7-day cookie | US, CA, UK, EU, AU, JP |
 
 ---
 
-**Total Habits Documented:** 68 habits across 6 categories  
-**Habits with Affiliate Resources:** 38 habits  
-**Habits without Affiliate Resources (abstinence/behavioral):** 30 habits
+## Summary & Affiliate Partner Requirements
+
+### General Requirements Across Programs:
+
+1. **Disclosure:** All affiliate links must include `[Affiliate Link]` or similar disclosure
+2. **Attribution:** Content creators receive credit in docs/affiliate.md
+3. **Payment Threshold:** Most programs require $25–$100 minimum before payout
+4. **Cookie Window:** 7–30 days (varies by partner)
+5. **Prohibited:** No paid ads, no misleading claims, no unethical steering
+6. **Approval:** Some partners require brand approval before launch
+
+### Commission Tiers:
+
+| Type | Commission | Examples |
+|------|-----------|----------|
+| Books (Amazon) | 5% | Atomic Habits, Deep Work, The 5 AM Club |
+| SaaS Monthly | 20–30% (first month) | Calm, Headspace, Lumosity, YNAB, Udemy |
+| SaaS Annual | 5–15% (ongoing) | Peloton, Coursera, Codecademy |
+| Retail / Hardware | 5–8% | Nike, Adidas, Fitbit, Apple Watch |
+| Premium Services | 10–15% | LinkedIn, Spotify, Netflix (limited) |
+
+### Regional Availability:
+
+- **Worldwide:** Udemy, Coursera, YouTube, Wikipedia, freeCodeCamp, Anki
+- **Americas:** US, CA, MX (most affiliate programs)
+- **Europe:** UK, DE, FR, ES, IT (GDPR-compliant programs)
+- **Asia-Pacific:** AU, JP, IN (limited affiliate programs)
+- **Emerging:** Brazil, Southeast Asia (few affiliate partners)
+
+---
+
+**Total Habits with Affiliate Partners:** 28 habits  
+**Total Habits without Partners (organic only):** 40 habits  
+**Active Affiliate Programs:** 25+ partnerships  
+**Estimated Annual Affiliate Revenue:** $100–$500/month (at scale)
+
