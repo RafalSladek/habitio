@@ -11,10 +11,10 @@ const testIgnore = ["**/habitio.spec.js"];
 
 // Browser projects from playwright.config.js
 const projects = [
-  "Desktop Chromium",
-  "Pixel 5 Chromium",
-  "Tablet Firefox",
-  "iPhone 12 Safari",
+  { name: "Desktop Chromium", label: "Desktop", envKey: "DEVICE_DESKTOP" },
+  { name: "Pixel 5 Chromium", label: "Mobile", envKey: "DEVICE_PIXEL-5" },
+  { name: "Tablet Firefox", label: "Tablet", envKey: "DEVICE_TABLET" },
+  { name: "iPhone 12 Safari", label: "iPhone", envKey: "DEVICE_IPHONE-12" },
 ];
 
 function normalizeForMatch(value) {
@@ -38,7 +38,16 @@ function countActiveTests(filePath) {
   return matches ? matches.length : 0;
 }
 
-function countTestsForProject(projectName) {
+function countTestsForProject(projectName, envKey) {
+  // First try to use environment variable (set by CI during test summary aggregation)
+  const envValue = process.env[envKey];
+  if (envValue !== undefined) {
+    const count = parseInt(envValue, 10);
+    console.log(`[badges] Using ${envKey}=${count} from environment`);
+    return count;
+  }
+
+  // Fallback to running pytest --list (for local development)
   try {
     const output = execSync(`npx playwright test --list --project="${projectName}"`, {
       encoding: "utf8",
@@ -83,28 +92,24 @@ specFiles.forEach((name) => {
 });
 
 // Create badges for each project/device type
-projects.forEach((projectName) => {
-  const count = countTestsForProject(projectName);
-  const deviceLabel = projectName
-    .replace(" Chromium", "")
-    .replace(" Firefox", "")
-    .replace(" Safari", "");
+projects.forEach((project) => {
+  const count = countTestsForProject(project.name, project.envKey);
 
   const badgePayload = {
     schemaVersion: 1,
-    label: deviceLabel,
+    label: project.label,
     message: `${count} tests`,
     color: count > 0 ? "brightgreen" : "lightgrey",
   };
 
   const outputFile = path.join(
     outputDir,
-    `device-${deviceLabel.toLowerCase().replace(/\s+/g, "-")}.json`
+    `device-${project.label.toLowerCase()}.json`
   );
   fs.mkdirSync(outputDir, { recursive: true });
   fs.writeFileSync(outputFile, `${JSON.stringify(badgePayload, null, 2)}\n`);
   console.log(
-    `[badges] Wrote ${path.relative(repoRoot, outputFile)} for ${count} tests on ${projectName}`
+    `[badges] Wrote ${path.relative(repoRoot, outputFile)} for ${count} tests on ${project.name}`
   );
 });
 

@@ -59,6 +59,14 @@ jobs:
           path: playwright-report/
           retention-days: 30
 
+      - name: Upload test summary
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-summary-${{ matrix.project }}
+          path: test-results-summary.json
+          retention-days: 30
+
       - name: Upload test artifacts (videos, traces)
         uses: actions/upload-artifact@v4
         if: failure()
@@ -81,6 +89,49 @@ jobs:
           echo "- 🎥 Video recordings of failures" >> $GITHUB_STEP_SUMMARY
           echo "- 🔍 Full browser trace explorer" >> $GITHUB_STEP_SUMMARY
           echo "- ⏱️ Timing details for each step" >> $GITHUB_STEP_SUMMARY
+
+  test-summary:
+    name: Test Results Summary
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: test-summaries
+
+      - name: Parse test results and generate badge data
+        run: |
+          mkdir -p test-badge-data
+          
+          # Process each device's test summary
+          for device in "Desktop Chromium" "Pixel 5 Chromium" "Tablet Firefox" "iPhone 12 Safari"; do
+            device_lower=$(echo "$device" | sed 's/ Chromium//; s/ Firefox//; s/ Safari//; s/ /-/g' | tr A-Z a-z)
+            summary_file="test-summaries/test-summary-${device}/test-results-summary.json"
+            
+            if [ -f "$summary_file" ]; then
+              # Extract test stats from the JSON
+              passed=$(jq '.stats.expected' "$summary_file" || echo "0")
+              failed=$(jq '.stats.unexpected' "$summary_file" || echo "0")
+              total=$(($passed + $failed))
+              
+              # Save device results for deploy job to use
+              echo "DEVICE_${device_lower^^}=${total}" >> test-badge-data/badge-env.txt
+              echo "DEVICE_${device_lower^^}_PASSED=${passed}" >> test-badge-data/badge-env.txt
+              echo "DEVICE_${device_lower^^}_FAILED=${failed}" >> test-badge-data/badge-env.txt
+            fi
+          done
+          
+          cat test-badge-data/badge-env.txt
+
+      - name: Upload badge data
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-badge-data
+          path: test-badge-data/
+          retention-days: 1
+
   sonar:
     name: SonarCloud Analysis
     needs: test
@@ -148,7 +199,7 @@ jobs:
 
   deploy:
     name: Deploy to GitHub Pages
-    needs: [test, sonar]
+    needs: [test-summary, sonar]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -164,6 +215,18 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      - name: Download badge data
+        uses: actions/download-artifact@v4
+        with:
+          name: test-badge-data
+          path: test-badge-data
+
+      - name: Load test badge data
+        run: |
+          if [ -f test-badge-data/badge-env.txt ]; then
+            cat test-badge-data/badge-env.txt >> $GITHUB_ENV
+          fi
 
       - name: Generate badge endpoints
         run: node scripts/generate-badges.js
