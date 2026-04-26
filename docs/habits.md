@@ -359,11 +359,28 @@ Habit formation is not an overnight process. Research shows it takes approximate
 
 ### Motivational Quotes
 
-> "Success is the product of daily habits — not once-in-a-lifetime transformations."
+All quotes in **habit.io** are from **James Clear**, author of *Atomic Habits* (2018):
 
-> "The #1 book on habit science"
-> — James Clear, author of *Atomic Habits* (2018)
-> **Link:** [atomichabits.com](https://atomichabits.com)
+1. > "Every action you take is a vote for the type of person you wish to become."
+
+2. > "You do not rise to the level of your goals. You fall to the level of your systems."
+
+3. > "Habits are the compound interest of self-improvement."
+
+4. > "Success is the product of daily habits — not once-in-a-lifetime transformations."
+
+5. > "Getting 1% better every day counts for a lot in the long run."
+
+6. > "You should be far more concerned with your current trajectory than with your current results."
+
+7. > "Be the designer of your world and not merely the consumer of it."
+
+8. > "The most effective way to change your habits is to focus not on what you want to achieve, but on who you wish to become."
+
+These quotes are shown randomly during onboarding and appear as motivational encouragement throughout the app.
+
+**Reference:** James Clear, *Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones* (2018)  
+**Link:** [atomichabits.com](https://atomichabits.com)
 
 ---
 
