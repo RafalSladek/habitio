@@ -10,3 +10,4 @@ badges/
 .vscode/
 .scannerwork/
 test-results-sw-temp/
+test-output.log

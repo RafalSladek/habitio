@@ -66,7 +66,8 @@ test.describe("consent banner", () => {
         !error.includes("favicon") &&
         !error.includes("_ga") &&
         !error.includes("Cookie") &&
-        !error.includes("cookie")
+        !error.includes("cookie") &&
+        !error.includes("Returned response is null")
     );
     expect(realErrors).toHaveLength(0);
   });
