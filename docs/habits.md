@@ -258,21 +258,21 @@ Every habit in **habit.io** gets a **demographic priority score** calculated by 
 
 ### Why These Scores?
 
-The scoring weights are based on scientific research and longevity studies:
+The scoring weights are based on scientific research and longevity studies. Click any research basis to jump to the full citations:
 
 | Scoring Decision | Research Basis | Example |
 |---|---|---|
-| Teens get +4 on "No Social Media" | Haidt (2023): Social media harms teen girls most | Girls seeing #1 ranked digital detox habits |
-| Seniors get +4 on "Social Connection" | Holt-Lunstad (2010, 2015): Isolation = 15 cigarettes/day mortality | "Call a Friend" becomes urgent priority for 65+ |
-| Adults/Midlife get +3 on "Strength Training" | Layne Norton: Sarcopenia (muscle loss) accelerates at 30+, peaks at 50+ | Users 50–64 see strength training as critical |
-| Teens get +4 on "Sleep by 11pm" | Walker (2017): Teen sleep deprivation harms cognitive development | Sleep habits ranked highest for ages 13–17 |
-| Young Adults get +4 on "Savings" | Compound interest window narrowest in 20s–30s | Financial habits prioritized for ages 18–29 |
+| Teens get +4 on "No Social Media" | [→ Teen Mental Health & Screen Time](#teen-mental-health--screen-time): Haidt (2023) shows social media harms teen girls most | Girls seeing #1 ranked digital detox habits |
+| Seniors get +4 on "Social Connection" | [→ Social Connection & Longevity](#social-connection--longevity): Holt-Lunstad (2010, 2015) — isolation = 15 cigarettes/day mortality risk | "Call a Friend" becomes urgent priority for 65+ |
+| Adults/Midlife get +3 on "Strength Training" | [→ Physical Activity Across Ages](#physical-activity-across-ages): Layne Norton research on sarcopenia — muscle loss accelerates at 30+, peaks at 50+ | Users 50–64 see strength training as critical |
+| Teens get +4 on "Sleep by 11pm" | [→ Sleep & Cognitive Function](#sleep--cognitive-function): Walker (2017) — teen sleep deprivation harms cognitive development (8–10 hrs needed) | Sleep habits ranked highest for ages 13–17 |
+| Young Adults get +4 on "Savings" | [→ Habit Formation](#habit-formation): Compound interest window narrowest in 20s–30s (80-year compounding benefit) | Financial habits prioritized for ages 18–29 |
 
 ---
 
 ## Research & Science
 
-### Habit Formation
+### Habit Formation {#habit-formation}
 
 **The 66-Day Journey**
 
@@ -293,7 +293,7 @@ Habit formation is not an overnight process. Research shows it takes approximate
 
 ### Health & Physical Benefits
 
-**Sleep & Cognitive Function**
+**Sleep & Cognitive Function** {#sleep--cognitive-function}
 
 - During deep sleep, the brain clears toxic proteins linked to Alzheimer's disease
   - **Citation:** Xie, L., Kang, H., Xu, Q., et al. (2013). "Sleep drives metabolite clearance from the adult brain." *Science*, 342(6156), 373-377.
@@ -308,7 +308,7 @@ Habit formation is not an overnight process. Research shows it takes approximate
   - **Reference:** Matthew Walker's research on sleep and neuroscience
   - **Book:** *Why We Sleep: Unlocking the Power of Sleep and Dreams* (2017)
 
-**Physical Activity Across Ages**
+**Physical Activity Across Ages** {#physical-activity-across-ages}
 
 - **80% of adolescents** don't meet WHO physical activity guidelines (150 min/week moderate activity)
   - **Source:** WHO Global Health Observatory; youth fitness data
@@ -317,7 +317,7 @@ Habit formation is not an overnight process. Research shows it takes approximate
   - **Citation:** Norton, L. (Layne Norton research). Sarcopenia and age-related muscle loss studies
   - **Reference:** International Society of Sports Nutrition guidelines
 
-**Social Connection & Longevity**
+**Social Connection & Longevity** {#social-connection--longevity}
 
 - Strong relationships are linked to longevity and reduced mortality risk
   - **Citation:** Holt-Lunstad, J., Smith, T. B., & Layton, J. B. (2010). "Social relationships and mortality risk: A meta-analytic review." *PLOS Medicine*, 7(7), e1000316.
@@ -347,7 +347,7 @@ Habit formation is not an overnight process. Research shows it takes approximate
 
 ---
 
-### Teen Mental Health & Screen Time
+### Teen Mental Health & Screen Time {#teen-mental-health--screen-time}
 
 - **45% of US teens** report that social media negatively impacts their sleep
 - Girls report higher negative effects than boys
