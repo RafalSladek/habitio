@@ -1,5 +1,24 @@
 # Affiliate Strategy & Partner Link Implementation Guide
 
+## 📌 **ACTIVE PARTNER LINKS** 
+
+### Amazon Associates — Store ID: `habitio-21`
+
+**✅ LIVE:** 6 product links active in [docs/affiliate.md](affiliate.md)
+
+| Habit | Product | Link |
+|-------|---------|------|
+| ⏰ Wake Up Early | The 5 AM Club | https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21 |
+| 🚫 No Alcohol | This Naked Mind | https://www.amazon.com/dp/B00YFR7C3A?tag=habitio-21 |
+| 🛏️ Sleep by 11pm | Why We Sleep | https://www.amazon.com/dp/B06X9GF5F2?tag=habitio-21 |
+| 🧠 Deep Work Session | Deep Work | https://www.amazon.com/dp/B00X47ZVXM?tag=habitio-21 |
+| 🌙 Screen-Free Evening | Blue Light Glasses | https://www.amazon.com/s?k=blue+light+glasses&tag=habitio-21 |
+| ✍️ Journal / Reflect | Bullet Journal | https://www.amazon.com/s?k=bullet+journal&tag=habitio-21 |
+
+**Commission:** 5% on books, 5–8% on accessories
+
+---
+
 ## Strategy History
 
 ### 📅 **Strategy v1.0** — April 27, 2026
@@ -9,14 +28,14 @@
 
 | Rank | Partner | Product Category | Regions | Commission | Link Creation Difficulty | Status |
 |------|---------|------------------|---------|-----------|------------------------|--------|
-| **1** | **Amazon Associates** | Fitness wearables, sleep tech, books, supplements | US, UK, CA, DE, BR, IN, AU, JP | 4–10% | Easy | ⏳ To Do |
+| **1** | **Amazon Associates** | Fitness wearables, sleep tech, books, supplements | US, UK, CA, DE, BR, IN, AU, JP | 4–10% | Easy | ✅ **ACTIVE** (habitio-21) |
 | **2** | **Babbel** | Language learning | Global (all 20 languages) | €75/sub or 10–20% | Medium | ⏳ To Do |
 | **3** | **Headspace** | Meditation/mindfulness app | US, UK, DE, IN, AU | $15/trial CPA | Easy | ⏳ To Do |
 | **4** | **eToro** | Investment/finance | Global (US, UK, DE, BR) | $250/acquisition CPA | Medium | ⏳ To Do |
 | **5** | **Rosetta Stone** | Language learning | Global | 12% per sale | Medium | ⏳ To Do |
 
 #### Expected Timeline
-- **Week 1:** Amazon Associates activation
+- **✅ Week 1:** Amazon Associates activation — Store ID: **`habitio-21`** (5 Amazon product links added to docs/affiliate.md)
 - **Week 2:** Babbel + Rosetta Stone applications
 - **Week 3:** Headspace registration
 - **Week 4:** eToro high-value CPA setup

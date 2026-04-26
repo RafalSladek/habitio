@@ -37,7 +37,7 @@ The app supports **20 languages** across 19+ countries:
 
 | Habit | Cadence | Partner | Price | Commission | Rules | Country | Ideas & Starting Points |
 |-------|---------|---------|-------|------------|-------|---------|------------------------|
-| ⏰ Wake Up Early | Daily | Amazon (The 5 AM Club) | $12–15 | 5% | Links on book page only | US, UK, CA, DE, FR, ES, IT | **1. Read the book** → Amazon affiliate (US, UK, CA, DE, FR, ES, IT) |
+| ⏰ Wake Up Early | Daily | [Amazon: The 5 AM Club](https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21) | $12–15 | 5% | Links on book page only | US, UK, CA, DE, FR, ES, IT | **1. Read the book** → [Amazon affiliate](https://www.amazon.com/dp/B01N4FFBY5?tag=habitio-21) (US, UK, CA, DE, FR, ES, IT) |
 | | | | | | | | **2. Use phone alarm + calendar reminder** → Worldwide (free) |
 | | | | | | | | **3. Join accountability group** → Worldwide (no affiliate) |
 | 🏃 Morning Workout | Daily | Nike | Free–$300 | 5–8% | Affiliate disclosure required; no direct links on paid ads | US, UK, CA, EU | **1. Get workout gear** → Nike, Adidas (US, UK, CA, EU, AU) |
@@ -55,7 +55,7 @@ The app supports **20 languages** across 19+ countries:
 | 🧘 Yoga / Stretch | 2x/week | Yoga with Adriene (YouTube) | Free | — | No affiliate; organic YouTube link only | Worldwide | **1. Follow free YouTube** → Yoga with Adriene (Worldwide) |
 | | | Peloton | $14–44/mo | 5–10% | SaaS affiliate; 30-day cookie window | US, CA, UK, EU, AU | **2. Subscribe to app** → Peloton (US, CA, UK, EU, AU) |
 | | | | | | | | **3. Use meditation + stretching combo** → Calm, Headspace (US, CA, UK, EU, AU) |
-| 🚫 No Alcohol | Daily | Amazon (This Naked Mind) | $10–15 | 5% | Book affiliate; no discount code stacking | US, UK, CA, EU | **1. Read recovery book** → Amazon (US, UK, CA, EU) |
+| 🚫 No Alcohol | Daily | [Amazon: This Naked Mind](https://www.amazon.com/dp/B00YFR7C3A?tag=habitio-21) | $10–15 | 5% | Book affiliate; no discount code stacking | US, UK, CA, EU | **1. Read recovery book** → [Amazon affiliate](https://www.amazon.com/dp/B00YFR7C3A?tag=habitio-21) (US, UK, CA, EU) |
 | | | | | | | | **2. Join accountability community** → Worldwide (free) |
 | | | | | | | | **3. Replace with healthier drink** → Worldwide (free) |
 | 💊 Take Vitamins | Daily | NOW Foods | $5–30 | 8–12% | B2B affiliate program; requires content approval | US, CA, UK, EU | **1. Choose quality brand** → NOW Foods (US, CA, UK, EU), iHerb (Worldwide) |
@@ -64,7 +64,7 @@ The app supports **20 languages** across 19+ countries:
 | 🥩 High-Protein Meal | Daily | MyFitnessPal | Free | In-app conversion | Premium tier affiliate; non-exclusive | US, UK, CA, EU, AU | **1. Track food intake** → MyFitnessPal (US, UK, CA, EU, AU) |
 | | | | | | | | **2. Meal prep on Sunday** → Worldwide (free) |
 | | | | | | | | **3. Stack before gym/training** → Worldwide (free) |
-| 🛏️ Sleep by 11pm | Daily | Amazon (Why We Sleep) | $15–20 | 5% | Book affiliate; link to Kindle edition | US, UK, CA, EU | **1. Read sleep science** → Amazon (US, UK, CA, EU) |
+| 🛏️ Sleep by 11pm | Daily | [Amazon: Why We Sleep](https://www.amazon.com/dp/B06X9GF5F2?tag=habitio-21) | $15–20 | 5% | Book affiliate; link to Kindle edition | US, UK, CA, EU | **1. Read sleep science** → [Amazon affiliate](https://www.amazon.com/dp/B06X9GF5F2?tag=habitio-21) (US, UK, CA, EU) |
 | | | | | | | | **2. Set phone reminder at 10:45pm** → Worldwide (free) |
 | | | | | | | | **3. Use meditation app before bed** → Calm, Headspace (US, CA, UK, EU, AU) |
 | 🚶 Walk 10k Steps | Daily | Fitbit | $80–250 | 6–8% | Smartwatch affiliate; quarterly payouts | US, CA, UK, EU, AU | **1. Get activity tracker** → Fitbit (US, CA, UK, EU, AU), Apple Watch (US, CA, UK, EU, AU, JP) |
@@ -83,10 +83,10 @@ The app supports **20 languages** across 19+ countries:
 | 🧘 Meditate | Daily | Calm | $12–60/year | 30% (first month) | SaaS affiliate; 30-day cookie | US, CA, UK, EU, AU | **1. Try free meditation app** → Calm, Headspace (US, CA, UK, EU, AU, JP) |
 | | | Headspace | $12–96/year | 25–30% | Subscription affiliate; varies by region | US, CA, UK, EU, AU, JP | **2. Start with 5-minute session** → Worldwide (free) |
 | | | | | | | | **3. Stack before bed or morning** → Worldwide (free) |
-| ✍️ Journal / Reflect | Daily | Bullet Journal | $25–50 | 10–15% | Books & supplies affiliate | US, CA, UK, EU | **1. Get journal book & supplies** → Bullet Journal (US, CA, UK, EU), Amazon (US, UK, CA, EU) |
+| ✍️ Journal / Reflect | Daily | [Amazon: Bullet Journal](https://www.amazon.com/s?k=bullet+journal&tag=habitio-21) | $25–50 | 10–15% | Books & supplies affiliate | US, CA, UK, EU | **1. Get journal book & supplies** → [Amazon search](https://www.amazon.com/s?k=bullet+journal&tag=habitio-21) (US, CA, UK, EU) |
 | | | | | | | | **2. Set daily reminder** → Worldwide (free) |
 | | | | | | | | **3. Reflect after morning routine** → Worldwide (free) |
-| 🧠 Deep Work Session | Daily | Amazon (Deep Work) | $15–18 | 5% | Book affiliate | US, UK, CA, EU | **1. Read productivity book** → Amazon (US, UK, CA, EU) |
+| 🧠 Deep Work Session | Daily | [Amazon: Deep Work](https://www.amazon.com/dp/B00X47ZVXM?tag=habitio-21) | $15–18 | 5% | Book affiliate | US, UK, CA, EU | **1. Read productivity book** → [Amazon affiliate](https://www.amazon.com/dp/B00X47ZVXM?tag=habitio-21) (US, UK, CA, EU) |
 | | | | | | | | **2. Block calendar for 2 hours** → Worldwide (free) |
 | | | | | | | | **3. Close all notifications & distractions** → Worldwide (free) |
 | 🌬️ Breathwork | Daily | Wim Hof Method | $10–50/mo | 20% | Course & app subscription affiliate | US, CA, UK, EU, AU | **1. Learn box breathing (4-4-4-4)** → Wim Hof Method (US, CA, UK, EU, AU) |
@@ -105,7 +105,7 @@ The app supports **20 languages** across 19+ countries:
 
 | Habit | Cadence | Partner | Price | Commission | Rules | Country | Ideas & Starting Points |
 |-------|---------|---------|-------|------------|-------|---------|------------------------|
-| 🌙 Screen-Free Evening | Daily | Amazon (Blue Light Glasses) | $15–50 | 5–8% | Accessory affiliate; search results | US, UK, CA, EU | **1. Get blue light glasses** → Amazon (US, UK, CA, EU) |
+| 🌙 Screen-Free Evening | Daily | [Amazon: Blue Light Glasses](https://www.amazon.com/s?k=blue+light+glasses&tag=habitio-21) | $15–50 | 5–8% | Accessory affiliate; search results | US, UK, CA, EU | **1. Get blue light glasses** → [Amazon search](https://www.amazon.com/s?k=blue+light+glasses&tag=habitio-21) (US, UK, CA, EU) |
 | | | | | | | | **2. Set phone away time (8pm)** → Worldwide (free) |
 | | | | | | | | **3. Replace screens with reading** → Worldwide (free) |
 
