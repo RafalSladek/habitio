@@ -11,10 +11,10 @@ const testIgnore = ["**/habitio.spec.js"];
 
 // Browser projects from playwright.config.js
 const projects = [
-  { name: "Desktop Chromium", label: "Desktop", envKey: "DEVICE_DESKTOP" },
-  { name: "Pixel 5 Chromium", label: "Mobile", envKey: "DEVICE_PIXEL-5" },
-  { name: "Tablet Firefox", label: "Tablet", envKey: "DEVICE_TABLET" },
-  { name: "iPhone 12 Safari", label: "iPhone", envKey: "DEVICE_IPHONE-12" },
+  { name: "Desktop Chromium", label: "Desktop", envKey: "DEVICE_DESKTOP", filename: "device-desktop" },
+  { name: "Pixel 5 Chromium", label: "Mobile", envKey: "DEVICE_PIXEL-5", filename: "device-pixel-5" },
+  { name: "Tablet Firefox", label: "Tablet", envKey: "DEVICE_TABLET", filename: "device-tablet" },
+  { name: "iPhone 12 Safari", label: "iPhone", envKey: "DEVICE_IPHONE-12", filename: "device-iphone-12" },
 ];
 
 function normalizeForMatch(value) {
@@ -104,7 +104,7 @@ projects.forEach((project) => {
 
   const outputFile = path.join(
     outputDir,
-    `device-${project.label.toLowerCase()}.json`
+    `${project.filename}.json`
   );
   fs.mkdirSync(outputDir, { recursive: true });
   fs.writeFileSync(outputFile, `${JSON.stringify(badgePayload, null, 2)}\n`);
