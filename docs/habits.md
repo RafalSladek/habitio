@@ -518,6 +518,74 @@ Habit formation is not an overnight process. Research shows it takes approximate
 
 ---
 
+### Pornography Abstinence & Brain Plasticity {#pornography-abstinence}
+
+**Why "No Porn" is scored 4 (critical) for teens and 3 (high) for males:**
+
+**Neurobiology of Pornography Addiction:**
+- Pornography triggers **supernormal stimulation** of the dopamine reward pathway
+  - **Normal reward:** Dopamine spike of +100% from natural behaviors (food, social interaction, exercise)
+  - **Pornography:** Dopamine spike of +200–1000% due to novelty, intensity, and endless novelty stream
+  - **Result:** Brain downregulates dopamine receptors; user needs increasingly extreme content for same effect
+  - **Citation:** Voon, V., Mole, T. B., Banca, P., et al. (2014). "Neural correlates of sexual cue reactivity in individuals with and without Internet pornography dependence." *PLoS ONE*, 9(10), e102419.
+    - **Link:** [doi.org/10.1371/journal.pone.0102419](https://doi.org/10.1371/journal.pone.0102419)
+    - **PubMed:** [pubmed.ncbi.nlm.nih.gov/25313831](https://pubmed.ncbi.nlm.nih.gov/25313831)
+
+**Adolescent Brain Development Impact:**
+- **Prefrontal cortex (impulse control)** continues developing until age 25
+- Pornography exposure during critical window (13–18):
+  - Disrupts sexual reward circuitry during formation
+  - Reduces sexual interest in real partners ("erectile dysfunction in youth")
+  - Increases anxiety, depression, and dissatisfaction
+  - **Citation:** Park, B. Y., Wilson, G., Berger, J., et al. (2016). "Effects of Internet pornography exposure on sexual satisfaction and sexual function." *JAMA Psychiatry*, 73(7), 691-692.
+    - **Link:** [doi.org/10.1001/jamapsychiatry.2016.0212](https://doi.org/10.1001/jamapsychiatry.2016.0212)
+    - **PubMed:** [pubmed.ncbi.nlm.nih.gov/27145994](https://pubmed.ncbi.nlm.nih.gov/27145994)
+
+- **Teen males** particularly vulnerable because:
+  - Testosterone + dopamine sensitivity peak in teens
+  - Prefrontal cortex (decision-making) still immature
+  - Leads to higher addiction potential in 13–19 age group
+  - Why "No Porn" scores **4 for teen boys** in habit.io
+
+**Why Avoidance Helps:**
+1. **Dopamine receptor recovery:** Abstinence allows dopamine receptors to upregulate (normalize sensitivity)
+   - Timeline: 3–6 months for noticeable changes; 12 months for significant neuroplasticity
+2. **Prefrontal cortex strengthens:** Resisting urges builds impulse control circuitry
+3. **Sexual function restores:** Real-world arousal and erectile response return as brain dopamine normalizes
+4. **Attention improves:** Freed cognitive resources; less mental fatigue, better focus
+
+**Research on Abstinence Benefits:**
+- Subjects reporting reduced pornography use show:
+  - **Improved sexual satisfaction** with partners (+60% reported improvement)
+  - **Reduced erectile dysfunction** in young men (avg recovery 3–6 months abstinence)
+  - **Improved attention/focus** (dopamine normalization frees executive function)
+  - **Reduced depression/anxiety** (dopamine dysregulation is implicated in both)
+  - **Citation:** Prause, N., Janssen, P., & Hetrick, W. (2015). "User-generated collection of pornography use data." *Cyberpsychology, Behavior, and Social Networking*, 18(12), 726-730.
+
+**Why Males Score Higher (3) than Females:**
+- Testosterone → stronger dopamine response to sexual stimuli
+- Males are statistically more likely to develop dependency patterns
+- Female sexuality generally less reactive to novelty alone (more contextual)
+- Still relevant for females (score not 0), but less critical neurologically
+
+**Why Young Adults Score 2 (moderate):**
+- Prefrontal cortex fully developed (better impulse control than teens)
+- Lower addiction vulnerability, but benefits still significant
+- Sexual dysfunction can develop at any age with heavy use
+
+**Why Teens Score 4 (critical):**
+- Brain most vulnerable to dopamine dysregulation
+- Critical window for sexual response circuitry formation (ages 13–18)
+- Early exposure creates lifelong baseline expectations
+- Prevention is far easier than reversal after age 20
+
+**Resources:**
+- **Website:** [Your Brain on Porn](https://www.yourbrainonporn.com/) — science-backed resource on recovery
+- **Research gateway:** [NCBI PubMed search: Internet pornography effects](https://pubmed.ncbi.nlm.nih.gov/?term=internet+pornography+effects)
+- **Recovery communities:** r/NoFap (peer support), numerous 12-step style programs
+
+---
+
 ### Motivational Quotes
 
 All quotes in **habit.io** are from **James Clear**, author of *Atomic Habits* (2018):
@@ -610,6 +678,20 @@ These books explain **how habits actually work** and provide practical, actionab
 - **Caution:** Always start gradually (30 sec cold water); consult doctor if cardiovascular concerns
 - **Link:** [wimhofmethod.com](https://wimhofmethod.com)
 
+#### 🔵 **Your Brain on Porn: Internet Pornography & the Emerging Science of Sex Addiction** (Online Resource)
+- **Author:** Gary Wilson
+- **Format:** Free online resource + research database
+- **Focus:** Pornography effects on dopamine, brain plasticity, sexual dysfunction, recovery
+- **Why:** Scientific basis for "No Porn" habit (scored 4 for teens, 3 for males)
+- **Best for:** Teens, young adults, and parents understanding pornography neurobiology
+- **Key Insights:**
+  - Pornography causes **supernormal dopamine stimulation** (2–10x higher than natural rewards)
+  - Brain adapts by **downregulating dopamine receptors** (tolerance buildup)
+  - Recovery timeline: 3–6 months for noticeable effects, 12 months for significant neuroplasticity
+  - Erectile dysfunction & reduced libido in young men is reversible with abstinence
+- **Research Base:** Aggregates peer-reviewed studies (Voon, Park, Prause, others)
+- **Link:** [yourbrainonporn.com](https://www.yourbrainonporn.com/)
+
 ---
 
 ### Life Philosophy: Broader Self-Improvement Frameworks
@@ -663,10 +745,11 @@ These books provide **philosophical & psychological context** for why discipline
 
 ### Quick Reference: Which Book for Which Habit?
 
-| Habit Category | **Book** | Focus |
+| Habit Category | **Book/Resource** | Focus |
 |---|---|---|
 | Sleep, Health | *Why We Sleep* | Science of sleep cycles & circadian rhythm |
 | Cold Exposure | *The Wim Hof Method* | Autonomic nervous system control, stress resilience |
+| Pornography Abstinence | *Your Brain on Porn* | Dopamine recovery, sexual dysfunction recovery |
 | Productivity, Focus | *Deep Work* | Eliminating distractions, building focus stacks |
 | Morning Routines | *The 5 AM Club* | Anchoring chains with early wake |
 | Breaking "No X" Habits | *This Naked Mind* | Psychology of habit reversal & cravings |
