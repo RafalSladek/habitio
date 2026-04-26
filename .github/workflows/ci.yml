@@ -66,7 +66,21 @@ jobs:
           name: test-results-${{ matrix.project }}
           path: test-results/
           retention-days: 30
-
+      - name: Report test failures with report link
+        if: failure()
+        run: |
+          echo "## ❌ Tests Failed: ${{ matrix.project }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎬 View Test Report" >> $GITHUB_STEP_SUMMARY
+          echo "1. Go to **Artifacts** tab above" >> $GITHUB_STEP_SUMMARY
+          echo "2. Download **\`playwright-report-${{ matrix.project }}\`**" >> $GITHUB_STEP_SUMMARY
+          echo "3. Extract and open **\`index.html\`** in your browser" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The report includes:" >> $GITHUB_STEP_SUMMARY
+          echo "- 📸 Screenshots of each failed test" >> $GITHUB_STEP_SUMMARY
+          echo "- 🎥 Video recordings of failures" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔍 Full browser trace explorer" >> $GITHUB_STEP_SUMMARY
+          echo "- ⏱️ Timing details for each step" >> $GITHUB_STEP_SUMMARY
   sonar:
     name: SonarCloud Analysis
     needs: test
