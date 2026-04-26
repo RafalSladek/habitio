@@ -2,66 +2,140 @@
 
 All 68 habits with affiliate partnerships, pricing, partner requirements, and regional availability.
 
+## Supported Languages & Markets
+
+The app supports **20 languages** across 19+ countries:
+
+| Language | Code | Countries | Region |
+|----------|------|-----------|--------|
+| 🇬🇧 English | `en` | US, UK, CA, AU | Americas, Europe, Pacific |
+| 🇩🇪 Deutsch | `de` | Germany, Austria, Switzerland | Central Europe |
+| 🇫🇷 Français | `fr` | France, Belgium, Luxembourg | Western Europe |
+| 🇪🇸 Español | `es` | Spain, Mexico, Argentina, Colombia | Europe, Americas |
+| 🇮🇹 Italiano | `it` | Italy, Switzerland | Southern Europe |
+| 🇵🇱 Polski | `pl` | Poland | Central Europe |
+| 🇧🇷 Português | `pt` | Brazil, Portugal | Americas, Europe |
+| 🇷🇺 Русский | `ru` | Russia, Belarus | Eastern Europe, Asia |
+| 🇺🇦 Українська | `uk` | Ukraine | Eastern Europe |
+| 🇬🇷 Ελληνικά | `el` | Greece | Southern Europe |
+| 🇭🇷 Hrvatski | `hr` | Croatia | Southern Europe |
+| 🇷🇴 Română | `ro` | Romania | Eastern Europe |
+| 🇷🇸 Srpski | `sr` | Serbia | Balkans |
+| 🇦🇱 Shqip | `sq` | Albania | Balkans |
+| 🇳🇱 Nederlands | `nl` | Netherlands, Belgium | Western Europe |
+| 🇹🇷 Türkçe | `tr` | Turkey | Middle East, Europe |
+| 🇮🇳 हिन्दी | `hi` | India | South Asia |
+| 🇪🇬 عربي مصري | `ar` | Egypt | Middle East, North Africa |
+| 🏔️ Bayrisch | `bar` | Bavaria (Germany) | Central Europe |
+| 🏴󠁥󠁳󠁣󠁴󠁿 Català | `ca` | Catalonia (Spain) | Western Europe |
+
+**Total markets: 19+ countries across 4 continents**
+
 ---
 
 ## Health & Body
 
-| Habit | Cadence | Partner | Price | Commission | Rules | Country |
-|-------|---------|---------|-------|------------|-------|---------|
-| ⏰ Wake Up Early | Daily | Amazon (The 5 AM Club) | $12–15 | 5% | Links on book page only | US, UK, CA, DE, FR, ES, IT |
-| 🏃 Morning Workout | Daily | Nike | Free–$300 | 5–8% | Affiliate disclosure required; no direct links on paid ads | US, UK, CA, EU |
-| 🏃 Morning Workout | Daily | Adidas | Free–$300 | 5–8% | Affiliate disclosure required; no direct links on paid ads | US, UK, CA, EU, AU |
-| 💧 Drink 2L Water | Daily | Hydro Flask | $25–50 | 7% | Non-exclusive; quarterly reporting | US, CA, UK |
-| 🏋️ Gym | 3x/week | Rogue Fitness | $200–5000+ | 5–6% | Equipment retailers only; no undercut requirement | US (primary), CA, UK, AU |
-| 🏋️ Gym | 3x/week | Stronger U | $99–299/mo | 20% (recurring) | Affiliate program capped at 100 members | US, CA |
-| 💪 Strength Training | 3x/week | Layne Norton | $50–300/mo | 25–30% | Creator platform; payment via PayPal monthly | US, CA (limited) |
-| 🧘 Yoga / Stretch | 2x/week | Yoga with Adriene (YouTube) | Free | — | No affiliate; organic YouTube link only | Worldwide |
-| 🧘 Yoga / Stretch | 2x/week | Peloton | $14–44/mo | 5–10% | SaaS affiliate; 30-day cookie window | US, CA, UK, EU, AU |
-| 🚫 No Alcohol | Daily | Amazon (This Naked Mind) | $10–15 | 5% | Book affiliate; no discount code stacking | US, UK, CA, EU |
-| 💊 Take Vitamins | Daily | NOW Foods | $5–30 | 8–12% | B2B affiliate program; requires content approval | US, CA, UK, EU |
-| 💊 Take Vitamins | Daily | iHerb | $5–100+ | 5–8% | International fulfillment hub; higher commissions for volume | Worldwide (100+ countries) |
-| 🥩 High-Protein Meal | Daily | MyFitnessPal | Free | In-app conversion | Premium tier affiliate; non-exclusive | US, UK, CA, EU, AU |
-| 🛏️ Sleep by 11pm | Daily | Amazon (Why We Sleep) | $15–20 | 5% | Book affiliate; link to Kindle edition | US, UK, CA, EU |
-| 🚶 Walk 10k Steps | Daily | Fitbit | $80–250 | 6–8% | Smartwatch affiliate; quarterly payouts | US, CA, UK, EU, AU |
-| 🚶 Walk 10k Steps | Daily | Apple Watch | $250–800 | 3–5% | Tech affiliate (Apple Affiliate Program) | US, CA, UK, EU, AU, JP |
-| 🥾 Walk 30 min | Daily | Nike Training | Free | 5–7% | Mobile app download affiliate | US, UK, CA, EU, AU |
+| Habit | Cadence | Partner | Price | Commission | Rules | Country | Ideas & Starting Points |
+|-------|---------|---------|-------|------------|-------|---------|------------------------|
+| ⏰ Wake Up Early | Daily | Amazon (The 5 AM Club) | $12–15 | 5% | Links on book page only | US, UK, CA, DE, FR, ES, IT | **1. Read the book** → Amazon affiliate (US, UK, CA, DE, FR, ES, IT) |
+| | | | | | | | **2. Use phone alarm + calendar reminder** → Worldwide (free) |
+| | | | | | | | **3. Join accountability group** → Worldwide (no affiliate) |
+| 🏃 Morning Workout | Daily | Nike | Free–$300 | 5–8% | Affiliate disclosure required; no direct links on paid ads | US, UK, CA, EU | **1. Get workout gear** → Nike, Adidas (US, UK, CA, EU, AU) |
+| | | Adidas | Free–$300 | 5–8% | Affiliate disclosure required; no direct links on paid ads | US, UK, CA, EU, AU | **2. Follow YouTube channel** → Worldwide (free) |
+| | | | | | | | **3. Use fitness tracker** → Fitbit, Apple Watch (US, CA, UK, EU, AU, JP) |
+| 💧 Drink 2L Water | Daily | Hydro Flask | $25–50 | 7% | Non-exclusive; quarterly reporting | US, CA, UK | **1. Get reusable bottle** → Hydro Flask (US, CA, UK) |
+| | | | | | | | **2. Set phone reminders** → Worldwide (free) |
+| | | | | | | | **3. Track with habit app** → Worldwide (free) |
+| 🏋️ Gym | 3x/week | Rogue Fitness | $200–5000+ | 5–6% | Equipment retailers only; no undercut requirement | US (primary), CA, UK, AU | **1. Join local gym** → Worldwide (no affiliate) |
+| | | Stronger U | $99–299/mo | 20% (recurring) | Affiliate program capped at 100 members | US, CA | **2. Get coaching program** → Stronger U (US, CA), Layne Norton (US, CA) |
+| | | | | | | | **3. Invest in home equipment** → Rogue Fitness (US, CA, UK, AU) |
+| 💪 Strength Training | 3x/week | Layne Norton | $50–300/mo | 25–30% | Creator platform; payment via PayPal monthly | US, CA (limited) | **1. Follow science-based program** → Layne Norton (US, CA) |
+| | | | | | | | **2. Stack after morning workout** → Worldwide (free) |
+| | | | | | | | **3. Get whey protein** → Worldwide (various retailers) |
+| 🧘 Yoga / Stretch | 2x/week | Yoga with Adriene (YouTube) | Free | — | No affiliate; organic YouTube link only | Worldwide | **1. Follow free YouTube** → Yoga with Adriene (Worldwide) |
+| | | Peloton | $14–44/mo | 5–10% | SaaS affiliate; 30-day cookie window | US, CA, UK, EU, AU | **2. Subscribe to app** → Peloton (US, CA, UK, EU, AU) |
+| | | | | | | | **3. Use meditation + stretching combo** → Calm, Headspace (US, CA, UK, EU, AU) |
+| 🚫 No Alcohol | Daily | Amazon (This Naked Mind) | $10–15 | 5% | Book affiliate; no discount code stacking | US, UK, CA, EU | **1. Read recovery book** → Amazon (US, UK, CA, EU) |
+| | | | | | | | **2. Join accountability community** → Worldwide (free) |
+| | | | | | | | **3. Replace with healthier drink** → Worldwide (free) |
+| 💊 Take Vitamins | Daily | NOW Foods | $5–30 | 8–12% | B2B affiliate program; requires content approval | US, CA, UK, EU | **1. Choose quality brand** → NOW Foods (US, CA, UK, EU), iHerb (Worldwide) |
+| | | iHerb | $5–100+ | 5–8% | International fulfillment hub; higher commissions for volume | Worldwide (100+ countries) | **2. Stack after breakfast** → Worldwide (free) |
+| | | | | | | | **3. Use pill organizer** → Worldwide (no affiliate) |
+| 🥩 High-Protein Meal | Daily | MyFitnessPal | Free | In-app conversion | Premium tier affiliate; non-exclusive | US, UK, CA, EU, AU | **1. Track food intake** → MyFitnessPal (US, UK, CA, EU, AU) |
+| | | | | | | | **2. Meal prep on Sunday** → Worldwide (free) |
+| | | | | | | | **3. Stack before gym/training** → Worldwide (free) |
+| 🛏️ Sleep by 11pm | Daily | Amazon (Why We Sleep) | $15–20 | 5% | Book affiliate; link to Kindle edition | US, UK, CA, EU | **1. Read sleep science** → Amazon (US, UK, CA, EU) |
+| | | | | | | | **2. Set phone reminder at 10:45pm** → Worldwide (free) |
+| | | | | | | | **3. Use meditation app before bed** → Calm, Headspace (US, CA, UK, EU, AU) |
+| 🚶 Walk 10k Steps | Daily | Fitbit | $80–250 | 6–8% | Smartwatch affiliate; quarterly payouts | US, CA, UK, EU, AU | **1. Get activity tracker** → Fitbit (US, CA, UK, EU, AU), Apple Watch (US, CA, UK, EU, AU, JP) |
+| | | Apple Watch | $250–800 | 3–5% | Tech affiliate (Apple Affiliate Program) | US, CA, UK, EU, AU, JP | **2. Gamify with step goals** → Worldwide (free) |
+| | | | | | | | **3. Walk during lunch break** → Worldwide (free) |
+| 🥾 Walk 30 min | Daily | Nike Training | Free | 5–7% | Mobile app download affiliate | US, UK, CA, EU, AU | **1. Use guided walks app** → Nike Training (US, UK, CA, EU, AU) |
+| | | | | | | | **2. Stack after work/meetings** → Worldwide (free) |
+| | | | | | | | **3. Find local route or park** → Worldwide (free) |
 
 ---
 
 ## Mind & Focus
 
-| Habit | Cadence | Partner | Price | Commission | Rules | Country |
-|-------|---------|---------|-------|------------|-------|---------|
-| 🧘 Meditate | Daily | Calm | $12–60/year | 30% (first month) | SaaS affiliate; 30-day cookie | US, CA, UK, EU, AU |
-| 🧘 Meditate | Daily | Headspace | $12–96/year | 25–30% | Subscription affiliate; varies by region | US, CA, UK, EU, AU, JP |
-| ✍️ Journal / Reflect | Daily | Bullet Journal | $25–50 | 10–15% | Books & supplies affiliate | US, CA, UK, EU |
-| 🧠 Deep Work Session | Daily | Amazon (Deep Work) | $15–18 | 5% | Book affiliate | US, UK, CA, EU |
-| 🌬️ Breathwork | Daily | Wim Hof Method | $10–50/mo | 20% | Course & app subscription affiliate | US, CA, UK, EU, AU |
-| 🎓 Learn Something New | 3x/week | Coursera | $50–400/course | 15–20% | Course completion affiliate | US, CA, UK, EU, AU |
-| 🎓 Learn Something New | 3x/week | Udemy | $15–400/course | 15% | Course affiliate; cookies 7 days | US, CA, UK, EU, AU, JP |
-| 🧩 Brain Training Game | Daily | Lumosity | $10/mo | 25–30% | Subscription SaaS affiliate | US, CA, UK, EU, AU |
+| Habit | Cadence | Partner | Price | Commission | Rules | Country | Ideas & Starting Points |
+|-------|---------|---------|-------|------------|-------|---------|------------------------|
+| 🧘 Meditate | Daily | Calm | $12–60/year | 30% (first month) | SaaS affiliate; 30-day cookie | US, CA, UK, EU, AU | **1. Try free meditation app** → Calm, Headspace (US, CA, UK, EU, AU, JP) |
+| | | Headspace | $12–96/year | 25–30% | Subscription affiliate; varies by region | US, CA, UK, EU, AU, JP | **2. Start with 5-minute session** → Worldwide (free) |
+| | | | | | | | **3. Stack before bed or morning** → Worldwide (free) |
+| ✍️ Journal / Reflect | Daily | Bullet Journal | $25–50 | 10–15% | Books & supplies affiliate | US, CA, UK, EU | **1. Get journal book & supplies** → Bullet Journal (US, CA, UK, EU), Amazon (US, UK, CA, EU) |
+| | | | | | | | **2. Set daily reminder** → Worldwide (free) |
+| | | | | | | | **3. Reflect after morning routine** → Worldwide (free) |
+| 🧠 Deep Work Session | Daily | Amazon (Deep Work) | $15–18 | 5% | Book affiliate | US, UK, CA, EU | **1. Read productivity book** → Amazon (US, UK, CA, EU) |
+| | | | | | | | **2. Block calendar for 2 hours** → Worldwide (free) |
+| | | | | | | | **3. Close all notifications & distractions** → Worldwide (free) |
+| 🌬️ Breathwork | Daily | Wim Hof Method | $10–50/mo | 20% | Course & app subscription affiliate | US, CA, UK, EU, AU | **1. Learn box breathing (4-4-4-4)** → Wim Hof Method (US, CA, UK, EU, AU) |
+| | | | | | | | **2. Combine with cold shower** → Worldwide (free) |
+| | | | | | | | **3. Practice 5 min before meetings** → Worldwide (free) |
+| 🎓 Learn Something New | 3x/week | Coursera | $50–400/course | 15–20% | Course completion affiliate | US, CA, UK, EU, AU | **1. Enroll in online course** → Coursera (US, CA, UK, EU, AU), Udemy (US, CA, UK, EU, AU, JP) |
+| | | Udemy | $15–400/course | 15% | Course affiliate; cookies 7 days | US, CA, UK, EU, AU, JP | **2. Schedule 30-min learning time** → Worldwide (free) |
+| | | | | | | | **3. Follow YouTube creators** → Worldwide (free) |
+| 🧩 Brain Training Game | Daily | Lumosity | $10/mo | 25–30% | Subscription SaaS affiliate | US, CA, UK, EU, AU | **1. Try puzzle app** → Lumosity (US, CA, UK, EU, AU) |
+| | | | | | | | **2. Play 10 min each morning** → Worldwide (free alternatives) |
+| | | | | | | | **3. Compete with friends** → Worldwide (free) |
 
 ---
 
 ## Digital Detox
 
-| Habit | Cadence | Partner | Price | Commission | Rules | Country |
-|-------|---------|---------|-------|------------|-------|---------|
-| 🌙 Screen-Free Evening | Daily | Amazon (Blue Light Glasses) | $15–50 | 5–8% | Accessory affiliate; search results | US, UK, CA, EU |
+| Habit | Cadence | Partner | Price | Commission | Rules | Country | Ideas & Starting Points |
+|-------|---------|---------|-------|------------|-------|---------|------------------------|
+| 🌙 Screen-Free Evening | Daily | Amazon (Blue Light Glasses) | $15–50 | 5–8% | Accessory affiliate; search results | US, UK, CA, EU | **1. Get blue light glasses** → Amazon (US, UK, CA, EU) |
+| | | | | | | | **2. Set phone away time (8pm)** → Worldwide (free) |
+| | | | | | | | **3. Replace screens with reading** → Worldwide (free) |
 
 ---
 
 ## Relationships
 
-| Habit | Cadence | Partner | Price | Commission | Rules | Country |
-|-------|---------|---------|-------|------------|-------|---------|
-| 📞 Call a Friend | Daily | — | — | — | — | — |
-| 👨‍👧‍👦 Play with Kids | Daily | — | — | — | — | — |
-| 🤗 Hug Someone | Daily | — | — | — | — | — |
-| ❤️ Date Night | 1x/week | — | — | — | — | — |
-| ✍️ Write a Thank You | 1x/week | — | — | — | — | — |
-| 🧑‍🍳 Cook for Family | 2x/week | — | — | — | — | — |
-| 🤝 Volunteer / Give Back | 1x/week | — | — | — | — | — |
+| Habit | Cadence | Partner | Price | Commission | Rules | Country | Ideas & Starting Points |
+|-------|---------|---------|-------|------------|-------|---------|------------------------|
+| 📞 Call a Friend | Daily | — | — | — | — | — | **1. Set daily reminder at lunch** → Worldwide (free) |
+| | | | | | | | **2. Use speakerphone while walking** → Worldwide (free) |
+| | | | | | | | **3. Join accountability group** → Worldwide (free) |
+| 👨‍👧‍👦 Play with Kids | Daily | — | — | — | — | — | **1. Schedule family game time** → Worldwide (free) |
+| | | | | | | | **2. Get board games or puzzles** → Worldwide (no affiliate) |
+| | | | | | | | **3. Build outdoor activity routine** → Worldwide (free) |
+| 🤗 Hug Someone | Daily | — | — | — | — | — | **1. Add to morning routine** → Worldwide (free) |
+| | | | | | | | **2. Hug spouse/partner daily** → Worldwide (free) |
+| | | | | | | | **3. Get pet for daily hugs** → Worldwide (no affiliate) |
+| ❤️ Date Night | 1x/week | — | — | — | — | — | **1. Block calendar every Friday 7pm** → Worldwide (free) |
+| | | | | | | | **2. Try new restaurant weekly** → Worldwide (no affiliate) |
+| | | | | | | | **3. Create special activity list** → Worldwide (free) |
+| ✍️ Write a Thank You | 1x/week | — | — | — | — | — | **1. Buy nice stationery** → Worldwide (no affiliate) |
+| | | | | | | | **2. Write one per Sunday evening** → Worldwide (free) |
+| | | | | | | | **3. Send to different person each week** → Worldwide (free) |
+| 🧑‍🍳 Cook for Family | 2x/week | — | — | — | — | — | **1. Plan recipes on Sunday** → Worldwide (free) |
+| | | | | | | | **2. Buy quality kitchen tools** → Worldwide (no affiliate) |
+| | | | | | | | **3. Invite family to cook together** → Worldwide (free) |
+| 🤝 Volunteer / Give Back | 1x/week | — | — | — | — | — | **1. Find local volunteer opportunity** → Worldwide (free) |
+| | | | | | | | **2. Set weekly volunteer slot** → Worldwide (free) |
+| | | | | | | | **3. Bring family member along** → Worldwide (free) |
 
 ---
 
@@ -128,6 +202,40 @@ All 68 habits with affiliate partnerships, pricing, partner requirements, and re
 - **Europe:** UK, DE, FR, ES, IT (GDPR-compliant programs)
 - **Asia-Pacific:** AU, JP, IN (limited affiliate programs)
 - **Emerging:** Brazil, Southeast Asia (few affiliate partners)
+
+### Country-Specific Affiliate Coverage Gaps
+
+**Full Coverage (8+ affiliate partners):**
+- 🇺🇸 **US** — Amazon, Nike, Adidas, Fitbit, Apple Watch, Rogue, YNAB, Calm, Headspace, Lumosity, Coursera, Udemy, LinkedIn
+- 🇬🇧 **UK** — Amazon, Nike, Adidas, Fitbit, Apple Watch, Peloton, YNAB, Calm, Headspace, Udemy
+- 🇨🇦 **Canada** — Amazon, Nike, Adidas, Fitbit, Apple Watch, YNAB, Calm, Headspace, Udemy, LinkedIn
+- 🇩🇪 **Germany** — Amazon, Nike, Adidas, Udemy, Coursera
+- 🇫🇷 **France** — Amazon, Nike, Adidas, Udemy, Coursera
+
+**Partial Coverage (3–7 partners):**
+- 🇪🇸 **Spain** — Amazon, Nike, Adidas, Udemy
+- 🇮🇹 **Italy** — Amazon, Nike, Adidas, Udemy
+- 🇦🇺 **Australia** — Nike, Adidas, Fitbit, Peloton, Udemy, Coursera
+- 🇯🇵 **Japan** — Apple Watch, Udemy, Coursera, Spotify
+- 🇮🇳 **India** — LinkedIn, Udemy, Coursera
+- 🇧🇷 **Brazil** — Udemy, Coursera, Netflix
+
+**Limited Coverage (1–2 partners) - PRIORITY FOR EXPANSION:**
+- 🇳🇱 **Netherlands** — Udemy, Coursera only (need: fitness, SaaS)
+- 🇵🇱 **Poland** — Udemy, Coursera only (need: fitness, lifestyle brands)
+- 🇷🇺 **Russia** — Udemy, Coursera only (need: local partners, fitness)
+- 🇺🇦 **Ukraine** — Udemy, Coursera only (need: local SaaS, fitness)
+- 🇬🇷 **Greece** — Udemy, Coursera only (need: Mediterranean affiliate programs)
+- 🇭🇷 **Croatia** — Udemy, Coursera only (need: regional partners)
+- 🇷🇴 **Romania** — Udemy, Coursera only (need: regional fitness, SaaS)
+- 🇷🇸 **Serbia** — Udemy, Coursera only (need: Balkans regional partners)
+- 🇦🇱 **Albania** — Udemy, Coursera only (need: Balkans regional partners)
+- 🇹🇷 **Turkey** — Udemy, Coursera only (need: local fitness, books)
+- 🇪🇬 **Egypt** — Udemy, Coursera only (need: Middle East, MENA partners)
+- 🏔️ **Bavaria (DE regional)** — Udemy, Coursera, Amazon only (need: local retailers)
+- 🏴󠁥󠁳󠁣󠁴󠁿 **Catalonia (ES regional)** — Udemy, Coursera, Amazon only (need: local brands)
+
+**Recommendation:** Prioritize partnerships in Central/Eastern Europe (PL, RO, HR, RS, UA, RU) and Middle East (EG, TR) where users exist but affiliate options are limited.
 
 ---
 
