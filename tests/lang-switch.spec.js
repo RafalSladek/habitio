@@ -35,7 +35,7 @@ test.describe("language switching", () => {
   test("lang persists after reload", async ({ page }) => {
     await page.getByRole("button", { name: /Settings/ }).click();
     await page.locator("#settings-content .lang-list").selectOption("es");
-    await page.reload({ waitUntil: "domcontentloaded" });
+    await page.goto(page.url(), { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("button", { name: "Hoy" })).toBeVisible();
   });
 });

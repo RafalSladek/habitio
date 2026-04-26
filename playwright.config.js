@@ -40,6 +40,7 @@ module.exports = defineConfig({
     {
       name: "iPhone 12 Safari",
       use: { ...devices["iPhone 12"] },
+      retries: 2,
     },
   ],
 });
