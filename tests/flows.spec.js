@@ -52,6 +52,9 @@ test.describe("after onboarding", () => {
 
     await page.getByRole("button", { name: /Next/i }).click();
     await expect(page.getByText(/make this day even better/)).toBeVisible();
+
+    await page.getByRole("button", { name: /Next/i }).click();
+    await expect(page.getByText(/How do you feel today/i)).toBeVisible();
   });
 
   test("stats tab shows key metrics", async ({ page }) => {
@@ -71,10 +74,10 @@ test.describe("after onboarding", () => {
     await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
     await expect(page.getByText("Profile", { exact: true })).toBeVisible();
     await expect(page.getByText("Data", { exact: true })).toBeVisible();
-    await expect(page.getByText("Export Backup")).toBeVisible();
+    await expect(page.getByText("Export Backu10")).toBeVisible();
     await expect(page.getByText("Import Backup")).toBeVisible();
     await expect(page.getByText("Reset All Data")).toBeVisible();
-    await expect(page.getByText("habit.io v2.10")).toBeVisible();
+    await expect(page.getByText("habit.io v2.9")).toBeVisible();
   });
 
   test("settings shows saved profile", async ({ page }) => {

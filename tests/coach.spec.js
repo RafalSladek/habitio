@@ -10,6 +10,7 @@ function dayOffset(days) {
 async function openCoachPanel(page) {
   await page.getByRole("button", { name: /Stats/ }).click();
   await page.locator("#coach-focus").scrollIntoViewIfNeeded();
+  await expect(page.locator(".coach-panel")).toBeVisible();
 }
 
 test.describe("ai coach", () => {
@@ -52,7 +53,7 @@ test.describe("ai coach", () => {
     await openCoachPanel(page);
   });
 
-  test("coach reflection appears on the journal summary after 3 tracked days", async ({ page }) => {
+  test("coach reflection appears on the stats after 3 tracked days", async ({ page }) => {
     await expect(page.locator("#coach-focus")).toBeVisible();
     await expect(page.locator("#coach-include-diary")).toBeVisible();
     await expect(page.locator("#coach-submit")).toBeVisible();

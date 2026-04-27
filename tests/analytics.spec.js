@@ -123,12 +123,8 @@ test.describe("GA4 event tracking", () => {
     const before = (await getCalls()).length;
 
     await page.locator("#fab-add").click();
-    const header = page.locator(".category-header", { hasText: "Health & Body" });
-    if ((await header.count()) > 0) {
-      const isCollapsed = await header.evaluate((el) => el.nextElementSibling.classList.contains("collapsed"));
-      if (isCollapsed) await header.click();
-    }
-    await page.locator(".suggestion-item").first().click({ force: true });
+    await expect(page.locator(".suggestion-item").first()).toBeVisible();
+    await page.locator(".suggestion-item").first().click();
     await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "habit_add");
 
     const calls = await getCalls();
