@@ -45,6 +45,29 @@ cd worker && npx wrangler deploy
 cd worker && npx wrangler secret put GITHUB_TOKEN
 ```
 
+## Model Routing
+
+Use the `model-router` skill when unsure. Quick reference for this project's common tasks:
+
+| Task | Model | Why |
+|------|-------|-----|
+| `yarn test` / run Playwright | **Haiku** | Pass/fail — mechanical execution |
+| `yarn format` / `format:check` | **Haiku** | Deterministic, no judgment needed |
+| `sonar-scanner` (run only) | **Haiku** | Mechanical scan execution |
+| Fix SonarCloud bugs/smells | **Sonnet** | Requires code quality judgment |
+| Security hotspot review | **Sonnet** | Security implications need reasoning |
+| Version bump (3 places) | **Haiku** | Find-and-replace across known files |
+| `gh run watch` / CI status | **Haiku** | Mechanical wait + report |
+| `wrangler deploy` | **Haiku** | Mechanical deploy |
+| Update `TODO.md` | **Haiku** | Append completed tasks |
+| Debug failing test | **Sonnet** | Root cause requires reasoning |
+| New feature / refactor | **Sonnet** | Architecture + correctness decisions |
+| Update `CLAUDE.md` / `README.md` | **Sonnet** | Requires architecture understanding |
+| Add a new language | **Sonnet** | 100% key parity + all touch-points |
+| Write new tests | **Haiku** if happy-path; **Sonnet** if edge cases need business logic |
+
+Commands: `claude --model claude-haiku-4-5-20251001` / `claude --model claude-sonnet-4-6`
+
 ## Architecture
 
 No transpilation, no bundling, no modules. All JS is vanilla ES6+ served directly.
