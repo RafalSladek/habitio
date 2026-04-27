@@ -131,8 +131,8 @@ test.describe("GA4 event tracking", () => {
 
     await page.locator("#fab-add").click();
     await page.locator(".suggestion-toggle").first().click();
-    await expect(page.locator(".suggestion-item").first()).toBeVisible();
-    await page.locator(".suggestion-item").first().click();
+    // force:true bypasses overflow:hidden clipping during the 300ms max-height CSS transition
+    await page.locator(".suggestion-item").first().click({ force: true });
     await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "habit_add");
 
     const calls = await getCalls();

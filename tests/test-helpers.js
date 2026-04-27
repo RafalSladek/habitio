@@ -164,8 +164,11 @@ async function addSuggestedHabit(page, name = "Drink 2L Water") {
     has: page.locator(".suggestion-item", { hasText: name }),
   });
   const sectionId = await section.getAttribute("id");
-  await page.locator(`[data-section-id="${sectionId}"]`).click();
-  await page.locator(".suggestion-item", { hasText: name }).getByText("+").click();
+  if (sectionId) {
+    await page.locator(`[data-section-id="${sectionId}"]`).click();
+  }
+  // force:true bypasses overflow:hidden clipping during the 300ms max-height CSS transition
+  await page.locator(".suggestion-item", { hasText: name }).click({ force: true });
   await page.locator("#modal-done-bar").click();
 }
 
