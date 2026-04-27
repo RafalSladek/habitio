@@ -7,9 +7,9 @@ function dayOffset(days) {
   return new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
 }
 
-async function openJournalSummary(page) {
-  await page.getByRole("button", { name: /Journal/ }).click();
-  await expect(page.locator(".diary-summary")).toBeVisible();
+async function openCoachPanel(page) {
+  await page.getByRole("button", { name: /Stats/ }).click();
+  await page.locator("#coach-focus").scrollIntoViewIfNeeded();
 }
 
 test.describe("ai coach", () => {
@@ -49,7 +49,7 @@ test.describe("ai coach", () => {
       },
     });
 
-    await openJournalSummary(page);
+    await openCoachPanel(page);
   });
 
   test("coach reflection appears on the journal summary after 3 tracked days", async ({ page }) => {
@@ -85,7 +85,7 @@ test.describe("ai coach", () => {
       },
     });
 
-    await openJournalSummary(page);
+    await openCoachPanel(page);
 
     await expect(page.locator("#coach-submit")).toHaveCount(0);
     await expect(page.getByText(/After 3 tracked days/i)).toBeVisible();

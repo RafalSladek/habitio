@@ -154,7 +154,12 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
  */
 async function addSuggestedHabit(page, name = "Drink 2L Water") {
   await page.locator("#fab-add").click();
-  await page.locator(".suggestion-item", { hasText: name }).getByText("+").click();
+  const header = page.locator(".category-header", { hasText: "Health & Body" });
+  if ((await header.count()) > 0) {
+    const isCollapsed = await header.evaluate((el) => el.nextElementSibling.classList.contains("collapsed"));
+    if (isCollapsed) await header.click();
+  }
+  await page.locator(".suggestion-item", { hasText: name }).click({ force: true });
   await page.locator("#modal-done-bar").click();
 }
 
