@@ -1,4 +1,4 @@
-const APP_VERSION = "v2.9";
+const APP_VERSION = "v2.10";
 const BUILD_SHA = "__BUILD_SHA__";
 // Replace with your deployed worker URL after running: wrangler deploy
 const WORKER_BASE_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
@@ -512,15 +512,28 @@ const QUOTES = [
   },
 ];
 
+let sugPriorityCache = {};
+
 function getSuggestions() {
+  // Clear cache if profile changed
+  const cacheKey = state.profile.age + "|" + state.profile.sex;
+  if (!sugPriorityCache.key || sugPriorityCache.key !== cacheKey) {
+    sugPriorityCache = { key: cacheKey, cache: {} };
+  }
+
   return SUGGESTION_DATA.map((group) => ({
     cat: t(group.catKey),
     items: group.items
-      .map((item) => ({
-        ...item,
-        name: t(item.nameKey),
-        _p: sugPriority(item.nameKey, state.profile),
-      }))
+      .map((item) => {
+        const prio =
+          sugPriorityCache.cache[item.nameKey] ??
+          (sugPriorityCache.cache[item.nameKey] = sugPriority(item.nameKey, state.profile));
+        return {
+          ...item,
+          name: t(item.nameKey),
+          _p: prio,
+        };
+      })
       .sort((a, b) => b._p - a._p),
   }));
 }
@@ -620,12 +633,13 @@ function getCoachDeviceId() {
   return id;
 }
 function save() {
-  localStorage.setItem("habitio_v9", JSON.stringify(state));
+  localStorage.setItem("habitio_v10", JSON.stringify(state));
 }
 function load() {
   try {
-    // Migration: read from older keys if current key is absent
+    // Migration: read from current/older keys if current key is absent
     const raw =
+      localStorage.getItem("habitio_v10") ||
       localStorage.getItem("habitio_v9") ||
       localStorage.getItem("habitio_v8") ||
       localStorage.getItem("habitio_v7") ||
@@ -649,7 +663,8 @@ function load() {
       d.aiCoach = { ...defaultCoachState(), ...(d.aiCoach || {}) };
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v9", JSON.stringify(state));
+      localStorage.setItem("habitio_v10", JSON.stringify(state));
+      localStorage.removeItem("habitio_v9");
       localStorage.removeItem("habitio_v8");
       localStorage.removeItem("habitio_v7");
       localStorage.removeItem("habitio_v6");
@@ -1359,13 +1374,44 @@ function updateModalDoneState() {
     cancelBtn.classList.remove("done-state");
   }
 }
+function toggleSuggestionSection(btn) {
+  const sectionId = btn.getAttribute("data-section-id");
+  const section = document.getElementById(sectionId);
+  const isExpanded = btn.classList.contains("expanded");
+  if (isExpanded) {
+    btn.classList.remove("expanded");
+    section.classList.remove("expanded");
+    btn.setAttribute("aria-expanded", "false");
+  } else {
+    btn.classList.add("expanded");
+    section.classList.add("expanded");
+    btn.setAttribute("aria-expanded", "true");
+  }
+}
+
 function renderSuggestions() {
   const existing = new Set(state.habits.map((h) => h.name.toLowerCase()));
   let html = '<div class="suggestions">';
-  getSuggestions().forEach((cat) => {
+  getSuggestions().forEach((cat, idx) => {
     const items = cat.items.filter((s) => !existing.has(s.name.toLowerCase()));
     if (!items.length) return;
-    html += '<div class="suggestion-cat">' + esc(cat.cat) + "</div>";
+    const sectionId = "suggestion-section-" + idx;
+    html +=
+      '<div class="suggestion-cat-header">' +
+      '<button class="suggestion-toggle" onclick="toggleSuggestionSection(this)" aria-label="' +
+      esc(t("toggle_suggestions")) +
+      ": " +
+      esc(cat.cat) +
+      '" data-section-id="' +
+      sectionId +
+      '" aria-expanded="false">▶</button>' +
+      '<div class="suggestion-cat">' +
+      esc(cat.cat) +
+      "</div>" +
+      "</div>" +
+      '<div class="suggestion-section" id="' +
+      sectionId +
+      '">';
     items.forEach((s) => {
       const cL = cadenceLabel(s.cadence) || t("cad_daily");
       html +=
@@ -1385,6 +1431,7 @@ function renderSuggestions() {
         (s._p > 0 ? '<span class="s-for-you">★ ' + t("for_you") + "</span>" : "") +
         '</span></span><span class="s-add">+</span></div>';
     });
+    html += "</div>";
   });
   html += "</div>";
   document.getElementById("suggestions-area").innerHTML = html;
@@ -1571,7 +1618,7 @@ function renderDiary() {
   const c = document.getElementById("diary-content");
   document.getElementById("diary-header").textContent = t("nav_journal");
   const k = fmt(diaryDate);
-  const entry = state.diary[k] || { grateful: "", affirm: "", good: "", better: "" };
+  const entry = state.diary[k] || { grateful: "", affirm: "", good: "", mood: null, better: "" };
 
   const dn = isToday(diaryDate)
     ? t("nav_today")
@@ -1596,63 +1643,49 @@ function renderDiary() {
   }).join("");
   const progress = '<div class="diary-progress">' + dots + "</div>";
 
-  // ── Summary screen ──
+  // Display summary screen for completed entries instead of auto-navigating away
   if (diaryStep >= DIARY_FIELDS.length) {
-    const filled = DIARY_FIELDS.filter((f) => entry[f]?.trim()).length;
-    const suggestions = SUGGESTION_DATA.flatMap((cat) =>
-      cat.items.map((s) => ({ name: t(s.nameKey), emoji: s.emoji, nameKey: s.nameKey }))
-    )
-      .filter((s) => !state.habits.some((h) => h.name === s.name))
-      .slice(0, 3);
-
     c.innerHTML =
       dateNav +
       progress +
-      '<div class="diary-summary">' +
-      '<div class="diary-summary-icon">✨</div>' +
-      '<div class="diary-summary-title">' +
-      t("diary_complete") +
-      "</div>" +
-      '<div class="diary-summary-meta">' +
-      filled +
-      " / " +
-      DIARY_FIELDS.length +
-      " " +
-      t("diary_filled") +
-      "</div>" +
-      (suggestions.length
-        ? '<div class="diary-suggest-wrap">' +
-          '<div class="diary-suggest-lbl">' +
-          t("diary_suggest_label") +
-          "</div>" +
-          suggestions
-            .map(
-              (s) =>
-                '<button class="diary-habit-chip" onclick="addFromDiary(\'' +
-                s.nameKey +
-                "'," +
-                '"' +
-                s.emoji +
-                '"' +
-                ')">' +
-                s.emoji +
-                " " +
-                esc(s.name) +
-                ' <span class="chip-add">+ Add</span></button>'
-            )
-            .join("") +
-          "</div>"
-        : "") +
-      renderCoachPanel() +
-      '<button class="diary-edit-btn" onclick="diaryStep=0;renderDiary()">← ' +
-      t("diary_edit") +
+      '<div class="diary-summary"><p>' +
+      t("diary_done") +
+      " ✓</p></div>" +
+      '<div class="diary-step-nav">' +
+      '<button class="diary-back-btn" onclick="diaryStepGo(-1)">← ' +
+      t("diary_back") +
       "</button>" +
+      '<button class="diary-next-btn" onclick="switchPage(\'stats\')">' +
+      t("nav_stats") +
+      " →</button>" +
       "</div>";
     return;
   }
 
   // ── Single prompt step ──
   const field = DIARY_FIELDS[diaryStep];
+  const moodSection =
+    field === "good"
+      ? '<div class="diary-mood-section">' +
+        '<label class="diary-mood-label">' +
+        esc(t("diary_mood")) +
+        tipBtn("tip_diary_mood") +
+        "</label>" +
+        '<div class="diary-mood-container">' +
+        '<span class="mood-emoji" id="mood-display">😐</span>' +
+        '<input type="range" class="diary-mood-slider" id="d_mood" min="1" max="5" ' +
+        'value="' +
+        (entry.mood || 3) +
+        '" ' +
+        "oninput=\"updateMoodDisplay(this.value); saveMood('" +
+        k +
+        "', this.value)\">" +
+        '<div class="mood-scale">' +
+        "<span>😔</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>" +
+        "</div>" +
+        "</div>" +
+        "</div>"
+      : "";
   c.innerHTML =
     dateNav +
     progress +
@@ -1676,6 +1709,7 @@ function renderDiary() {
     '">' +
     esc(entry[field] || "") +
     "</textarea>" +
+    moodSection +
     '<div class="diary-saved" id="ds_' +
     field +
     '">' +
@@ -1692,12 +1726,15 @@ function renderDiary() {
     (diaryStep < DIARY_FIELDS.length - 1 ? t("diary_next") + " →" : "✓ " + t("diary_done")) +
     "</button>" +
     "</div>";
-
-  setTimeout(() => document.getElementById("d_" + field)?.focus(), 80);
 }
 
 function diaryStepGo(dir) {
   diaryStep = Math.max(0, Math.min(DIARY_FIELDS.length, diaryStep + dir));
+  // Auto-navigate to stats only when completing the form (clicking Done on final step)
+  if (dir > 0 && diaryStep >= DIARY_FIELDS.length) {
+    switchPage("stats");
+    return;
+  }
   renderDiary();
 }
 
@@ -1725,7 +1762,8 @@ function addFromDiary(nameKey, emoji) {
   renderDiary();
 }
 function saveDiary(k, field, val) {
-  if (!state.diary[k]) state.diary[k] = { grateful: "", affirm: "", good: "", better: "" };
+  if (!state.diary[k])
+    state.diary[k] = { grateful: "", affirm: "", good: "", mood: null, better: "" };
   const wasEmpty = !state.diary[k][field]?.trim();
   state.diary[k][field] = val;
   if (wasEmpty && val.trim()) trackEvent("journal_write", { section: field, date: k });
@@ -1734,6 +1772,21 @@ function saveDiary(k, field, val) {
   const el = document.getElementById("ds_" + field);
   el.classList.add("show");
   diaryTimers[field] = setTimeout(() => el.classList.remove("show"), 1500);
+}
+
+function saveMood(k, val) {
+  if (!state.diary[k])
+    state.diary[k] = { grateful: "", affirm: "", good: "", mood: null, better: "" };
+  const wasMissing = state.diary[k].mood === null || state.diary[k].mood === undefined;
+  state.diary[k].mood = parseInt(val, 10);
+  if (wasMissing && val) trackEvent("journal_mood", { mood: val, date: k });
+  save();
+}
+
+function updateMoodDisplay(val) {
+  const emojis = ["", "😔", "😕", "😐", "🙂", "😄"];
+  const display = document.getElementById("mood-display");
+  if (display) display.textContent = emojis[parseInt(val, 10)] || "😐";
 }
 
 // ═══ IMPORT / EXPORT ═══
@@ -2132,6 +2185,110 @@ function buildHeatmapHtml() {
   return hm;
 }
 
+function renderMoodGraph(days = 7) {
+  const today = new Date();
+  const moodData = [];
+
+  for (let i = days - 1; i >= 0; i--) {
+    const d = addD(today, -i);
+    const key = fmt(d);
+    const mood = state.diary[key]?.mood || null;
+    const isToday = fmt(d) === fmt(today);
+    moodData.push({
+      date: d,
+      mood: mood,
+      key: key,
+      label: isToday ? t("nav_today") : DN()[dIdx(d)].slice(0, 3),
+      isToday: isToday,
+    });
+  }
+
+  const width = 280;
+  const height = 100;
+  const padding = { top: 10, right: 10, bottom: 20, left: 40 };
+  const graphWidth = width - padding.left - padding.right;
+  const graphHeight = height - padding.top - padding.bottom;
+
+  const yMin = 1,
+    yMax = 5;
+  const yScale = graphHeight / (yMax - yMin);
+  const xScale = graphWidth / (moodData.length - 1 || 1);
+
+  const validPoints = moodData
+    .map((d, i) => (d.mood !== null ? { ...d, index: i } : null))
+    .filter(Boolean);
+
+  let pathD = "";
+  if (validPoints.length > 0) {
+    validPoints.forEach((d, i) => {
+      const x = padding.left + d.index * xScale;
+      const y = padding.top + graphHeight - (d.mood - yMin) * yScale;
+      pathD += (i === 0 ? "M" : "L") + " " + x + " " + y + " ";
+    });
+  }
+
+  let svg =
+    '<svg class="mood-graph" viewBox="0 0 ' +
+    width +
+    " " +
+    height +
+    '" width="' +
+    width +
+    '" height="' +
+    height +
+    '">';
+
+  svg += '<g class="mood-axis">';
+  for (let i = 1; i <= 5; i++) {
+    const y = padding.top + graphHeight - (i - yMin) * yScale;
+    const emoji = ["", "😔", "😕", "😐", "🙂", "😄"][i];
+    svg += '<text x="18" y="' + (y + 4) + '" class="mood-axis-label">' + emoji + "</text>";
+    svg +=
+      '<line x1="' +
+      padding.left +
+      '" y1="' +
+      y +
+      '" x2="' +
+      (width - padding.right) +
+      '" y2="' +
+      y +
+      '" class="mood-grid-line"/>';
+  }
+  svg += "</g>";
+
+  if (pathD) {
+    svg +=
+      '<path d="' +
+      pathD +
+      '" class="mood-line" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+
+  validPoints.forEach((d) => {
+    const x = padding.left + d.index * xScale;
+    const y = padding.top + graphHeight - (d.mood - yMin) * yScale;
+    const dotColor = d.isToday ? "var(--success)" : "var(--accent)";
+    svg += '<circle cx="' + x + '" cy="' + y + '" r="3" class="mood-dot" fill="' + dotColor + '"/>';
+  });
+
+  svg += '<g class="mood-x-axis">';
+  moodData.forEach((d, i) => {
+    const x = padding.left + i * xScale;
+    svg +=
+      '<text x="' +
+      x +
+      '" y="' +
+      (padding.top + graphHeight + 15) +
+      '" class="mood-x-label">' +
+      d.label +
+      "</text>";
+  });
+  svg += "</g>";
+
+  svg += "</svg>";
+
+  return svg;
+}
+
 function renderStats() {
   const c = document.getElementById("stats-content");
   document.getElementById("stats-header").textContent = t("nav_stats");
@@ -2191,7 +2348,8 @@ function renderStats() {
 
   c.innerHTML =
     '<div class="stats-grid">' +
-    '<div class="stats-grid-item">' +
+    '<div class="stats-grid-item stats-grid-split">' +
+    '<div class="stats-grid-top">' +
     '<div class="stat-big">' +
     wP +
     "%</div>" +
@@ -2200,6 +2358,17 @@ function renderStats() {
     "</div>" +
     '<div class="stat-big-sub">' +
     t("week_sub") +
+    "</div>" +
+    "</div>" +
+    '<div class="stats-grid-bottom">' +
+    '<div class="stat-big">' +
+    wD +
+    "/" +
+    wT +
+    "</div>" +
+    '<div class="stat-big-label">' +
+    t("week_completed") +
+    "</div>" +
     "</div>" +
     "</div>" +
     '<div class="stats-grid-item">' +
@@ -2320,6 +2489,15 @@ function renderStats() {
         );
       })
       .join("") +
+    "</div>" +
+    '<div class="stat-card">' +
+    '<div class="stat-card-title">💭 ' +
+    t("stats_mood_title") +
+    "</div>" +
+    renderMoodGraph(7) +
+    "</div>" +
+    '<div class="stat-card">' +
+    renderCoachPanel() +
     "</div>";
 }
 
@@ -2543,7 +2721,7 @@ async function requestCoachFeedback() {
       if (data?.budget) {
         state.aiCoach.lastBudget = data.budget;
         save();
-        renderDiary();
+        renderStats();
       }
       throw new Error(data?.code || "HTTP_" + res.status);
     }
@@ -2553,7 +2731,7 @@ async function requestCoachFeedback() {
     state.aiCoach.lastModel = data.model || "";
     state.aiCoach.lastRequestedAt = new Date().toISOString();
     save();
-    renderDiary();
+    renderStats();
     showToast(t("coach_done"));
     trackEvent("ai_coach_success", {
       include_diary: state.aiCoach.includeDiary,
@@ -2632,6 +2810,12 @@ function switchPage(p) {
   }
   if (p === "stats") renderStats();
   if (p === "settings") renderSettings();
+  // Update hash for direct linking
+  if (p !== "tracker") {
+    history.replaceState(null, "", "#" + p);
+  } else {
+    history.replaceState(null, "", location.pathname);
+  }
   // SPA page_view — fires only when consent has been granted
   if (state.consentAnalytics) {
     const titles = { tracker: "Today", diary: "Journal", stats: "Stats", settings: "Settings" };
@@ -2718,6 +2902,18 @@ function showConsentBannerIfNeeded() {
 load();
 setAnalyticsDisabled(state.consentAnalytics !== true);
 render();
+// Hash routing: switch to page if hash is set
+const hash = location.hash.slice(1);
+if (hash && ["tracker", "diary", "stats", "settings"].includes(hash)) {
+  switchPage(hash);
+}
+// Listen for hash changes
+window.addEventListener("hashchange", () => {
+  const newHash = location.hash.slice(1);
+  if (newHash && ["tracker", "diary", "stats", "settings"].includes(newHash)) {
+    switchPage(newHash);
+  }
+});
 setFabVisible(true);
 const needsWelcome = !state.profile.name && !state.habits.length;
 if (needsWelcome) {

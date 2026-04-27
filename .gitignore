@@ -11,3 +11,5 @@ badges/
 .scannerwork/
 test-results-sw-temp/
 test-output.log
+.worktrees/
+test-run.log

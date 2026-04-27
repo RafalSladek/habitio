@@ -576,6 +576,22 @@ body {
   padding: 14px;
   text-align: center;
 }
+.stats-grid-split {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.stats-grid-top,
+.stats-grid-bottom {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 14px;
+}
+.stats-grid-top {
+  border-bottom: 1px solid var(--border);
+}
 .heatmap {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -1772,6 +1788,47 @@ body {
 .suggestion-item:active .s-add {
   transform: scale(0.9);
 }
+.suggestion-cat-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+.suggestion-cat-header:first-child {
+  margin-top: 0;
+}
+.suggestion-toggle {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 14px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    color 0.2s;
+  font-weight: 700;
+}
+.suggestion-toggle:hover {
+  color: var(--text);
+}
+.suggestion-toggle.expanded {
+  transform: rotate(90deg);
+}
+.suggestion-section {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.suggestion-section.expanded {
+  max-height: 5000px;
+}
 .phase-tag {
   padding: 1px 6px;
   border-radius: 4px;
@@ -2297,4 +2354,120 @@ body {
   .consent-banner {
     left: calc(240px + (100vw - 240px - 480px) / 2);
   }
+}
+
+/* ═══ MOOD TRACKING ═══ */
+.diary-mood-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.diary-mood-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.diary-mood-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mood-emoji {
+  font-size: 32px;
+  text-align: center;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diary-mood-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(to right, #ef4444, #f97316, #eab308, #84cc16, #22c55e);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.diary-mood-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.diary-mood-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.mood-scale {
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  opacity: 0.8;
+  padding: 0 4px;
+}
+
+.stats-mood-section {
+  margin-bottom: 20px;
+}
+
+.stats-section-title {
+  margin: 16px 0 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.mood-graph {
+  width: calc(100% - 8px);
+  height: auto;
+  margin: 12px 4px;
+  color: var(--accent);
+}
+
+.mood-axis-label {
+  font-size: 10px;
+  text-anchor: end;
+  fill: var(--text-muted);
+}
+
+.mood-grid-line {
+  stroke: var(--border);
+  stroke-dasharray: 2, 2;
+  opacity: 0.3;
+}
+
+.mood-line {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mood-dot {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+}
+
+.mood-x-label {
+  font-size: 10px;
+  text-anchor: middle;
+  fill: var(--text-muted);
 }

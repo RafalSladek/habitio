@@ -2,7 +2,6 @@
 const { test, expect, resetToDefaultState } = require("./test-helpers");
 
 const WORKER_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
-const WORKER_ROUTE = "**habitio-feedback.rafal-sladek.workers.dev**";
 
 test.describe("feedback form", () => {
   /** @type {Array<Record<string, any>>} */
@@ -11,8 +10,16 @@ test.describe("feedback form", () => {
   test.beforeEach(async ({ page }) => {
     feedbackRequests = [];
 
-    // Intercept worker requests so tests run offline and don't create real issues
-    await page.route(WORKER_ROUTE, async (route) => {
+    // First unroute any existing routes to this URL to ensure clean state
+    try {
+      await page.unroute("**/habitio-feedback.rafal-sladek.workers.dev/**");
+    } catch {
+      // Route doesn't exist yet, that's fine
+    }
+
+    // Intercept ALL worker requests so tests run offline and don't create real issues
+    // This route stays active for all tests unless explicitly changed
+    await page.route("**/habitio-feedback.rafal-sladek.workers.dev/**", async (route) => {
       const payload = route.request().postData();
       if (payload) feedbackRequests.push(JSON.parse(payload));
       await route.fulfill({
@@ -87,12 +94,14 @@ test.describe("feedback form", () => {
   });
 
   test("shows error toast when worker returns error", async ({ page }) => {
-    await page.unroute(WORKER_ROUTE);
-    await page.route(WORKER_ROUTE, async (route) => {
+    // Set up route to respond with error BEFORE interacting with form
+    let errorRouteActive = false;
+    await page.unroute("**/habitio-feedback.rafal-sladek.workers.dev/**");
+    await page.route("**/habitio-feedback.rafal-sladek.workers.dev/**", async (route) => {
       await route.fulfill({ status: 502, body: "Bad Gateway" });
     });
 
-    await page.locator("#feedback-msg").fill("This is a test message that should fail to send.");
+    await page.locator("#feedback-msg").fill("This is a test message with error response.");
     await page.locator("#feedback-submit").click();
     await expect(page.locator(".toast")).toBeVisible();
   });

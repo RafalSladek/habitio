@@ -1,5 +1,5 @@
 // @ts-check
-const { test, expect, resetToDefaultState } = require("./test-helpers");
+const { test, expect, resetToDefaultState, STORAGE_VERSION } = require("./test-helpers");
 
 test.describe("consent banner", () => {
   test.beforeEach(async ({ page }) => {
@@ -33,19 +33,19 @@ test.describe("consent banner", () => {
 
   test("accepting consent saves consentAnalytics:true to localStorage", async ({ page }) => {
     await page.locator(".consent-btn.accept").click();
-    const saved = await page.evaluate(() => {
-      const raw = localStorage.getItem("habitio_v9");
+    const saved = await page.evaluate(({ version }) => {
+      const raw = localStorage.getItem(version);
       return raw ? JSON.parse(raw) : null;
-    });
+    }, { version: STORAGE_VERSION });
     expect(saved?.consentAnalytics).toBe(true);
   });
 
   test("declining consent saves consentAnalytics:false to localStorage", async ({ page }) => {
     await page.locator(".consent-btn.decline").click();
-    const saved = await page.evaluate(() => {
-      const raw = localStorage.getItem("habitio_v9");
+    const saved = await page.evaluate(({ version }) => {
+      const raw = localStorage.getItem(version);
       return raw ? JSON.parse(raw) : null;
-    });
+    }, { version: STORAGE_VERSION });
     expect(saved?.consentAnalytics).toBe(false);
   });
 

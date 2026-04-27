@@ -1,35 +1,38 @@
 // @ts-check
-const { test, expect, createState, openClearedApp, goToSettings } = require("./test-helpers");
+const { test, expect, createState, openClearedApp, goToSettings, STORAGE_VERSION } = require("./test-helpers");
 
 /**
  * @param {import('@playwright/test').Page} page
  */
 async function seedAndGoToSettings(page) {
   await page.evaluate(
-    (state) => {
-      localStorage.setItem("habitio_v9", JSON.stringify(state));
+    ({ state, version }) => {
+      localStorage.setItem(version, JSON.stringify(state));
     },
-    createState({
-      habits: [
-        {
-          id: "h1",
-          name: "Drink Water",
-          emoji: "💧",
-          cadence: { type: "daily" },
-          createdAt: "2024-01-01",
-        },
-        {
-          id: "h2",
-          name: "Read",
-          emoji: "📖",
-          cadence: { type: "daily" },
-          createdAt: "2024-01-01",
-        },
-      ],
-      checks: { "2024-01-15": { h1: true } },
-      diary: { "2024-01-15": { mood: 4 } },
-      profile: { name: "Test", age: "30", ageGroup: "adult", sex: "male" },
-    })
+    {
+      state: createState({
+        habits: [
+          {
+            id: "h1",
+            name: "Drink Water",
+            emoji: "💧",
+            cadence: { type: "daily" },
+            createdAt: "2024-01-01",
+          },
+          {
+            id: "h2",
+            name: "Read",
+            emoji: "📖",
+            cadence: { type: "daily" },
+            createdAt: "2024-01-01",
+          },
+        ],
+        checks: { "2024-01-15": { h1: true } },
+        diary: { "2024-01-15": { mood: 4 } },
+        profile: { name: "Test", age: "30", ageGroup: "adult", sex: "male" },
+      }),
+      version: STORAGE_VERSION,
+    }
   );
 
   await page.reload({ waitUntil: "domcontentloaded" });
@@ -131,7 +134,7 @@ test.describe("export / import", () => {
     ]);
 
     await expect(page.locator("#import-modal")).not.toHaveClass(/show/);
-    const state = await page.evaluate(() => JSON.parse(localStorage.getItem("habitio_v9") || "{}"));
+    const state = await page.evaluate(({ version }) => JSON.parse(localStorage.getItem(version) || "{}"), { version: STORAGE_VERSION });
 
     expect(state.habits).toHaveLength(3);
     expect(state.habits.map((habit) => habit.name)).toContain("Meditate");
@@ -181,12 +184,15 @@ test.describe("export / import", () => {
     const exportedBuffer = Buffer.concat(chunks);
 
     await page.evaluate(
-      (state) => {
-        localStorage.setItem("habitio_v9", JSON.stringify(state));
+      ({ state, version }) => {
+        localStorage.setItem(version, JSON.stringify(state));
       },
-      createState({
-        profile: { name: "Test", age: "30", ageGroup: "adult", sex: "male" },
-      })
+      {
+        state: createState({
+          profile: { name: "Test", age: "30", ageGroup: "adult", sex: "male" },
+        }),
+        version: STORAGE_VERSION,
+      }
     );
 
     await page.reload({ waitUntil: "domcontentloaded" });
@@ -211,7 +217,7 @@ test.describe("export / import", () => {
     ]);
 
     await expect(page.locator("#import-modal")).not.toHaveClass(/show/);
-    const state = await page.evaluate(() => JSON.parse(localStorage.getItem("habitio_v9") || "{}"));
+    const state = await page.evaluate(({ version }) => JSON.parse(localStorage.getItem(version) || "{}"), { version: STORAGE_VERSION });
     expect(state.habits).toHaveLength(2);
     expect(state.habits.map((habit) => habit.name)).toContain("Drink Water");
     expect(Object.values(state.checks["2024-01-15"] || {}).some((value) => value)).toBe(true);

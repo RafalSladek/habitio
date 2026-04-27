@@ -2,6 +2,10 @@
 const { test: base, expect } = require("@playwright/test");
 const fs = require("node:fs");
 const path = require("node:path");
+
+/** Storage version key - increment when schema changes */
+const STORAGE_VERSION = "habitio_v10";
+
 const gaRouteInstalled = new WeakSet();
 
 const test = base.extend({
@@ -79,11 +83,13 @@ async function openClearedApp(page) {
  */
 async function resetToDefaultState(page, overrides = {}) {
   await mockGoogleAnalytics(page);
-  await page.goto("/");
-  await page.evaluate((state) => {
+  if (!page.url().startsWith("http://localhost:3000")) {
+    await page.goto("/");
+  }
+  await page.evaluate(({ state, version }) => {
     localStorage.clear();
-    localStorage.setItem("habitio_v9", JSON.stringify(state));
-  }, createState(overrides));
+    localStorage.setItem(version, JSON.stringify(state));
+  }, { state: createState(overrides), version: STORAGE_VERSION });
   await page.reload({ waitUntil: "domcontentloaded" });
 }
 
@@ -154,6 +160,11 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
  */
 async function addSuggestedHabit(page, name = "Drink 2L Water") {
   await page.locator("#fab-add").click();
+  const section = page.locator(".suggestion-section").filter({
+    has: page.locator(".suggestion-item", { hasText: name }),
+  });
+  const sectionId = await section.getAttribute("id");
+  await page.locator(`[data-section-id="${sectionId}"]`).click();
   await page.locator(".suggestion-item", { hasText: name }).getByText("+").click();
   await page.locator("#modal-done-bar").click();
 }
@@ -211,14 +222,17 @@ async function spyOnGtag(page) {
 async function seedConsented(page, extra = {}) {
   await mockGoogleAnalytics(page);
   await page.evaluate(
-    (state) => {
-      localStorage.setItem("habitio_v9", JSON.stringify(state));
+    ({ state, version }) => {
+      localStorage.setItem(version, JSON.stringify(state));
     },
-    createState({
-      profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
-      consentAnalytics: true,
-      ...extra,
-    })
+    {
+      state: createState({
+        profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
+        consentAnalytics: true,
+        ...extra,
+      }),
+      version: STORAGE_VERSION,
+    }
   );
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.locator("#fab-add")).toBeVisible();
@@ -233,6 +247,7 @@ async function goToSettings(page) {
 module.exports = {
   test,
   expect,
+  STORAGE_VERSION,
   createState,
   mockGoogleAnalytics,
   openClearedApp,

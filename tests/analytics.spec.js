@@ -6,6 +6,7 @@ const {
   openClearedApp,
   spyOnGtag,
   seedConsented,
+  STORAGE_VERSION,
 } = require("./test-helpers");
 
 test.describe("GA4 event tracking", () => {
@@ -20,13 +21,16 @@ test.describe("GA4 event tracking", () => {
   test("no GA events fired before consent", async ({ page }) => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
-      (state) => {
-        localStorage.setItem("habitio_v9", JSON.stringify(state));
+      ({ state, version }) => {
+        localStorage.setItem(version, JSON.stringify(state));
       },
-      createState({
-        profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
-        consentAnalytics: null,
-      })
+      {
+        state: createState({
+          profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
+          consentAnalytics: null,
+        }),
+        version: STORAGE_VERSION,
+      }
     );
     await page.reload({ waitUntil: "domcontentloaded" });
     await expect(page.locator(".consent-banner")).toBeVisible();
@@ -40,13 +44,16 @@ test.describe("GA4 event tracking", () => {
   test("page_view fired after accepting consent", async ({ page }) => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
-      (state) => {
-        localStorage.setItem("habitio_v9", JSON.stringify(state));
+      ({ state, version }) => {
+        localStorage.setItem(version, JSON.stringify(state));
       },
-      createState({
-        profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
-        consentAnalytics: null,
-      })
+      {
+        state: createState({
+          profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
+          consentAnalytics: null,
+        }),
+        version: STORAGE_VERSION,
+      }
     );
 
     await page.reload({ waitUntil: "domcontentloaded" });
@@ -123,6 +130,7 @@ test.describe("GA4 event tracking", () => {
     const before = (await getCalls()).length;
 
     await page.locator("#fab-add").click();
+    await page.locator(".suggestion-toggle").first().click();
     await expect(page.locator(".suggestion-item").first()).toBeVisible();
     await page.locator(".suggestion-item").first().click();
     await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "habit_add");
@@ -165,13 +173,16 @@ test.describe("GA4 event tracking", () => {
   test("no GA events fired after declining consent", async ({ page }) => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
-      (state) => {
-        localStorage.setItem("habitio_v9", JSON.stringify(state));
+      ({ state, version }) => {
+        localStorage.setItem(version, JSON.stringify(state));
       },
-      createState({
-        profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
-        consentAnalytics: null,
-      })
+      {
+        state: createState({
+          profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
+          consentAnalytics: null,
+        }),
+        version: STORAGE_VERSION,
+      }
     );
 
     await page.reload({ waitUntil: "domcontentloaded" });

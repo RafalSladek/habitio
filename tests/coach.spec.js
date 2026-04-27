@@ -1,8 +1,6 @@
 // @ts-check
 const { test, expect, resetToDefaultState } = require("./test-helpers");
 
-const COACH_URL = "https://habitio-feedback.rafal-sladek.workers.dev/coach";
-
 function dayOffset(days) {
   return new Date(Date.now() - days * 86400000).toISOString().slice(0, 10);
 }
@@ -10,6 +8,8 @@ function dayOffset(days) {
 async function openJournalSummary(page) {
   await page.getByRole("button", { name: /Journal/ }).click();
   await expect(page.locator(".diary-summary")).toBeVisible();
+  await page.locator(".diary-next-btn").click();
+  await expect(page.locator(".coach-panel")).toBeVisible();
 }
 
 test.describe("ai coach", () => {
@@ -58,38 +58,6 @@ test.describe("ai coach", () => {
     await expect(page.locator("#coach-submit")).toBeVisible();
   });
 
-  test("coach reflection stays locked before 3 tracked days", async ({ page }) => {
-    await resetToDefaultState(page, {
-      profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
-      habits: [
-        {
-          id: "habit-1",
-          name: "Walk 20 minutes",
-          emoji: "🚶",
-          cadence: { type: "daily" },
-          morning: true,
-          createdAt: dayOffset(5),
-        },
-      ],
-      checks: {
-        [dayOffset(0)]: { "habit-1": true },
-        [dayOffset(1)]: { "habit-1": true },
-      },
-      diary: {
-        [dayOffset(0)]: {
-          grateful: "A calm start.",
-          affirm: "I can keep it simple.",
-          good: "I went for a walk.",
-          better: "I want to keep evenings lighter.",
-        },
-      },
-    });
-
-    await openJournalSummary(page);
-
-    await expect(page.locator("#coach-submit")).toHaveCount(0);
-    await expect(page.getByText(/After 3 tracked days/i)).toBeVisible();
-  });
 
   test("posts a compact summary without diary entries by default", async ({ page }, testInfo) => {
     // Skip on iPhone 12 due to route interception issues on smaller viewports
@@ -98,7 +66,7 @@ test.describe("ai coach", () => {
     }
 
     let captured;
-    await page.route(COACH_URL, async (route) => {
+    await page.route("https://habitio-feedback.rafal-sladek.workers.dev/coach", async (route) => {
       captured = JSON.parse(route.request().postData() || "{}");
       await route.fulfill({
         status: 200,
@@ -138,7 +106,7 @@ test.describe("ai coach", () => {
     }
 
     let captured;
-    await page.route(COACH_URL, async (route) => {
+    await page.route("https://habitio-feedback.rafal-sladek.workers.dev/coach", async (route) => {
       captured = JSON.parse(route.request().postData() || "{}");
       await route.fulfill({
         status: 200,
@@ -169,7 +137,7 @@ test.describe("ai coach", () => {
   });
 
   test("shows a toast when the daily coach limit is reached", async ({ page }) => {
-    await page.route(COACH_URL, async (route) => {
+    await page.route("https://habitio-feedback.rafal-sladek.workers.dev/coach", async (route) => {
       await route.fulfill({
         status: 429,
         contentType: "application/json",
@@ -189,5 +157,41 @@ test.describe("ai coach", () => {
 
     await expect(page.locator(".toast")).toBeVisible();
     await expect(page.locator("#coach-submit")).toHaveText(/Get coach reflection/i);
+  });
+});
+
+test.describe("ai coach - before sufficient tracked days", () => {
+  test.beforeEach(async ({ page }) => {
+    await resetToDefaultState(page, {
+      profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
+      habits: [
+        {
+          id: "habit-1",
+          name: "Walk 20 minutes",
+          emoji: "🚶",
+          cadence: { type: "daily" },
+          morning: true,
+          createdAt: dayOffset(5),
+        },
+      ],
+      checks: {
+        [dayOffset(0)]: { "habit-1": true },
+        [dayOffset(1)]: { "habit-1": true },
+      },
+      diary: {
+        [dayOffset(0)]: {
+          grateful: "A calm start.",
+          affirm: "I can keep it simple.",
+          good: "I went for a walk.",
+          better: "I want to keep evenings lighter.",
+        },
+      },
+    });
+    await openJournalSummary(page);
+  });
+
+  test("coach reflection stays locked before 3 tracked days", async ({ page }) => {
+    await expect(page.locator("#coach-submit")).toHaveCount(0);
+    await expect(page.getByText(/After 3 tracked days/i)).toBeVisible();
   });
 });

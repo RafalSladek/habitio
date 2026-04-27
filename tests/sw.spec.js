@@ -1,5 +1,5 @@
 // @ts-check
-const { test, expect } = require("@playwright/test");
+const { test, expect, STORAGE_VERSION } = require("./test-helpers");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
@@ -25,7 +25,7 @@ function createServiceWorkerHarness({
       new Response(body, { status: 200, headers: { "Content-Type": "text/plain" } }),
     ])
   );
-  cacheBuckets.set("habitio_v9", defaultCache);
+  cacheBuckets.set(STORAGE_VERSION, defaultCache);
 
   const cachesApi = {
     async open(name) {
@@ -113,7 +113,7 @@ function createServiceWorkerHarness({
       await Promise.allSettled(waitUntilPromises);
       return response;
     },
-    async readCachedText(url, cacheName = "habitio_v9") {
+    async readCachedText(url, cacheName = STORAGE_VERSION) {
       const bucket = cacheBuckets.get(cacheName);
       const response = bucket?.get(url);
       return response ? response.clone().text() : undefined;
