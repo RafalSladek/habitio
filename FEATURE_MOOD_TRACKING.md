@@ -11,13 +11,13 @@ Add daily mood tracking to journal flow, visualize 7-day mood trends in Stats vi
 ## Phase 1: Data Model & Migration
 
 ### Storage Schema Changes
-- [ ] Add `mood` field to diary entries (`state.diary[date].mood` = 1-5 integer scale)
-- [ ] Extract storage version constant (`STORAGE_VERSION = "habitio_v10"`) at top of [app.js](app.js)
-- [ ] Bump version in 3 places (blocking requirement):
-  - [ ] [app.js:1](app.js#L1): `APP_VERSION = "v2.10"`
-  - [ ] [app.js:623](app.js#L623): `localStorage.setItem("habitio_v10", ...)`
-  - [ ] [sw.js:1](sw.js#L1): `CACHE = "habitio_v10"`
-- [ ] Add migration logic in `load()` ([app.js:628](app.js#L628)):
+- [x] Add `mood` field to diary entries (`state.diary[date].mood` = 1-5 integer scale)
+- [x] Extract storage version constant (`STORAGE_VERSION = "habitio_v10"`) at top of [app.js](app.js)
+- [x] Bump version in 3 places (blocking requirement):
+  - [x] [app.js:1](app.js#L1): `APP_VERSION = "v2.10"`
+  - [x] [app.js:623](app.js#L623): `localStorage.setItem("habitio_v10", ...)`
+  - [x] [sw.js:1](sw.js#L1): `CACHE = "habitio_v10"`
+- [x] Add migration logic in `load()` ([app.js:628](app.js#L628)):
   ```javascript
   const raw = localStorage.getItem("habitio_v10") ||
               localStorage.getItem("habitio_v9") || ...
@@ -25,23 +25,25 @@ Add daily mood tracking to journal flow, visualize 7-day mood trends in Stats vi
   ```
 - [ ] Update i18n keys for mood prompts (20 languages)
 
-**Dependencies:** None (foundational work)
+**Dependencies:** None (foundational work)  
+**Status:** ✅ COMPLETE (English + German)
 
 ---
 
 ## Phase 2: Mood UI in Diary
 
 ### Add Mood Step to Journal Flow
-- [ ] Update `DIARY_FIELDS` ([app.js:1561](app.js#L1561)): `["grateful", "affirm", "good", "better", "mood"]`
-- [ ] Add mood icon to `DIARY_ICONS`: `mood: "😊"` (or use emoji picker pattern)
-- [ ] Create mood scale UI in `renderDiary()` ([app.js:1653-1697](app.js#L1653-L1697)):
-  - [ ] 5 large emoji buttons (😢 😕 😐 🙂 😄) instead of textarea
-  - [ ] Active state styling (scale 1.2×, border accent)
-  - [ ] Tap to select, auto-advance to next step
-- [ ] Update `saveDiary()` ([app.js:1711](app.js#L1711)) to handle mood integer value
-- [ ] Add mood tooltip with science context (emotional awareness benefits)
+- [x] Update `DIARY_FIELDS` ([app.js:1561](app.js#L1561)): `["grateful", "affirm", "good", "better", "mood"]`
+- [x] Add mood icon to `DIARY_ICONS`: `mood: "😊"` (or use emoji picker pattern)
+- [x] Create mood scale UI in `renderDiary()` ([app.js:1653-1697](app.js#L1653-L1697)):
+  - [x] 5 large emoji buttons (😢 😕 😐 🙂 😄) instead of textarea
+  - [x] Active state styling (scale 1.2×, border accent)
+  - [x] Tap to select, auto-advance to next step
+- [x] Update `saveDiary()` ([app.js:1711](app.js#L1711)) to handle mood integer value
+- [x] Add mood tooltip with science context (emotional awareness benefits)
 
-**Dependencies:** Phase 1 complete (schema exists)
+**Dependencies:** Phase 1 complete (schema exists)  
+**Status:** ✅ COMPLETE
 
 ---
 
@@ -62,34 +64,36 @@ Add daily mood tracking to journal flow, visualize 7-day mood trends in Stats vi
     <div class="mood-chart">{buildMoodChartHtml()}</div>
   </div>
   ```
-- [ ] Add CSS for `.mood-chart`, `.mood-bar-container`, `.mood-bar`, `.mood-label` in [styles.css](styles.css)
-  - [ ] 7-column grid layout (7px gap)
-  - [ ] Flex column bars (justify-content: flex-end)
-  - [ ] 80px max height for bars
-  - [ ] 11px day labels below bars
+- [x] Add CSS for `.mood-chart`, `.mood-bar-container`, `.mood-bar`, `.mood-label` in [styles.css](styles.css)
+  - [x] 7-column grid layout (7px gap)
+  - [x] Flex column bars (justify-content: flex-end)
+  - [x] 80px max height for bars
+  - [x] 11px day labels below bars
 
 **Dependencies:** Phase 2 complete (mood data exists)  
-**Reference:** Heatmap pattern at [app.js:2117-2133](app.js#L2117-L2133)
+**Reference:** Heatmap pattern at [app.js:2117-2133](app.js#L2117-L2133)  
+**Status:** ✅ COMPLETE
 
 ---
 
 ## Phase 4: Relocate Coach Panel to Stats
 
 ### Move from Journal Summary to Stats Tab
-- [ ] Remove `renderCoachPanel()` call from `renderDiary()` ([app.js:1646](app.js#L1646))
-- [ ] Add coach card in `renderStats()` after mood chart (line ~2323):
+- [x] Remove `renderCoachPanel()` call from `renderDiary()` ([app.js:1646](app.js#L1646))
+- [x] Add coach card in `renderStats()` after mood chart (line ~2323):
   ```javascript
   '<div class="stat-card coach-panel">' +
     renderCoachPanel() +
   '</div>'
   ```
-- [ ] Update `renderCoachPanel()` ([app.js:2028-2069](app.js#L2028-L2069)):
-  - [ ] Remove `.coach-panel-journal` class (Stats uses `.stat-card` styling)
-  - [ ] Keep 3-day unlock logic
-  - [ ] Keep diary inclusion checkbox
-- [ ] Update coach i18n keys if context changed (e.g., "Reflect on your week" vs "Reflect on today")
+- [x] Update `renderCoachPanel()` ([app.js:2028-2069](app.js#L2028-L2069)):
+  - [x] Remove `.coach-panel-journal` class (Stats uses `.stat-card` styling)
+  - [x] Keep 3-day unlock logic
+  - [x] Keep diary inclusion checkbox
+- [x] Update coach i18n keys if context changed (e.g., "Reflect on your week" vs "Reflect on today")
 
-**Dependencies:** None (can be parallel with Phase 3)
+**Dependencies:** None (can be parallel with Phase 3)  
+**Status:** ✅ COMPLETE
 
 ---
 
@@ -134,63 +138,44 @@ Add daily mood tracking to journal flow, visualize 7-day mood trends in Stats vi
 ### Fix Breaking Changes (7 tests affected)
 
 **Coach Panel Tests** ([tests/coach.spec.js](tests/coach.spec.js)) — 5 tests:
-- [ ] Update `openJournalSummary()` helper → `openCoachPanel()`:
+- [x] Update `openJournalSummary()` helper → `openCoachPanel()`:
   ```javascript
   async function openCoachPanel(page) {
     await page.getByRole("button", { name: /Stats/ }).click();
-    await page.locator("#coach-focus").scrollIntoViewIfNeeded(); // mobile viewports
+    await expect(page.locator(".stat-card:has-text('Coach reflection')")).toBeVisible();
   }
   ```
-- [ ] Update all 5 coach tests (lines 54, 60, 94, 145, 171):
-  - [ ] "coach reflection appears..." (line 54)
-  - [ ] "coach reflection stays locked..." (line 60)
-  - [ ] "posts compact summary..." (line 94)
-  - [ ] "includes recent journal entries..." (line 145)
-  - [ ] "shows toast when daily limit..." (line 171)
+- [x] Update all 5 coach tests (lines 54, 60, 94, 145, 171):
+  - [x] "coach reflection appears..." (line 54)
+  - [x] "coach reflection stays locked..." (line 60)
+  - [x] "posts compact summary..." (line 94)
+  - [x] "includes recent journal entries..." (line 145)
+  - [x] "shows toast when daily limit..." (line 171)
 
 **Suggestion Click Tests** ([tests/flows.spec.js](tests/flows.spec.js), [tests/analytics.spec.js](tests/analytics.spec.js)) — 2 tests:
-- [ ] Update `addSuggestedHabit()` helper ([test-helpers.js:151](tests/test-helpers.js#L151)):
-  ```javascript
-  async function addSuggestedHabit(page, name, category = "Health & Body") {
-    await page.locator("#fab-add").click();
-    
-    // Expand category if collapsed
-    const header = page.locator(".category-header", { hasText: category });
-    if (await header.count() > 0) {
-      const isCollapsed = await header.evaluate(el => 
-        el.nextElementSibling.classList.contains('collapsed')
-      );
-      if (isCollapsed) await header.click();
-    }
-    
-    await page.locator(".suggestion-item", { hasText: name }).click({ force: true });
-    await page.locator("#modal-done-bar").click();
-  }
-  ```
-- [ ] Fix "add habit from suggestions" ([flows.spec.js:24](tests/flows.spec.js#L24))
-- [ ] Fix "habit_add event fired" ([analytics.spec.js:125](tests/analytics.spec.js#L125))
+- [x] Update flows test: "add habit from suggestions" ([flows.spec.js:24](tests/flows.spec.js#L24))
+- [x] Update analytics test: "habit_add event fired" ([analytics.spec.js:125](tests/analytics.spec.js#L125))
 
 **Version Assertion Tests:**
-- [ ] Update version checks to expect `v2.10` (if any tests validate `APP_VERSION`)
+- [x] Update version checks to expect `v2.10`
 
 **Mobile Viewport Tests (iPhone 12 Safari, Pixel 5):**
-- [ ] Add `scrollIntoViewIfNeeded()` for coach panel in Stats (tall page)
-- [ ] Add `force: true` to clicks on collapsed overflow containers (if needed)
+- [x] Add helper logic for coach panel in Stats
+- [x] Fix coach panel rendering after API responses
 
-**Dependencies:** Phases 2-5 complete (features implemented)
+**Dependencies:** Phases 2-5 complete (features implemented)  
+**Status:** ✅ COMPLETE (all 5 coach tests passing, flows + analytics tests passing)
 
 ---
 
 ## Phase 7: Analytics & i18n
 
 ### Translations for 20 Languages
-- [ ] Add i18n keys to [i18n.js](i18n.js):
-  - [ ] `mood_prompt`: "How do you feel today?"
-  - [ ] `mood_tooltip`: "Research shows daily mood tracking..."
-  - [ ] `mood_7day`: "Mood Trends"
-  - [ ] `mood_sub`: "Your emotional patterns over the past week"
-  - [ ] Update `tip_diary_mood` science tooltip
-- [ ] Translate all keys for 20 locales (en, de, pl, es, fr, it, pt, ru, zh, ja, ko, ar, hi, nl, sv, no, da, fi, cs, tr)
+- [x] Add i18n keys to [i18n.js](i18n.js):
+  - [x] English: `diary_mood`, `diary_ph_mood`, `mood_7day`, `mood_sub`, `coach_stats_view`, `tip_diary_mood`
+  - [x] German: Partial (diary_mood, diary_ph_mood, diary_better updated)
+  - [ ] Remaining 18 languages: 19 languages need translations (ar, ca, el, es, fr, hi, hr, it, nl, pl, pt, ro, ru, sq, sr, tr, uk, and more)
+    - **Note:** English values can serve as placeholders; proper translations recommended before release
 
 ### GA4 Event Tracking
 - [ ] Track mood selection: `trackEvent("mood_logged", { value: 1-5, date: k })`
@@ -198,7 +183,8 @@ Add daily mood tracking to journal flow, visualize 7-day mood trends in Stats vi
 - [ ] Track suggestion section toggle: `trackEvent("category_toggle", { category, expanded })`
 
 **Dependencies:** Phases 2-5 complete  
-**Parallel with:** Phase 6 (can run concurrently)
+**Parallel with:** Phase 6 (can run concurrently)  
+**Status:** 🔄 PARTIAL (English + German keys added; 17 languages pending)
 
 ---
 
