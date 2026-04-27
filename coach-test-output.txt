@@ -1,0 +1,8 @@
+
+Running 5 tests using 1 worker
+
+  ✓  1 [Desktop Chromium] › tests\coach.spec.js:56:3 › ai coach › coach reflection appears on the stats after 3 tracked days (472ms)
+  ✘  2 [Desktop Chromium] › tests\coach.spec.js:62:3 › ai coach › coach reflection stays locked before 3 tracked days (30.7s)
+  ✘  3 [Desktop Chromium] › tests\coach.spec.js:95:3 › ai coach › posts a compact summary without diary entries by default (5.6s)
+  ✘  4 [Desktop Chromium] › tests\coach.spec.js:135:3 › ai coach › includes recent journal entries when requested (5.6s)
+  ✓  5 [Desktop Chromium] › tests\coach.spec.js:172:3 › ai coach › shows a toast when the daily coach limit is reached (604ms)

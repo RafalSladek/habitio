@@ -2619,7 +2619,7 @@ async function requestCoachFeedback() {
       if (data?.budget) {
         state.aiCoach.lastBudget = data.budget;
         save();
-        renderDiary();
+        renderStats();
       }
       throw new Error(data?.code || "HTTP_" + res.status);
     }
@@ -2629,7 +2629,7 @@ async function requestCoachFeedback() {
     state.aiCoach.lastModel = data.model || "";
     state.aiCoach.lastRequestedAt = new Date().toISOString();
     save();
-    renderDiary();
+    renderStats();
     showToast(t("coach_done"));
     trackEvent("ai_coach_success", {
       include_diary: state.aiCoach.includeDiary,

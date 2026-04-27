@@ -9,8 +9,7 @@ function dayOffset(days) {
 
 async function openCoachPanel(page) {
   await page.getByRole("button", { name: /Stats/ }).click();
-  await page.locator("#coach-focus").scrollIntoViewIfNeeded();
-  await expect(page.locator(".coach-panel")).toBeVisible();
+  await expect(page.locator(".stat-card:has-text('Coach reflection')")).toBeVisible();
 }
 
 test.describe("ai coach", () => {

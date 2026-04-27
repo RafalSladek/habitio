@@ -1,0 +1,172 @@
+
+Running 5 tests using 1 worker
+
+  ✘  1 [Desktop Chromium] › tests\coach.spec.js:56:3 › ai coach › coach reflection appears on the stats after 3 tracked days (508ms)
+  ✘  2 [Desktop Chromium] › tests\coach.spec.js:62:3 › ai coach › coach reflection stays locked before 3 tracked days (521ms)
+  ✘  3 [Desktop Chromium] › tests\coach.spec.js:95:3 › ai coach › posts a compact summary without diary entries by default (531ms)
+  ✘  4 [Desktop Chromium] › tests\coach.spec.js:135:3 › ai coach › includes recent journal entries when requested (514ms)
+  ✘  5 [Desktop Chromium] › tests\coach.spec.js:172:3 › ai coach › shows a toast when the daily coach limit is reached (523ms)
+[coverage] LCOV written to coverage/lcov.info
+
+
+  1) [Desktop Chromium] › tests\coach.spec.js:56:3 › ai coach › coach reflection appears on the stats after 3 tracked days 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('.coach-panel')
+    Expected: visible
+    Error: strict mode violation: locator('.coach-panel') resolved to 2 elements:
+        1) <div class="stat-card coach-panel">…</div> aka locator('div').filter({ hasText: 'Coach reflectionOnly when you' }).nth(3)
+        2) <div class="coach-panel coach-panel-journal">…</div> aka getByText('Coach reflectionOnly when you')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('.coach-panel')[22m
+
+
+      11 |   await page.getByRole("button", { name: /Stats/ }).click();
+      12 |   await page.locator("#coach-focus").scrollIntoViewIfNeeded();
+    > 13 |   await expect(page.locator(".coach-panel")).toBeVisible();
+         |                                              ^
+      14 | }
+      15 |
+      16 | test.describe("ai coach", () => {
+        at openCoachPanel (C:\Source\habitio\tests\coach.spec.js:13:46)
+        at C:\Source\habitio\tests\coach.spec.js:53:5
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\coach-ai-coach-coach-refle-19f40--stats-after-3-tracked-days-Desktop-Chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\coach-ai-coach-coach-refle-19f40--stats-after-3-tracked-days-Desktop-Chromium\error-context.md
+
+  2) [Desktop Chromium] › tests\coach.spec.js:62:3 › ai coach › coach reflection stays locked before 3 tracked days 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('.coach-panel')
+    Expected: visible
+    Error: strict mode violation: locator('.coach-panel') resolved to 2 elements:
+        1) <div class="stat-card coach-panel">…</div> aka locator('div').filter({ hasText: 'Coach reflectionOnly when you' }).nth(3)
+        2) <div class="coach-panel coach-panel-journal">…</div> aka getByText('Coach reflectionOnly when you')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('.coach-panel')[22m
+
+
+      11 |   await page.getByRole("button", { name: /Stats/ }).click();
+      12 |   await page.locator("#coach-focus").scrollIntoViewIfNeeded();
+    > 13 |   await expect(page.locator(".coach-panel")).toBeVisible();
+         |                                              ^
+      14 | }
+      15 |
+      16 | test.describe("ai coach", () => {
+        at openCoachPanel (C:\Source\habitio\tests\coach.spec.js:13:46)
+        at C:\Source\habitio\tests\coach.spec.js:53:5
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\coach-ai-coach-coach-refle-33c29-ocked-before-3-tracked-days-Desktop-Chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\coach-ai-coach-coach-refle-33c29-ocked-before-3-tracked-days-Desktop-Chromium\error-context.md
+
+  3) [Desktop Chromium] › tests\coach.spec.js:95:3 › ai coach › posts a compact summary without diary entries by default 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('.coach-panel')
+    Expected: visible
+    Error: strict mode violation: locator('.coach-panel') resolved to 2 elements:
+        1) <div class="stat-card coach-panel">…</div> aka locator('div').filter({ hasText: 'Coach reflectionOnly when you' }).nth(3)
+        2) <div class="coach-panel coach-panel-journal">…</div> aka getByText('Coach reflectionOnly when you')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('.coach-panel')[22m
+
+
+      11 |   await page.getByRole("button", { name: /Stats/ }).click();
+      12 |   await page.locator("#coach-focus").scrollIntoViewIfNeeded();
+    > 13 |   await expect(page.locator(".coach-panel")).toBeVisible();
+         |                                              ^
+      14 | }
+      15 |
+      16 | test.describe("ai coach", () => {
+        at openCoachPanel (C:\Source\habitio\tests\coach.spec.js:13:46)
+        at C:\Source\habitio\tests\coach.spec.js:53:5
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\coach-ai-coach-posts-a-com-a3606-ut-diary-entries-by-default-Desktop-Chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\coach-ai-coach-posts-a-com-a3606-ut-diary-entries-by-default-Desktop-Chromium\error-context.md
+
+  4) [Desktop Chromium] › tests\coach.spec.js:135:3 › ai coach › includes recent journal entries when requested 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('.coach-panel')
+    Expected: visible
+    Error: strict mode violation: locator('.coach-panel') resolved to 2 elements:
+        1) <div class="stat-card coach-panel">…</div> aka locator('div').filter({ hasText: 'Coach reflectionOnly when you' }).nth(3)
+        2) <div class="coach-panel coach-panel-journal">…</div> aka getByText('Coach reflectionOnly when you')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('.coach-panel')[22m
+
+
+      11 |   await page.getByRole("button", { name: /Stats/ }).click();
+      12 |   await page.locator("#coach-focus").scrollIntoViewIfNeeded();
+    > 13 |   await expect(page.locator(".coach-panel")).toBeVisible();
+         |                                              ^
+      14 | }
+      15 |
+      16 | test.describe("ai coach", () => {
+        at openCoachPanel (C:\Source\habitio\tests\coach.spec.js:13:46)
+        at C:\Source\habitio\tests\coach.spec.js:53:5
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\coach-ai-coach-includes-re-1a656-rnal-entries-when-requested-Desktop-Chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\coach-ai-coach-includes-re-1a656-rnal-entries-when-requested-Desktop-Chromium\error-context.md
+
+  5) [Desktop Chromium] › tests\coach.spec.js:172:3 › ai coach › shows a toast when the daily coach limit is reached 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('.coach-panel')
+    Expected: visible
+    Error: strict mode violation: locator('.coach-panel') resolved to 2 elements:
+        1) <div class="stat-card coach-panel">…</div> aka locator('div').filter({ hasText: 'Coach reflectionOnly when you' }).nth(3)
+        2) <div class="coach-panel coach-panel-journal">…</div> aka getByText('Coach reflectionOnly when you')
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('.coach-panel')[22m
+
+
+      11 |   await page.getByRole("button", { name: /Stats/ }).click();
+      12 |   await page.locator("#coach-focus").scrollIntoViewIfNeeded();
+    > 13 |   await expect(page.locator(".coach-panel")).toBeVisible();
+         |                                              ^
+      14 | }
+      15 |
+      16 | test.describe("ai coach", () => {
+        at openCoachPanel (C:\Source\habitio\tests\coach.spec.js:13:46)
+        at C:\Source\habitio\tests\coach.spec.js:53:5
+
+    attachment #1: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\coach-ai-coach-shows-a-toa-59011-aily-coach-limit-is-reached-Desktop-Chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\coach-ai-coach-shows-a-toa-59011-aily-coach-limit-is-reached-Desktop-Chromium\error-context.md
+
+  5 failed
+    [Desktop Chromium] › tests\coach.spec.js:56:3 › ai coach › coach reflection appears on the stats after 3 tracked days 
+    [Desktop Chromium] › tests\coach.spec.js:62:3 › ai coach › coach reflection stays locked before 3 tracked days 
+    [Desktop Chromium] › tests\coach.spec.js:95:3 › ai coach › posts a compact summary without diary entries by default 
+    [Desktop Chromium] › tests\coach.spec.js:135:3 › ai coach › includes recent journal entries when requested 
+    [Desktop Chromium] › tests\coach.spec.js:172:3 › ai coach › shows a toast when the daily coach limit is reached 
