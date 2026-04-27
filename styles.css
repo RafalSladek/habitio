@@ -757,7 +757,9 @@ body {
   background: none;
   cursor: pointer;
   padding: 8px;
-  transition: transform 0.15s, border-color 0.15s;
+  transition:
+    transform 0.15s,
+    border-color 0.15s;
 }
 .mood-btn:active {
   transform: scale(1.15);

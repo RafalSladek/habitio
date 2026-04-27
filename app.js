@@ -1677,7 +1677,7 @@ function renderDiary() {
               field +
               "'," +
               m.v +
-              ");diaryStepGo(1)\">" +
+              ');diaryStepGo(1)">' +
               m.e +
               "</button>"
           )
@@ -1759,10 +1759,12 @@ function addFromDiary(nameKey, emoji) {
   renderDiary();
 }
 function saveDiary(k, field, val) {
-  if (!state.diary[k]) state.diary[k] = { grateful: "", affirm: "", good: "", better: "", mood: "" };
+  if (!state.diary[k])
+    state.diary[k] = { grateful: "", affirm: "", good: "", better: "", mood: "" };
   const wasEmpty = field === "mood" ? !state.diary[k][field] : !state.diary[k][field]?.trim();
   state.diary[k][field] = field === "mood" ? String(val) : val;
-  if (wasEmpty && (field === "mood" ? val : val.trim())) trackEvent("journal_write", { section: field, date: k });
+  if (wasEmpty && (field === "mood" ? val : val.trim()))
+    trackEvent("journal_write", { section: field, date: k });
   save();
   clearTimeout(diaryTimers[field]);
   const el = document.getElementById("ds_" + field);
