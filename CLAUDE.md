@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # habit.io — Claude Instructions
 
 ## Project Overview
@@ -17,9 +21,9 @@ Files are split for clarity; no build step required:
 | `index.html`     | App shell and markup (~240 lines)                                                            |
 | `styles.css`     | All styles                                                                                   |
 | `i18n.js`        | All translations (`T` object, 20 languages) + `t()`, `DN()`, `MN()` helpers                  |
-| `app.js`         | All application logic (~1 800 lines)                                                         |
+| `app.js`         | All application logic (~2 700 lines)                                                         |
 | `suggestions.js` | Habit suggestion data with demographic scoring                                               |
-| `sw.js`          | Service worker — network-first app shell + offline cache fallback (cache name: `habitio_v9`) |
+| `sw.js`          | Service worker — network-first app shell + offline cache fallback (cache name: `habitio_v10`) |
 | `manifest.json`  | PWA manifest                                                                                 |
 | `icons/`         | Favicon, app icons (16, 32, 192, 512px + SVG), hero-onboarding.webp/png                      |
 
@@ -28,8 +32,8 @@ Files are split for clarity; no build step required:
 All user data is stored **client-side only**:
 
 - API: `localStorage`
-- Key: `habitio_v9`
-- Format: JSON-serialized state object: `{ habits[], checks{}, diary{}, profile{name,age,ageGroup,sex}, lang, kitsDismissed{}, consentAnalytics }`
+- Key: `habitio_v10`
+- Format: JSON-serialized state object: `{ habits[], checks{}, diary{}, profile{name,age,ageGroup,sex}, lang, kitsDismissed{}, consentAnalytics, aiCoach{} }`
 - No backend, no sync, no accounts
 
 Export/import via JSON file is the only cross-device migration path. Do not introduce a backend unless explicitly requested.
@@ -39,7 +43,7 @@ Export/import via JSON file is the only cross-device migration path. Do not intr
 - **Habit IDs**: `crypto.randomUUID()` via `uid()` function (with fallback)
 - **Age groups**: `AGE_GROUPS = [{key,age}]` — stores both `profile.ageGroup` (key) and `profile.age` (representative int) for backward compat with `getSuggestions()` which uses `parseInt(profile.age)`
 - **Date formatting**: `fmt(d)` uses `toISOString().slice(0,10)` (UTC-based)
-- **i18n**: `T` object in `i18n.js` with `en`/`de`/`pl`/`pt`/`ru`/`fr`/`hi`/`uk`/`ar`/`sq`/`sr`/`bar` keys; `t(key)` helper; language stored in `state.lang`
+- **i18n**: `T` object in `i18n.js` with 20 language keys: `en`/`de`/`pl`/`pt`/`ru`/`fr`/`hi`/`uk`/`ar`/`sq`/`sr`/`bar`/`es`/`it`/`ro`/`nl`/`tr`/`el`/`hr`/`ca`; `t(key)` helper; language stored in `state.lang`
 - **Sex options**: `profile.sex` can be `"male"`, `"female"`, or `"prefer"` (prefer not to say)
 - **Formation arc**: 66-day science-backed journey shown as phase emoji per habit
 - **Morning routine**: habits tagged `morning:true` grouped at top
@@ -60,6 +64,7 @@ GitHub Actions (`.github/workflows/ci.yml`):
 
 - **Source**: `worker/feedback.js` + `worker/wrangler.toml`
 - **Live URL**: `https://habitio-feedback.kryptoroger.workers.dev`
+- **Endpoints**: `POST /` (creates GitHub issue from feedback) · `POST /coach` (Cloudflare Workers AI coaching, rate-limited 5 req/day per device)
 - **Secret**: `GITHUB_TOKEN` stored in Cloudflare (fine-grained PAT, Issues: Read & Write on this repo only)
 - **No cache** — stateless compute, no invalidation needed after deploy
 - **Manual deploy**: `cd worker && npx wrangler deploy`
@@ -79,6 +84,20 @@ GitHub Actions (`.github/workflows/ci.yml`):
 - Deploy by pushing to `main` (GitHub Pages auto-builds from GitHub Actions)
 - Do not use `git push --force` on main
 - To convert images to WebP: `ffmpeg -i input.png -c:v libwebp -quality 82 output.webp`
+
+### Setup
+
+```bash
+yarn install
+npx playwright install chromium
+```
+
+### Local Dev Server
+
+```bash
+npx serve . -p 3000
+# Open http://localhost:3000
+```
 
 ### Running Tests
 
@@ -130,7 +149,15 @@ npx playwright test --headed
 
 # Run with UI mode (interactive debugging)
 yarn test:ui
+
+# View last HTML test report
+yarn test:report
 ```
+
+**Test helpers** (in `tests/test-helpers.js`):
+- `completeOnboarding(page, name)` — skips onboarding flow
+- `seedHabit(page, daysOld, checkedDaysBack)` — seeds localStorage with test habit data
+- `mockGoogleAnalytics(page)` — stubs GA4 for consent tests
 
 ## Service Worker & Caching
 
@@ -140,9 +167,9 @@ The SW uses **network-first** for same-origin app shell files (`index.html`, `ap
 - When offline, the cached shell is used so the app still works
 - Other same-origin assets still use stale-while-revalidate for a good offline/perf balance
 
-**SW cache name must always match the localStorage key** (`CACHE` in `sw.js` = `habitio_v9`).
+**SW cache name must always match the localStorage key** (`CACHE` in `sw.js` = `habitio_v10`).
 
-- When the localStorage key is bumped (e.g. `habitio_v9` → `habitio_v10`), update `CACHE` in `sw.js` to the same value
+- When the localStorage key is bumped (e.g. `habitio_v10` → `habitio_v10`), update `CACHE` in `sw.js` to the same value
 - This keeps a single version number across both systems — one bump covers both the data schema migration and the asset cache bust
 - Without bumping, users who haven't visited since the last SW version change will keep getting old cached files
 
@@ -152,7 +179,7 @@ Without asset fingerprinting (e.g. `app.a1b2c3.js`) there is no way to guarantee
 
 ## Data Migration
 
-When bumping the localStorage version key (e.g. `habitio_v9` → `habitio_v10`), always implement a migration layer in `app.js` that:
+When bumping the localStorage version key (e.g. `habitio_v10` → `habitio_v10`), always implement a migration layer in `app.js` that:
 
 1. Reads any older version keys on startup
 2. Migrates the data shape to the new format
