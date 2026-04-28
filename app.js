@@ -545,7 +545,8 @@ let modalEmoji = "🎯",
   modalFreqPeriod = "week",
   modalMorning = false,
   editId = null,
-  modalAddedCount = 0;
+  modalAddedCount = 0,
+  collapsedCategories = {};
 
 function getFormationPhase(h) {
   if (!h.createdAt) return null;
@@ -1316,6 +1317,7 @@ function openAddModal(hid) {
     modalFreqPeriod = "week";
     modalMorning = false;
     modalAddedCount = 0;
+    collapsedCategories = {}; // Reset collapsed state for new add modal
     updateModalDoneState();
     document.getElementById("modal-title").textContent = t("new_habit");
     document.getElementById("modal-save-btn").textContent = t("add_habit");
@@ -1365,10 +1367,34 @@ function updateModalDoneState() {
 function renderSuggestions() {
   const existing = new Set(state.habits.map((h) => h.name.toLowerCase()));
   let html = '<div class="suggestions">';
-  getSuggestions().forEach((cat) => {
+  getSuggestions().forEach((cat, catIdx) => {
     const items = cat.items.filter((s) => !existing.has(s.name.toLowerCase()));
     if (!items.length) return;
-    html += '<div class="suggestion-cat">' + esc(cat.cat) + "</div>";
+    const catKey = "cat_" + catIdx; // Use index as unique key during session
+    const isCollapsed = collapsedCategories[catKey];
+    html +=
+      '<div class="suggestion-cat-container">' +
+      '<div class="suggestion-cat-header" onclick="toggleSuggestionCategory(\'' +
+      catKey +
+      '\')" data-cat-key="' +
+      catKey +
+      '">' +
+      '<span class="cat-chevron' +
+      (isCollapsed ? " collapsed" : "") +
+      '">▼</span>' +
+      '<span class="cat-name">' +
+      esc(cat.cat) +
+      "</span>" +
+      '<span class="cat-count">(' +
+      items.length +
+      ")</span>" +
+      "</div>";
+    html +=
+      '<div class="suggestion-items" id="cat-items-' +
+      catKey +
+      '"' +
+      (isCollapsed ? ' style="display:none"' : "") +
+      ">";
     items.forEach((s) => {
       const cL = cadenceLabel(s.cadence) || t("cad_daily");
       html +=
@@ -1388,10 +1414,12 @@ function renderSuggestions() {
         (s._p > 0 ? '<span class="s-for-you">★ ' + t("for_you") + "</span>" : "") +
         '</span></span><span class="s-add">+</span></div>';
     });
+    html += "</div></div>"; // Close suggestion-items and suggestion-cat-container
   });
   html += "</div>";
   document.getElementById("suggestions-area").innerHTML = html;
 }
+
 function addSuggestion(el) {
   const name = el.dataset.name,
     emoji = el.dataset.emoji,
@@ -1417,6 +1445,26 @@ function addSuggestion(el) {
     source: "suggestion",
   });
   showToast(emoji + " " + name + "!");
+}
+function toggleSuggestionCategory(catKey) {
+  const isCollapsed = collapsedCategories[catKey];
+  collapsedCategories[catKey] = !isCollapsed;
+  const itemsContainer = document.getElementById("cat-items-" + catKey);
+  const header = document.querySelector('[data-cat-key="' + catKey + '"]');
+  if (itemsContainer) {
+    const newCollapsed = collapsedCategories[catKey];
+    if (newCollapsed) {
+      itemsContainer.style.display = "none";
+      header?.querySelector(".cat-chevron")?.classList.add("collapsed");
+    } else {
+      itemsContainer.style.display = "block";
+      header?.querySelector(".cat-chevron")?.classList.remove("collapsed");
+    }
+    trackEvent("category_toggle", {
+      category: header?.querySelector(".cat-name")?.textContent || catKey,
+      expanded: !newCollapsed,
+    });
+  }
 }
 function renderEmojiPicker() {
   document.getElementById("emoji-picker").innerHTML = EMOJIS.map(
