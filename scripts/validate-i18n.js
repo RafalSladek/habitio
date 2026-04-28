@@ -1,7 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 const vm = require('vm');
 
-const source = fs.readFileSync('i18n.js', 'utf8');
+const source = fs.readFileSync(path.join(__dirname, '..', 'i18n.js'), 'utf8');
 const sandbox = {};
 
 try {

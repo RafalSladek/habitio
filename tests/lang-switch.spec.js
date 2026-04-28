@@ -30,7 +30,7 @@ test.describe("language switching", () => {
     await page.getByRole("button", { name: /Settings/ }).click();
     const sel = page.locator("#settings-content .lang-select");
     await expect(sel).toBeVisible();
-    await expect(sel).toHaveAttribute("onchange");
+    await expect(sel).toHaveAttribute("onchange", /.+/);
   });
 
   test("lang persists after reload", async ({ page }) => {

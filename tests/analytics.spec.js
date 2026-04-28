@@ -130,6 +130,10 @@ test.describe("GA4 event tracking", () => {
     const before = (await getCalls()).length;
 
     await page.locator("#fab-add").click();
+    // "Create Your Own" is the first .suggestion-cat-header and starts expanded;
+    // target a suggestion category header (has .cat-count) to expand it
+    const catHeader = page.locator(".suggestion-cat-header:has(.cat-count)").first();
+    await catHeader.click();
     await expect(page.locator(".suggestion-item").first()).toBeVisible();
     await page.locator(".suggestion-item").first().click();
     await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "habit_add");

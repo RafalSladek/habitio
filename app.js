@@ -1825,14 +1825,6 @@ function renderDiary() {
 
   // ── Single prompt step ──
   const field = DIARY_FIELDS[diaryStep];
-  const moodValue = entry["mood"] ? parseInt(entry["mood"]) : 3;
-  const moodEmojis = [
-    { v: 1, e: "😢" },
-    { v: 2, e: "😕" },
-    { v: 3, e: "😐" },
-    { v: 4, e: "🙂" },
-    { v: 5, e: "😄" },
-  ];
 
   let fieldUI =
     '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
@@ -1850,6 +1842,14 @@ function renderDiary() {
 
   // Add mood slider to "good" field
   if (field === "good") {
+    const moodValue = entry["mood"] ? parseInt(entry["mood"]) : 3;
+    const moodEmojis = [
+      { v: 1, e: "😢" },
+      { v: 2, e: "😕" },
+      { v: 3, e: "😐" },
+      { v: 4, e: "🙂" },
+      { v: 5, e: "😄" },
+    ];
     const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
     const betterValue = entry["better"] || "";
     const showBetter = moodValue > 0 && moodValue < 5;
@@ -2415,8 +2415,9 @@ function buildHeatmapHtml() {
 function buildMoodChartHtml() {
   // Collect last 7 days (exactly 7 data points)
   const data = [];
+  const now = new Date();
   for (let i = 6; i >= 0; i--) {
-    const date = addD(new Date(), -i);
+    const date = addD(now, -i);
     const entry = state.diary[fmt(date)] || {};
     const mood = entry.mood ? parseInt(entry.mood) : 0;
     data.push({
@@ -2425,7 +2426,6 @@ function buildMoodChartHtml() {
       isToday: i === 0,
     });
   }
-  if (data.length !== 7) console.warn("Mood chart data length:", data.length);
 
   // Chart config
   const w = 420;
@@ -2710,7 +2710,7 @@ function renderStats() {
     "</div>" +
     buildMoodChartHtml() +
     "</div>" +
-    '<div class="stat-card coach-panel">' +
+    '<div class="stat-card">' +
     renderCoachPanel() +
     "</div>";
 }

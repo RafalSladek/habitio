@@ -39,7 +39,7 @@ test.describe("onboarding", () => {
   test("onboarding language selector is a native dropdown", async ({ page }) => {
     const sel = page.locator(".lang-select").first();
     await expect(sel).toBeVisible();
-    await expect(sel).toHaveAttribute("onchange");
+    await expect(sel).toHaveAttribute("onchange", /.+/);
   });
 
   test("onboarding language change updates UI language", async ({ page }) => {

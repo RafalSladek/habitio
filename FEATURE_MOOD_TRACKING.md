@@ -32,17 +32,16 @@ Add daily mood tracking to journal flow, visualize 7-day mood trends in Stats vi
 
 ## Phase 2: Mood UI in Diary
 
-### Add Mood Step to Journal Flow
-- [x] Update `DIARY_FIELDS` ([app.js:1561](app.js#L1561)): `["grateful", "affirm", "good", "better", "mood"]`
-- [x] Add mood icon to `DIARY_ICONS`: `mood: "😊"` (or use emoji picker pattern)
-- [x] Create mood scale UI in `renderDiary()` ([app.js:1653-1697](app.js#L1653-L1697)):
-  - [x] 5 large emoji buttons (😢 😕 😐 🙂 😄) instead of textarea
-  - [x] Active state styling (scale 1.2×, border accent)
-  - [x] Tap to select, auto-advance to next step
-- [x] Update `saveDiary()` ([app.js:1711](app.js#L1711)) to handle mood integer value
+### Mood Tracking in Journal Flow
+- [x] `DIARY_FIELDS` remains `["grateful", "affirm", "good"]` — mood is embedded inside the "good" step
+- [x] Create mood range slider UI in `renderDiary()` inside `if (field === "good")` block:
+  - [x] Range slider (1–5) with emoji labels (😢 😕 😐 🙂 😄)
+  - [x] Live emoji preview updates on slide
+  - [x] Optional "better" section appears as collapsible below mood slider
+- [x] Update `saveDiary()` to handle mood integer value with null guard for `#ds_mood`
 - [x] Add mood tooltip with science context (emotional awareness benefits)
 
-**Dependencies:** Phase 1 complete (schema exists)  
+**Dependencies:** Phase 1 complete (schema exists)
 **Status:** ✅ COMPLETE
 
 ---

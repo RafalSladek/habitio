@@ -28,11 +28,25 @@ const D4 = utcDaysAgo(4);
 const D5 = utcDaysAgo(5);
 const D6 = utcDaysAgo(6);
 
+// Simple seeded PRNG (mulberry32) for deterministic screenshot data
+function seededRng(seed) {
+  let s = seed | 0;
+  return function () {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 // Generate checks for a habit over N days with a success rate
 function generateChecks(habitId, daysBack, successRate = 0.8) {
+  // Seed from habitId for reproducible screenshots
+  const seed = habitId.split("").reduce((a, c) => a + c.codePointAt(0), 0);
+  const rng = seededRng(seed);
   const checks = {};
   for (let i = 0; i <= daysBack; i++) {
-    if (Math.random() < successRate) {
+    if (rng() < successRate) {
       const date = utcDaysAgo(i);
       if (!checks[date]) checks[date] = {};
       checks[date][habitId] = true;
