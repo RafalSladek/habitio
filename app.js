@@ -2446,7 +2446,7 @@ function buildHeatmapHtml() {
 }
 
 function buildMoodChartHtml() {
-  // Collect last 7 days
+  // Collect last 7 days (exactly 7 data points)
   const data = [];
   for (let i = 6; i >= 0; i--) {
     const date = addD(new Date(), -i);
@@ -2458,6 +2458,7 @@ function buildMoodChartHtml() {
       isToday: i === 0
     });
   }
+  if (data.length !== 7) console.warn('Mood chart data length:', data.length);
   
   // Chart config
   const w = 420;

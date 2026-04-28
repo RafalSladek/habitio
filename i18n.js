@@ -7279,8 +7279,13 @@ const MN_I = {
   hr: ["Sij", "Velj", "Ožu", "Tra", "Svi", "Lip", "Srp", "Kol", "Ruj", "Lis", "Stu", "Pro"],
   ca: ["Gen", "Feb", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Oct", "Nov", "Des"],
 };
-function DN() {
-  return DN_I[state.lang] || DN_I.en;
+function DN(i) {
+  const days = DN_I[state.lang] || DN_I.en;
+  if (i === undefined) return days; // Return full array when no param
+  // getDay() returns 0=Sun, 1=Mon, ..., 6=Sat
+  // DN_I arrays are [Mon, Tue, Wed, Thu, Fri, Sat, Sun]
+  // Map: 0(Sun)→6, 1(Mon)→0, 2(Tue)→1, ..., 6(Sat)→5
+  return days[(i + 6) % 7];
 }
 function MN() {
   return MN_I[state.lang] || MN_I.en;
