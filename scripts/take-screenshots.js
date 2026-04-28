@@ -193,13 +193,12 @@ async function main() {
     await mobile.waitForTimeout(400);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-onboarding.png") });
 
-    // 2. Tracker — seeded state, Today tab
+    // 2. Tracker — seeded state, Today tab, full page
     console.log("  screenshot-tracker.png");
     await loadWithState(mobile, SEED_STATE);
-    // Today tab is first nav-tab and active by default
     await mobile.waitForSelector("#habits-list", { timeout: 3000 }).catch(() => {});
     await mobile.waitForTimeout(400);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-tracker.png") });
+    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-tracker.png"), fullPage: true });
 
     // 3. Add-habit modal open — 1 habit seeded so FAB is visible, modal scrolled to CTA
     console.log("  screenshot-add-habit.png");
@@ -216,46 +215,32 @@ async function main() {
     await mobile.waitForTimeout(300);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-add-habit.png") });
 
-    // 4. Journal step 1 (gratitude prompt) — no diary data today
+    // 4. Journal — show first step (grateful)
     console.log("  screenshot-journal.png");
     const stateNoDiary = { ...SEED_STATE, diary: {} };
     await loadWithState(mobile, stateNoDiary);
-    // Click Journal tab (second nav-tab)
     await mobile.locator(".nav-tab").nth(1).click();
     await mobile.waitForTimeout(600);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-journal.png") });
 
-    // 5. Journal summary — diary data pre-filled for today, so calcDiaryStep()
-    //    returns 4 and the summary screen renders immediately on tab switch.
-    console.log("  screenshot-journal-summary.png");
-    await loadWithState(mobile, SEED_STATE);
-    await mobile.locator(".nav-tab").nth(1).click();
-    // Wait for the summary div that renders when all 4 diary fields are filled
-    await mobile.waitForSelector(".diary-summary", { timeout: 4000 }).catch(() => {});
-    await mobile.waitForTimeout(600);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-journal-summary.png") });
-
-    // 6. Stats page
+    // 5. Stats page — scroll to show all graphs
     console.log("  screenshot-stats.png");
     await loadWithState(mobile, SEED_STATE);
     await mobile.locator(".nav-tab").nth(2).click();
     await mobile.waitForTimeout(800);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-stats.png") });
+    // Scroll down to show mood trends and other charts
+    await mobile.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+    await mobile.waitForTimeout(400);
+    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-stats.png"), fullPage: true });
 
-    // 7. Settings page
+    // 6. Settings page — full page capture
     console.log("  screenshot-settings.png");
     await loadWithState(mobile, SEED_STATE);
     await mobile.locator(".nav-tab").nth(3).click();
     await mobile.waitForTimeout(600);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-settings.png") });
-
-    // 8. Consent banner — seeded with consentAnalytics: null so the banner appears
-    console.log("  screenshot-consent.png");
-    const stateConsent = { ...SEED_STATE, consentAnalytics: null };
-    await loadWithState(mobile, stateConsent);
-    await mobile.waitForSelector(".consent-banner", { timeout: 3000 }).catch(() => {});
-    await mobile.waitForTimeout(400);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-consent.png") });
+    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-settings.png"), fullPage: true });
 
     await mobileCtx.close();
 
@@ -268,19 +253,24 @@ async function main() {
     });
     const desktop = await desktopCtx.newPage();
 
-    // 8. Desktop tracker
+    // 8. Desktop tracker — full page
     console.log("  desktop-preview.png");
     await loadWithState(desktop, SEED_STATE);
     await desktop.waitForSelector("#habits-list", { timeout: 3000 }).catch(() => {});
     await desktop.waitForTimeout(400);
-    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-preview.png") });
+    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-preview.png"), fullPage: true });
 
-    // 9. Desktop stats
+    // 9. Desktop stats — scroll to show all graphs
     console.log("  desktop-stats.png");
     await loadWithState(desktop, SEED_STATE);
     await desktop.locator(".nav-tab").nth(2).click();
     await desktop.waitForTimeout(800);
-    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-stats.png") });
+    // Scroll down to show mood trends and other charts
+    await desktop.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+    await desktop.waitForTimeout(400);
+    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-stats.png"), fullPage: true });
 
     // 10. Desktop journal (step 1, no diary)
     console.log("  desktop-journal.png");
@@ -289,12 +279,12 @@ async function main() {
     await desktop.waitForTimeout(800);
     await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-journal.png") });
 
-    // 11. Desktop settings
+    // 11. Desktop settings — full page capture
     console.log("  desktop-settings.png");
     await loadWithState(desktop, SEED_STATE);
     await desktop.locator(".nav-tab").nth(3).click();
     await desktop.waitForTimeout(600);
-    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-settings.png") });
+    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-settings.png"), fullPage: true });
 
     // 12. Desktop modal (add habit open)
     console.log("  desktop-modal.png");
@@ -302,14 +292,6 @@ async function main() {
     await desktop.click("#fab-add");
     await desktop.waitForTimeout(600);
     await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-modal.png") });
-
-    // 13. Desktop consent banner
-    console.log("  desktop-consent.png");
-    const desktopConsent = { ...SEED_STATE, consentAnalytics: null };
-    await loadWithState(desktop, desktopConsent);
-    await desktop.waitForSelector(".consent-banner", { timeout: 3000 }).catch(() => {});
-    await desktop.waitForTimeout(400);
-    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-consent.png") });
 
     await desktopCtx.close();
 
@@ -322,16 +304,16 @@ async function main() {
     });
     const tablet = await tabletCtx.newPage();
 
-    // 13. Tablet tracker
+    // 13. Tablet tracker — full page
     console.log("  tablet-preview.png");
     await loadWithState(tablet, SEED_STATE);
     await tablet.waitForSelector("#habits-list", { timeout: 3000 }).catch(() => {});
     await tablet.waitForTimeout(400);
-    await tablet.screenshot({ path: path.join(DOCS_DIR, "tablet-preview.png") });
+    await tablet.screenshot({ path: path.join(DOCS_DIR, "tablet-preview.png"), fullPage: true });
 
     await tabletCtx.close();
 
-    console.log("\n✅ All 15 screenshots saved to docs/");
+    console.log("\n✅ All 13 screenshots saved to docs/");
   } finally {
     await browser.close();
   }
