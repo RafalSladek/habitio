@@ -2419,7 +2419,7 @@ function buildMoodChartHtml() {
   for (let i = 6; i >= 0; i--) {
     const date = addD(now, -i);
     const entry = state.diary[fmt(date)] || {};
-    const mood = entry.mood ? parseInt(entry.mood) : 0;
+    const mood = entry.mood ? Number.parseInt(entry.mood, 10) : 0;
     data.push({
       label: i === 0 ? t("nav_today") : DN(date.getDay()),
       mood: mood,
