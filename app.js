@@ -1842,7 +1842,7 @@ function renderDiary() {
 
   // Add mood slider to "good" field
   if (field === "good") {
-    const moodValue = entry["mood"] ? parseInt(entry["mood"]) : 3;
+    const moodValue = entry["mood"] ? Number.parseInt(entry["mood"]) : 3;
     const moodEmojis = [
       { v: 1, e: "😢" },
       { v: 2, e: "😕" },
@@ -1922,9 +1922,9 @@ function renderDiary() {
     tipBtn("tip_diary_" + field) +
     "</div>" +
     fieldUI +
-    (field !== "good"
-      ? '<div class="diary-saved" id="ds_' + field + '">' + t("diary_saved") + " ✓</div>"
-      : "") +
+    (field === "good"
+      ? ""
+      : '<div class="diary-saved" id="ds_' + field + '">' + t("diary_saved") + " ✓</div>") +
     "</div>" +
     '<div class="diary-step-nav">' +
     (diaryStep > 0
@@ -1953,7 +1953,7 @@ function diaryStepGo(dir) {
 function updateMoodPreview(val) {
   const emojis = ["😢", "😕", "😐", "🙂", "😄"];
   const display = document.getElementById("mood-emoji-display");
-  if (display) display.textContent = emojis[parseInt(val) - 1];
+  if (display) display.textContent = emojis[Number.parseInt(val) - 1];
 }
 
 function handleMoodSelected(moodValue) {
