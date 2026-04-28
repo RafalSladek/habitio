@@ -7,7 +7,7 @@ const path = require("path");
 
 const BASE_URL = "http://localhost:3000";
 const DOCS_DIR = path.join(__dirname, "..", "docs");
-const STORAGE_KEY = "habitio_v9";
+const STORAGE_KEY = "habitio_v10";
 
 // The app uses toISOString().slice(0,10) for date keys (UTC-based).
 // We must use the same UTC date so diary/checks align with "today" in the app.
@@ -25,6 +25,31 @@ const D1 = utcDaysAgo(1);
 const D2 = utcDaysAgo(2);
 const D3 = utcDaysAgo(3);
 const D4 = utcDaysAgo(4);
+const D5 = utcDaysAgo(5);
+const D6 = utcDaysAgo(6);
+
+// Generate checks for a habit over N days with a success rate
+function generateChecks(habitId, daysBack, successRate = 0.8) {
+  const checks = {};
+  for (let i = 0; i <= daysBack; i++) {
+    if (Math.random() < successRate) {
+      const date = utcDaysAgo(i);
+      if (!checks[date]) checks[date] = {};
+      checks[date][habitId] = true;
+    }
+  }
+  return checks;
+}
+
+// Merge multiple check objects
+function mergeChecks(...checkObjects) {
+  return checkObjects.reduce((acc, obj) => {
+    Object.keys(obj).forEach((date) => {
+      acc[date] = { ...(acc[date] || {}), ...obj[date] };
+    });
+    return acc;
+  }, {});
+}
 
 const SEED_STATE = {
   habits: [
@@ -35,7 +60,7 @@ const SEED_STATE = {
       cadence: { type: "daily" },
       morning: true,
       source: "suggested",
-      createdAt: "2026-01-10",
+      createdAt: utcDaysAgo(85), // ✨ Mastered (75+ checks over ~85 days)
     },
     {
       id: "h2",
@@ -44,7 +69,7 @@ const SEED_STATE = {
       cadence: { type: "daily" },
       morning: false,
       source: "suggested",
-      createdAt: "2026-01-10",
+      createdAt: utcDaysAgo(45), // ⚡ Power (35 checks over ~45 days)
     },
     {
       id: "h3",
@@ -53,7 +78,7 @@ const SEED_STATE = {
       cadence: { type: "daily" },
       morning: false,
       source: "suggested",
-      createdAt: "2026-02-01",
+      createdAt: utcDaysAgo(20), // 🔨 Building (15 checks over ~20 days)
     },
     {
       id: "h4",
@@ -62,28 +87,68 @@ const SEED_STATE = {
       cadence: { type: "specific_days", days: [1, 2, 3, 4, 5] },
       morning: true,
       source: "custom",
-      createdAt: "2026-02-15",
+      createdAt: utcDaysAgo(7), // 🌱 Seedling (5 checks over ~7 days)
     },
   ],
-  checks: {
-    [TODAY]: { h1: true, h2: true },
-    [D1]: { h1: true, h2: true, h3: true, h4: true },
-    [D2]: { h1: true, h3: true },
-    [D3]: { h1: true, h2: true, h3: true },
-    [D4]: { h2: true, h3: true, h4: true },
-  },
+  checks: mergeChecks(
+    generateChecks("h1", 85, 0.9), // Very consistent
+    generateChecks("h2", 45, 0.75), // Good but not perfect
+    generateChecks("h3", 20, 0.7), // Building momentum
+    generateChecks("h4", 7, 0.65) // Just starting
+  ),
   diary: {
     [TODAY]: {
-      grateful: "My morning coffee, sunshine, good health",
-      affirm: "I am resilient, I am growing every day",
-      good: "Finished a great workout, read 30 pages, called a friend",
-      better: "Sleep earlier tonight, plan meals for the week",
+      grateful: "Beautiful sunrise, productive meeting, family dinner",
+      affirm: "I am capable, I am focused, I am growing stronger every day",
+      good: "Completed workout, finished project milestone, called mom",
+      mood: "4",
+      better: "Get 8 hours of sleep tonight",
+    },
+    [D1]: {
+      grateful: "Good coffee, finished book, nice weather",
+      affirm: "I am resilient and adaptable",
+      good: "Morning run, healthy meals, quality time with kids",
+      mood: "5",
+    },
+    [D2]: {
+      grateful: "Progress on goals, supportive friends, health",
+      affirm: "I trust the process",
+      good: "Meditated 20 minutes, cooked healthy dinner, read 40 pages",
+      mood: "3",
+      better: "Take a break from screens after 9pm",
+    },
+    [D3]: {
+      grateful: "Peaceful morning, good workout, inspiring podcast",
+      affirm: "I am exactly where I need to be",
+      good: "Hit all habits, great conversation, solved tough problem",
+      mood: "4",
+      better: "Drink more water throughout the day",
+    },
+    [D4]: {
+      grateful: "Learning opportunities, warm home, creativity",
+      affirm: "I embrace challenges as growth",
+      good: "Learned new skill, helped colleague, organized workspace",
+      mood: "2",
+      better: "Set clearer boundaries with work time",
+    },
+    [D5]: {
+      grateful: "Restful sleep, sunshine, laughter with friends",
+      affirm: "I am present and mindful",
+      good: "Long walk in nature, journaling, stretched 15 min",
+      mood: "4",
+      better: "Plan weekend activities in advance",
+    },
+    [D6]: {
+      grateful: "New insights, delicious meal, music",
+      affirm: "I am worthy of my goals",
+      good: "Early morning routine, creative project, connected with mentor",
+      mood: "5",
     },
   },
   profile: { name: "Alex", age: "32", ageGroup: "adult", sex: "male" },
   lang: "en",
   kitsDismissed: {},
-  consentAnalytics: false,
+  consentAnalytics: true, // Dismissed - won't show banner except for consent screenshots
 };
 
 async function seedState(page, state) {

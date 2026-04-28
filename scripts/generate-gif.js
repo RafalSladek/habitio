@@ -10,10 +10,9 @@ const DOCS_DIR = path.join(__dirname, "..", "docs");
 const OUTPUT = path.join(DOCS_DIR, "user-journey.gif");
 const CONCAT_FILE = path.join(DOCS_DIR, "_frames.txt");
 
-// Mobile screenshots in user-journey order
+// Mobile screenshots in user-journey order (consent shown only in onboarding)
 const FRAMES = [
   "screenshot-onboarding.png",
-  "screenshot-consent.png",
   "screenshot-tracker.png",
   "screenshot-add-habit.png",
   "screenshot-journal.png",
