@@ -234,6 +234,31 @@ To add a new language (e.g., Spanish `es`):
 5. **Skipping Quality Gate:** Do NOT push if SonarCloud fails
 6. **Wrong date format:** Always use `fmt(d)` for dates, not manual string formatting
 
+## Cloudflare Worker Deployment
+
+The feedback worker (`worker/feedback.js`) handles:
+- `POST /` — creates GitHub issues from in-app feedback
+- `POST /coach` — proxies AI coach requests to Workers AI
+
+**Test Detection:** The worker automatically detects Playwright test requests (via User-Agent header and message patterns) and returns fake success responses without creating GitHub issues.
+
+**Manual deployment:**
+
+```bash
+cd worker
+npx wrangler whoami  # Verify account: rafal-sladek Account (ec54fc24baed2216d78fece71a99d28f)
+npx wrangler deploy
+```
+
+**Account switching (if needed):**
+
+```bash
+npx wrangler logout
+npx wrangler login  # Select rafal-sladek account in browser
+```
+
+**Automatic deployment:** GitHub Actions deploys the worker on every push to `main` via the `deploy-worker` job using `CLOUDFLARE_API_TOKEN` secret.
+
 ## Post-Push: CI Build Check (MANDATORY)
 
 **After every `git push`, wait for the CI build to finish and verify it passes before declaring the task done.**

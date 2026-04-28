@@ -139,6 +139,17 @@ Do not load GA4 script unconditionally or reintroduce GTM.
 - Model: `@cf/meta/llama-3.1-8b-instruct-fast`
 - CORS whitelist: `habitio.rafal-sladek.com`, `rafalsladek.github.io`, `localhost:3000`
 - Secrets: `GITHUB_TOKEN` in Cloudflare; `CLOUDFLARE_API_TOKEN` in GitHub repo secrets
+- **Test detection:** Worker automatically blocks Playwright test requests (via User-Agent + message patterns) to prevent creating GitHub issues during test runs
+
+**Deploy worker manually:**
+
+```bash
+cd worker
+npx wrangler whoami  # Verify account: rafal-sladek Account (ec54fc24baed2216d78fece71a99d28f)
+npx wrangler deploy
+```
+
+If wrong account shown, switch: `npx wrangler logout` → `npx wrangler login` (select rafal-sladek in browser).
 
 ## CI/CD
 
