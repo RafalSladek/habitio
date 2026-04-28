@@ -474,6 +474,11 @@ const T = {
       "Drei gute Dinge\n\nSeligman et al. (2005): Täglich 3 gute Dinge aufzuschreiben reduzierte Depressionen signifikant — Wirkung bis zu 6 Monate.",
     tip_diary_better:
       "Umsetzungsabsichten\n\nGollwitzer (1999): Wer konkrete Pläne aufschreibt, ist 2–3× wahrscheinlicher, sie umzusetzen.",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Morgenroutine",
     for_you: "für dich",
     own_badge: "eigene",
@@ -777,6 +782,12 @@ const T = {
       "Trzy dobre rzeczy\n\nSeligman et al. (2005): codzienne zapisywanie 3 dobrych rzeczy znacznie zmniejszyło depresję — efekt do 6 miesięcy.",
     tip_diary_better:
       "Intencje implementacyjne\n\nGollwitzer (1999): pisanie konkretnych planów zwiększa prawdopodobieństwo realizacji 2–3×.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Poranny rytuał",
     for_you: "dla Ciebie",
     own_badge: "mój",
@@ -1072,6 +1083,12 @@ const T = {
       "Três Coisas Boas\n\nSeligman et al. (2005): escrever três coisas boas e suas causas por apenas uma semana reduziu significativamente a depressão e aumentou a felicidade por até 6 meses.",
     tip_diary_better:
       "Intenções de implementação\n\nGollwitzer (1999): pessoas que escrevem planos específicos 'se X então Y' têm 2–3× mais probabilidade de seguir adiante.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Rotina matinal",
     for_you: "para você",
     own_badge: "meu",
@@ -1369,6 +1386,9 @@ const T = {
       "Три хорошие вещи\n\nSeligman et al. (2005): ежедневная запись трёх хороших вещей всего за одну неделю значительно снизила депрессию и повысила счастье на срок до 6 месяцев.",
     tip_diary_better:
       "Намерения реализации\n\nGollwitzer (1999): люди, которые пишут конкретные планы «если X, то Y», в 2–3 раза чаще следуют им.",
+    diary_ph_mood: "",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Утренняя рутина",
     for_you: "для вас",
     own_badge: "моё",
@@ -1677,6 +1697,12 @@ const T = {
       "Trois bonnes choses\n\nSeligman et al. (2005) : écrire trois bonnes choses chaque jour pendant une seule semaine a significativement réduit la dépression et augmenté le bonheur pendant jusqu'à 6 mois.",
     tip_diary_better:
       "Intentions d'implémentation\n\nGollwitzer (1999) : les personnes qui écrivent des plans 'si X alors Y' sont 2–3 fois plus susceptibles de les suivre.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Routine matinale",
     for_you: "pour vous",
     own_badge: "mien",
@@ -1977,6 +2003,12 @@ const T = {
       "तीन अच्छी बातें\n\nSeligman et al. (2005): केवल एक सप्ताह तक प्रतिदिन तीन अच्छी बातें लिखने से अवसाद काफी कम हुआ और 6 महीने तक खुशी बढ़ी।",
     tip_diary_better:
       "कार्यान्वयन इरादे\n\nGollwitzer (1999): जो लोग विशिष्ट 'यदि X तो Y' सुधार योजनाएं लिखते हैं, वे 2–3 गुना अधिक उन्हें पूरा करते हैं।",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "सुबह की दिनचर्या",
     for_you: "आपके लिए",
     own_badge: "मेरी",
@@ -2274,6 +2306,9 @@ const T = {
       "Три хороші речі\n\nSeligman et al. (2005): написання трьох хороших речей та їх причин щодня протягом лише одного тижня суттєво знижувало депресію та підвищувало щастя на строк до 6 місяців.",
     tip_diary_better:
       "Наміри впровадження\n\nGollwitzer (1999): люди, які записують конкретні плани «якщо X, то Y», у 2–3 рази більш вірогідно виконують їх порівняно з розмитими цілями.",
+    diary_ph_mood: "",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Ранкова рутина",
     for_you: "для вас",
     own_badge: "моя",
@@ -2858,6 +2893,12 @@ const T = {
       "Tre gjëra të mira\n\nSeligman et al. (2005): shkrimi i tre gjërave të mira dhe shkaqeve të tyre çdo ditë për vetëm një javë zvogëloi ndjeshëm depresionin dhe rrit lumturinë deri në 6 muaj.",
     tip_diary_better:
       "Synimet e zbatimit\n\nGollwitzer (1999): njerëzit që shkruajnë plane specifike 'nëse X atëherë Y' kanë 2–3× më shumë gjasa të ndjekin planin krahasuar me qëllimet e paqarta.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Rutina e mëngjesit",
     for_you: "për ju",
     own_badge: "imja",
@@ -3147,6 +3188,12 @@ const T = {
       "Три добре ствари\n\nSeligman et al. (2005): писање три добре ствари и разлога сваки дан само недељу дана значајно је смањило депресију и повећало срећу до 6 месеци.",
     tip_diary_better:
       "Намере имплементације\n\nGollwitzer (1999): људи који пишу конкретне планове 'ако X онда Y' 2–3× су вероватнији да ће их пратити у поређењу са нејасним циљевима.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Јутарња рутина",
     for_you: "за тебе",
     own_badge: "моје",
@@ -3438,6 +3485,12 @@ const T = {
       "Drei gute Sachn\n\nSeligman et al. (2005): täglich drei gute Sachn und ihre Ursachen zu schreibn hat für nur a Wochn de Depression deutlich reduziert und de Glück bis zu 6 Monat erhöht.",
     tip_diary_better:
       "Umsetzungsabsichten\n\nGollwitzer (1999): Leit die spezifische 'wenn X dann Y'-Pläne schreibn san 2–3× wahrscheinlicher dass sie durchhalten verglichen mit vagen Zielen.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Morgenroutine",
     for_you: "für di",
     own_badge: "meins",
@@ -4050,6 +4103,12 @@ const T = {
       "Tre cose positive\n\nSeligman et al. (2005): scrivere tre cose positive ogni giorno per una settimana ha ridotto significativamente la depressione per fino a 6 mesi.",
     tip_diary_better:
       "Intenzioni di implementazione\n\nGollwitzer (1999): chi scrive piani specifici 'se X allora Y' ha 2–3× più probabilità di seguirli.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Routine mattutina",
     for_you: "per te",
     own_badge: "mia",
@@ -4292,6 +4351,12 @@ const T = {
     coach_result_next: "Încearcă acum",
     coach_unlock_note: "După 3 zile urmărite, reflecția ta va apărea aici.",
     coach_unlock_toast: "Continuă 3 zile pentru a debloca reflecția coachului.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Rutina de dimineață",
     formation_arc: "Arcul de formare",
     phase_foundation: "Fundație",
@@ -4637,6 +4702,12 @@ const T = {
     coach_result_next: "Probeer dit",
     coach_unlock_note: "Na 3 bijgehouden dagen verschijnt hier je reflectie.",
     coach_unlock_toast: "Ga door voor 3 bijgehouden dagen om je reflectie te ontgrendelen.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Ochtendroutine",
     formation_arc: "Vormingsboog",
     phase_foundation: "Fundament",
@@ -4982,6 +5053,12 @@ const T = {
     coach_result_next: "Bunu dene",
     coach_unlock_note: "3 takip edilen günden sonra yansıman burada görünecek.",
     coach_unlock_toast: "Koç yansımanı açmak için 3 gün takip et.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Sabah rutini",
     formation_arc: "Oluşum yayı",
     phase_foundation: "Temel",
@@ -5321,6 +5398,12 @@ const T = {
     coach_result_next: "Δοκίμασε αυτό",
     coach_unlock_note: "Μετά από 3 ημέρες παρακολούθησης, ο αναστοχασμός σου θα εμφανιστεί εδώ.",
     coach_unlock_toast: "Συνέχισε για 3 ημέρες για να ξεκλειδώσεις τον αναστοχασμό σου.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Πρωινή ρουτίνα",
     formation_arc: "Τόξο διαμόρφωσης",
     phase_foundation: "Θεμέλιο",
@@ -5669,6 +5752,12 @@ const T = {
     coach_result_next: "Isprobaj ovo",
     coach_unlock_note: "Nakon 3 praćena dana, ovdje će se pojaviti tvoja refleksija.",
     coach_unlock_toast: "Nastavi 3 praćena dana da otključaš refleksiju trenera.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Jutarnja rutina",
     formation_arc: "Luk formiranja",
     phase_foundation: "Temelj",
@@ -6015,6 +6104,12 @@ const T = {
     coach_unlock_note: "Després de 3 dies de seguiment, la teva reflexió apareixerà aquí.",
     coach_unlock_toast:
       "Continua 3 dies de seguiment per desbloquejar la reflexió de l'entrenador.",
+    diary_ph_mood: "",
+    mood_7day: "Mood Trends",
+    mood_sub: "Your emotional patterns over the past week",
+    coach_stats_view: "AI Coach Reflection",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Rutina matinal",
     formation_arc: "Arc de formació",
     phase_foundation: "Fonament",
