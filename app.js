@@ -1317,11 +1317,19 @@ function openAddModal(hid) {
     modalFreqPeriod = "week";
     modalMorning = false;
     modalAddedCount = 0;
-    collapsedCategories = {}; // Reset collapsed state for new add modal
+    // Initialize all categories as collapsed except "cat_own" (create your own)
+    collapsedCategories = {};
+    getSuggestions().forEach((_, idx) => {
+      collapsedCategories["cat_" + idx] = true; // All suggestion categories start collapsed
+    });
+    collapsedCategories["cat_own"] = false; // "Create your own" starts open
     updateModalDoneState();
     document.getElementById("modal-title").textContent = t("new_habit");
     document.getElementById("modal-save-btn").textContent = t("add_habit");
     renderSuggestions();
+    // Render emoji picker and cadence AFTER suggestions (since they're now inside suggestions-area)
+    renderEmojiPicker();
+    renderCadence();
   }
   const mc = document.getElementById("morning-chip");
   if (mc) mc.classList.toggle("selected", modalMorning);
@@ -1329,12 +1337,11 @@ function openAddModal(hid) {
   if (mcl) mcl.textContent = t("morning_routine");
   const lbl = document.getElementById("lbl-morning");
   if (lbl) lbl.textContent = t("options_label");
-  document.getElementById("habit-name-input").placeholder = t("type_own");
-  renderEmojiPicker();
-  renderCadence();
+  const nameInput = document.getElementById("habit-name-input");
+  if (nameInput) nameInput.placeholder = t("type_own");
   document.getElementById("add-modal").classList.add("show");
   document.getElementById("fab-add")?.classList.remove("visible");
-  if (!editId) setTimeout(() => document.getElementById("habit-name-input").focus(), 300);
+  if (!editId) setTimeout(() => document.getElementById("habit-name-input")?.focus(), 300);
 }
 function closeAddModal() {
   document.getElementById("add-modal").classList.remove("show");
@@ -1367,6 +1374,53 @@ function updateModalDoneState() {
 function renderSuggestions() {
   const existing = new Set(state.habits.map((h) => h.name.toLowerCase()));
   let html = '<div class="suggestions">';
+
+  // "Create your own" category (always first, open by default)
+  const ownCollapsed = collapsedCategories["cat_own"];
+  html +=
+    '<div class="suggestion-cat-container">' +
+    '<div class="suggestion-cat-header" onclick="toggleSuggestionCategory(\'cat_own\')" data-cat-key="cat_own">' +
+    '<span class="cat-chevron' +
+    (ownCollapsed ? " collapsed" : "") +
+    '">▼</span>' +
+    '<span class="cat-name">' +
+    t("create_own_habit") +
+    "</span>" +
+    "</div>";
+  html +=
+    '<div class="suggestion-items create-own-section" id="cat-items-cat_own"' +
+    (ownCollapsed ? ' style="display:none"' : "") +
+    ">" +
+    '<input class="modal-input" id="habit-name-input" type="text" maxlength="40" autocomplete="off" placeholder="' +
+    esc(t("type_own")) +
+    '" aria-label="Habit name" />' +
+    '<div class="section-label">' +
+    t("lbl_icon") +
+    "</div>" +
+    '<div class="emoji-picker" id="emoji-picker"></div>' +
+    '<div class="section-label">' +
+    t("lbl_cadence") +
+    "</div>" +
+    '<div class="cadence-picker">' +
+    '<div class="cadence-chips" id="cadence-chips"></div>' +
+    '<div id="cadence-detail"></div>' +
+    "</div>" +
+    '<div style="margin-top: 12px; margin-bottom: 14px">' +
+    '<div class="section-label" id="lbl-morning">' +
+    t("options_label") +
+    "</div>" +
+    '<button class="morning-chip" id="morning-chip" type="button" onclick="toggleModalMorning()">' +
+    '☀️ <span id="morning-chip-lbl">' +
+    t("morning_routine") +
+    "</span>" +
+    "</button>" +
+    "</div>" +
+    '<button class="modal-btn primary" id="modal-save-btn" onclick="saveHabit()">' +
+    t("add_habit") +
+    "</button>" +
+    "</div></div>"; // Close create-own-section and suggestion-cat-container
+
+  // Suggestion categories
   getSuggestions().forEach((cat, catIdx) => {
     const items = cat.items.filter((s) => !existing.has(s.name.toLowerCase()));
     if (!items.length) return;
@@ -1448,11 +1502,29 @@ function addSuggestion(el) {
 }
 function toggleSuggestionCategory(catKey) {
   const isCollapsed = collapsedCategories[catKey];
-  collapsedCategories[catKey] = !isCollapsed;
+  const newCollapsed = !isCollapsed;
+
+  // Accordion behavior: close all other categories when opening one
+  if (!newCollapsed) {
+    // Opening this category - close all others
+    Object.keys(collapsedCategories).forEach((key) => {
+      if (key !== catKey && !collapsedCategories[key]) {
+        collapsedCategories[key] = true;
+        const otherContainer = document.getElementById("cat-items-" + key);
+        const otherHeader = document.querySelector('[data-cat-key="' + key + '"]');
+        if (otherContainer) {
+          otherContainer.style.display = "none";
+          otherHeader?.querySelector(".cat-chevron")?.classList.add("collapsed");
+        }
+      }
+    });
+  }
+
+  // Toggle current category
+  collapsedCategories[catKey] = newCollapsed;
   const itemsContainer = document.getElementById("cat-items-" + catKey);
   const header = document.querySelector('[data-cat-key="' + catKey + '"]');
   if (itemsContainer) {
-    const newCollapsed = collapsedCategories[catKey];
     if (newCollapsed) {
       itemsContainer.style.display = "none";
       header?.querySelector(".cat-chevron")?.classList.add("collapsed");

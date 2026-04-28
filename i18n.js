@@ -19,6 +19,7 @@ const T = {
     per_week: "Week",
     per_month: "Month",
     new_habit: "New Habit",
+    create_own_habit: "Create Your Own",
     edit_habit: "Edit Habit",
     add_habit: "Add Habit",
     save_changes: "Save Changes",

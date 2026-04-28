@@ -1798,6 +1798,17 @@ body {
 .suggestion-items[style*="display:none"] {
   max-height: 0;
 }
+.create-own-section {
+  padding: 16px 20px 20px;
+  background: transparent;
+  border: none;
+}
+.create-own-section .modal-input {
+  margin-bottom: 16px;
+}
+.create-own-section .section-label {
+  margin-bottom: 8px;
+}
 .suggestion-item {
   display: flex;
   align-items: center;
