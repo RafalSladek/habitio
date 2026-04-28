@@ -1888,6 +1888,11 @@ function renderDiary() {
 }
 
 function diaryStepGo(dir) {
+  // If completing the last field, navigate to stats instead of showing summary
+  if (dir > 0 && diaryStep === DIARY_FIELDS.length - 1) {
+    switchPage("stats");
+    return;
+  }
   diaryStep = Math.max(0, Math.min(DIARY_FIELDS.length, diaryStep + dir));
   renderDiary();
 }
