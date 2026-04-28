@@ -1297,7 +1297,6 @@ function openAddModal(hid) {
   const sa = document.getElementById("suggestions-area");
   if (editId) {
     const h = state.habits.find((x) => x.id === editId);
-    document.getElementById("habit-name-input").value = h.name;
     modalEmoji = h.emoji;
     const c = h.cadence || { type: "daily" };
     modalCadenceType = c.type;
@@ -1305,11 +1304,22 @@ function openAddModal(hid) {
     modalFreqCount = c.type === "x_per" ? c.count || 2 : 2;
     modalFreqPeriod = c.type === "x_per" ? c.period || "week" : "week";
     modalMorning = !!h.morning;
+    // Render the form fields first (they live inside suggestions-area now)
+    collapsedCategories = { cat_own: false };
+    renderSuggestions();
+    renderEmojiPicker();
+    renderCadence();
+    // Now set values on dynamically-created elements
+    const ni = document.getElementById("habit-name-input");
+    if (ni) ni.value = h.name;
     document.getElementById("modal-title").textContent = t("edit_habit");
-    document.getElementById("modal-save-btn").textContent = t("save_changes");
-    sa.innerHTML = "";
+    const saveBtn = document.getElementById("modal-save-btn");
+    if (saveBtn) saveBtn.textContent = t("save_changes");
+    // Hide suggestion categories in edit mode
+    sa.querySelectorAll(".suggestion-cat-container").forEach((el, i) => {
+      if (i > 0) el.style.display = "none";
+    });
   } else {
-    document.getElementById("habit-name-input").value = "";
     modalEmoji = "🎯";
     modalCadenceType = "daily";
     modalDays = [];
@@ -1325,11 +1335,15 @@ function openAddModal(hid) {
     collapsedCategories["cat_own"] = false; // "Create your own" starts open
     updateModalDoneState();
     document.getElementById("modal-title").textContent = t("new_habit");
-    document.getElementById("modal-save-btn").textContent = t("add_habit");
     renderSuggestions();
     // Render emoji picker and cadence AFTER suggestions (since they're now inside suggestions-area)
     renderEmojiPicker();
     renderCadence();
+    // Set values on dynamically-created elements AFTER renderSuggestions()
+    const saveBtn = document.getElementById("modal-save-btn");
+    if (saveBtn) saveBtn.textContent = t("add_habit");
+    const ni = document.getElementById("habit-name-input");
+    if (ni) ni.value = "";
   }
   const mc = document.getElementById("morning-chip");
   if (mc) mc.classList.toggle("selected", modalMorning);
@@ -1473,13 +1487,18 @@ function renderSuggestions() {
   html += "</div>";
   document.getElementById("suggestions-area").innerHTML = html;
 
-// Attach Enter key handler to habit name input (created dynamically above)
-const nameInput = document.getElementById("habit-name-input");
-if (nameInput) {
-  nameInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") saveHabit();
-  });
+  // Attach Enter key handler to habit name input (created dynamically above)
+  const nameInput = document.getElementById("habit-name-input");
+  if (nameInput) {
+    nameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") saveHabit();
+    });
+  }
 }
+
+function addSuggestion(el) {
+  const name = el.dataset.name,
+    emoji = el.dataset.emoji,
     cadence = JSON.parse(el.dataset.cadence);
   state.habits.push({
     id: uid(),

@@ -92,11 +92,14 @@ async function resetToDefaultState(page, overrides = {}) {
  * @param {string} [name]
  */
 async function completeOnboarding(page, name = "Test") {
-  // Dismiss consent banner that appears at page load (before onboarding)
+  // Dismiss consent banner that may overlay the welcome modal
   const consentBanner = page.locator(".consent-banner");
-  if (await consentBanner.isVisible()) {
+  try {
+    await consentBanner.waitFor({ state: "visible", timeout: 2000 });
     await page.locator(".consent-btn.decline").click();
     await consentBanner.waitFor({ state: "hidden" });
+  } catch {
+    // Banner may not appear if consent was already set
   }
   
   await page.locator("#welcome-name").fill(name);
