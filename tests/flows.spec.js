@@ -51,10 +51,24 @@ test.describe("after onboarding", () => {
     await expect(page.getByText(/3 good things/i)).toBeVisible();
 
     await page.getByRole("button", { name: /Next/i }).click();
-    await expect(page.getByText(/make this day even better/)).toBeVisible();
-
-    await page.getByRole("button", { name: /Next/i }).click();
     await expect(page.getByText(/How do you feel today/i)).toBeVisible();
+    
+    // Mood slider should be present
+    await expect(page.locator(".mood-slider")).toBeVisible();
+    
+    // Select mood < 5 to see "better" field
+    const slider = page.locator(".mood-slider");
+    await slider.evaluate((el) => {
+      el.value = "3";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    
+    // Wait for better field to appear
+    await page.waitForTimeout(200);
+    
+    // Should proceed to "better" field
+    await expect(page.getByText(/make this day even better/)).toBeVisible();
   });
 
   test("stats tab shows key metrics", async ({ page }) => {

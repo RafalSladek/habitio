@@ -1718,7 +1718,7 @@ function saveHabit() {
 }
 
 // ═══ DIARY ═══
-const DIARY_FIELDS = ["grateful", "affirm", "good", "better", "mood"];
+const DIARY_FIELDS = ["grateful", "affirm", "good", "mood", "better"];
 const DIARY_ICONS = { grateful: "🙏", affirm: "💪", good: "⭐", better: "🚀", mood: "😊" };
 
 function calcDiaryStep() {
@@ -1812,7 +1812,7 @@ function renderDiary() {
 
   // ── Single prompt step ──
   const field = DIARY_FIELDS[diaryStep];
-  const moodValue = entry[field] ? parseInt(entry[field]) : 0;
+  const moodValue = entry[field] ? parseInt(entry[field]) : 3;
   const moodEmojis = [
     { v: 1, e: "😢" },
     { v: 2, e: "😕" },
@@ -1820,38 +1820,42 @@ function renderDiary() {
     { v: 4, e: "🙂" },
     { v: 5, e: "😄" },
   ];
-  const fieldUI =
-    field === "mood"
-      ? '<div class="diary-mood-scale">' +
-        moodEmojis
-          .map(
-            (m) =>
-              '<button class="mood-btn' +
-              (moodValue === m.v ? " mood-active" : "") +
-              '" onclick="saveDiary(\'' +
-              k +
-              "','" +
-              field +
-              "'," +
-              m.v +
-              ');diaryStepGo(1)">' +
-              m.e +
-              "</button>"
-          )
-          .join("") +
-        "</div>"
-      : '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
-        esc(t("diary_ph_" + field)) +
-        '" ' +
-        "oninput=\"saveDiary('" +
-        k +
-        "','" +
-        field +
-        '\',this.value)" id="d_' +
-        field +
-        '">' +
-        esc(entry[field] || "") +
-        "</textarea>";
+  let fieldUI;
+  if (field === "mood") {
+    const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
+    fieldUI =
+      '<div class="diary-mood-slider">' +
+      '<div class="mood-emoji-display" id="mood-emoji-display">' +
+      currentEmoji +
+      '</div>' +
+      '<input type="range" min="1" max="5" value="' +
+      moodValue +
+      '" class="mood-slider" id="mood-slider" ' +
+      'oninput="updateMoodPreview(this.value)" ' +
+      "onchange=\"saveDiary('" +
+      k +
+      "','" +
+      field +
+      "',this.value);handleMoodSelected(parseInt(this.value))\" />" +
+      '<div class="mood-labels">' +
+      '<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>' +
+      '</div>' +
+      "</div>";
+  } else {
+    fieldUI =
+      '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
+      esc(t("diary_ph_" + field)) +
+      '" ' +
+      "oninput=\"saveDiary('" +
+      k +
+      "','" +
+      field +
+      '\',this.value)" id="d_' +
+      field +
+      '">' +
+      esc(entry[field] || "") +
+      "</textarea>";
+  }
 
   c.innerHTML =
     dateNav +
@@ -1888,13 +1892,29 @@ function renderDiary() {
 }
 
 function diaryStepGo(dir) {
-  // If completing the last field, navigate to stats instead of showing summary
-  if (dir > 0 && diaryStep === DIARY_FIELDS.length - 1) {
+  // If completing better field (last), navigate to stats
+  if (dir > 0 && DIARY_FIELDS[diaryStep] === "better") {
     switchPage("stats");
     return;
   }
   diaryStep = Math.max(0, Math.min(DIARY_FIELDS.length, diaryStep + dir));
   renderDiary();
+}
+
+function updateMoodPreview(val) {
+  const emojis = ["😢", "😕", "😐", "🙂", "😄"];
+  const display = document.getElementById("mood-emoji-display");
+  if (display) display.textContent = emojis[parseInt(val) - 1];
+}
+
+function handleMoodSelected(moodValue) {
+  // If mood is 5 (best), skip "better" field and go to stats
+  if (moodValue === 5) {
+    switchPage("stats");
+  } else {
+    // Otherwise proceed to "better" field
+    diaryStepGo(1);
+  }
 }
 
 function changeDiaryDay(dir) {
