@@ -166,6 +166,29 @@ function setConsent(granted) {
   renderSettings();
 }
 
+const LANGUAGES = [
+  ["ar", "🇪🇬 عربي مصري"],
+  ["bar", "🏔️ Bayrisch"],
+  ["ca", "🏴󠁥󠁳󠁣󠁴󠁿 Català"],
+  ["de", "🇩🇪 Deutsch"],
+  ["el", "🇬🇷 Ελληνικά"],
+  ["en", "🇬🇧 English"],
+  ["es", "🇪🇸 Español"],
+  ["fr", "🇫🇷 Français"],
+  ["hi", "🇮🇳 हिन्दी"],
+  ["hr", "🇭🇷 Hrvatski"],
+  ["it", "🇮🇹 Italiano"],
+  ["nl", "🇳🇱 Nederlands"],
+  ["pl", "🇵🇱 Polski"],
+  ["pt", "🇧🇷 Português"],
+  ["ro", "🇷🇴 Română"],
+  ["ru", "🇷🇺 Русский"],
+  ["sq", "🇦🇱 Shqip"],
+  ["sr", "🇷🇸 Srpski"],
+  ["tr", "🇹🇷 Türkçe"],
+  ["uk", "🇺🇦 Українська"],
+];
+
 const EMOJIS = [
   "⏰",
   "🌅",
@@ -1218,42 +1241,18 @@ function showWelcome() {
   welcomeAgeGroup = state.profile.ageGroup || "";
   renderAgeChips();
   const lc = document.getElementById("welcome-lang-chips");
-  const LANGS = {
-    ar: "🇪🇬 عربي مصري",
-    bar: "🏔️ Bayrisch",
-    ca: "🏴󠁥󠁳󠁣󠁴󠁿 Català",
-    de: "🇩🇪 Deutsch",
-    el: "🇬🇷 Ελληνικά",
-    en: "🇬🇧 English",
-    es: "🇪🇸 Español",
-    fr: "🇫🇷 Français",
-    hi: "🇮🇳 हिन्दी",
-    hr: "🇭🇷 Hrvatski",
-    it: "🇮🇹 Italiano",
-    nl: "🇳🇱 Nederlands",
-    pl: "🇵🇱 Polski",
-    pt: "🇧🇷 Português",
-    ro: "🇷🇴 Română",
-    ru: "🇷🇺 Русский",
-    sq: "🇦🇱 Shqip",
-    sr: "🇷🇸 Srpski",
-    tr: "🇹🇷 Türkçe",
-    uk: "🇺🇦 Українська",
-  };
   lc.innerHTML =
-    '<select class="lang-select lang-list" size="5" onchange="setWelcomeLang(this.value)">' +
-    Object.keys(LANGS)
-      .map(
-        (l) =>
-          '<option value="' +
-          l +
-          '"' +
-          (state.lang === l ? " selected" : "") +
-          ">" +
-          LANGS[l] +
-          "</option>"
-      )
-      .join("") +
+    '<select class="lang-select" onchange="setWelcomeLang(this.value)">' +
+    LANGUAGES.map(
+      ([l, label]) =>
+        '<option value="' +
+        l +
+        '"' +
+        (state.lang === l ? " selected" : "") +
+        ">" +
+        label +
+        "</option>"
+    ).join("") +
     "</select>";
   document.getElementById("welcome-name").value = state.profile.name || "";
   wl.classList.add("show");
@@ -2771,40 +2770,17 @@ function renderSettings() {
         )
       : "") +
     '</span><span class="setting-action" style="margin-left:auto">›</span></div><div style="width:100%;padding-left:32px;padding-top:6px">' +
-    '<select class="lang-select lang-list" size="5" onclick="event.stopPropagation()" onchange="event.stopPropagation();changeLang(this.value)">' +
-    [
-      ["ar", "🇪🇬 عربي مصري"],
-      ["bar", "🏔️ Bayrisch"],
-      ["ca", "🏴󠁥󠁳󠁣󠁴󠁿 Català"],
-      ["de", "🇩🇪 Deutsch"],
-      ["el", "🇬🇷 Ελληνικά"],
-      ["en", "🇬🇧 English"],
-      ["es", "🇪🇸 Español"],
-      ["fr", "🇫🇷 Français"],
-      ["hi", "🇮🇳 हिन्दी"],
-      ["hr", "🇭🇷 Hrvatski"],
-      ["it", "🇮🇹 Italiano"],
-      ["nl", "🇳🇱 Nederlands"],
-      ["pl", "🇵🇱 Polski"],
-      ["pt", "🇧🇷 Português"],
-      ["ro", "🇷🇴 Română"],
-      ["ru", "🇷🇺 Русский"],
-      ["sq", "🇦🇱 Shqip"],
-      ["sr", "🇷🇸 Srpski"],
-      ["tr", "🇹🇷 Türkçe"],
-      ["uk", "🇺🇦 Українська"],
-    ]
-      .map(
-        ([l, label]) =>
-          '<option value="' +
-          l +
-          '"' +
-          (state.lang === l ? " selected" : "") +
-          ">" +
-          label +
-          "</option>"
-      )
-      .join("") +
+    '<select class="lang-select" onclick="event.stopPropagation()" onchange="event.stopPropagation();changeLang(this.value)">' +
+    LANGUAGES.map(
+      ([l, label]) =>
+        '<option value="' +
+        l +
+        '"' +
+        (state.lang === l ? " selected" : "") +
+        ">" +
+        label +
+        "</option>"
+    ).join("") +
     "</select></div></div></div></div></div>" +
     '<div class="settings-section"><div class="settings-title" style="display:flex;align-items:center;justify-content:space-between">' +
     "<span>" +
@@ -2862,7 +2838,7 @@ function renderSettings() {
     '<div class="settings-section"><div class="settings-title">' +
     t("settings_feedback") +
     '</div><div class="settings-list"><div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">' +
-    '<select id="feedback-type" class="lang-select">' +
+    '<select id="feedback-type" class="form-select">' +
     '<option value="bug">' +
     t("feedback_type_bug") +
     "</option>" +

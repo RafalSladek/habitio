@@ -1,132 +1,186 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Mood Chart Debug</title>
-  <style>
-    body { margin: 20px; font-family: system-ui; background: #1a1c2e; color: #fff; }
-    .mood-chart-svg { max-width: 450px; background: #252740; border-radius: 8px; }
-    pre { background: #252740; padding: 15px; border-radius: 8px; overflow-x: auto; }
-  </style>
-</head>
-<body>
-  <h1>Mood Chart - X Axis Verification</h1>
-  <p>Expected: Exactly 7 day labels (last 7 days)</p>
-  
-  <div id="chart"></div>
-  
-  <h2>SVG Source:</h2>
-  <pre id="source"></pre>
-  
-  <h2>X-axis labels count:</h2>
-  <pre id="count"></pre>
+  <head>
+    <meta charset="utf-8" />
+    <title>Mood Chart Debug</title>
+    <style>
+      body {
+        margin: 20px;
+        font-family: system-ui;
+        background: #1a1c2e;
+        color: #fff;
+      }
+      .mood-chart-svg {
+        max-width: 450px;
+        background: #252740;
+        border-radius: 8px;
+      }
+      pre {
+        background: #252740;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mood Chart - X Axis Verification</h1>
+    <p>Expected: Exactly 7 day labels (last 7 days)</p>
 
-  <script>
-    // Minimal mock functions
-    const state = {
-      diary: {
-        '2026-04-28': { mood: '4' },
-        '2026-04-27': { mood: '5' },
-        '2026-04-26': { mood: '3' },
-        '2026-04-25': { mood: '2' },
-        '2026-04-24': { mood: '4' },
-        '2026-04-23': { mood: '5' },
-        '2026-04-22': { mood: '3' }
+    <div id="chart"></div>
+
+    <h2>SVG Source:</h2>
+    <pre id="source"></pre>
+
+    <h2>X-axis labels count:</h2>
+    <pre id="count"></pre>
+
+    <script>
+      // Minimal mock functions
+      const state = {
+        diary: {
+          "2026-04-28": { mood: "4" },
+          "2026-04-27": { mood: "5" },
+          "2026-04-26": { mood: "3" },
+          "2026-04-25": { mood: "2" },
+          "2026-04-24": { mood: "4" },
+          "2026-04-23": { mood: "5" },
+          "2026-04-22": { mood: "3" },
+        },
+      };
+
+      function fmt(d) {
+        return d.toISOString().slice(0, 10);
       }
-    };
-    
-    function fmt(d) { return d.toISOString().slice(0, 10); }
-    function addD(d, n) { const r = new Date(d); r.setDate(r.getDate() + n); return r; }
-    function DN(i) { return ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So'][i]; }
-    function t(k) { return k === 'today' ? 'Dziś' : k; }
-    
-    function buildMoodChartHtml() {
-      // Collect last 7 days
-      const data = [];
-      for (let i = 6; i >= 0; i--) {
-        const date = addD(new Date(), -i);
-        const entry = state.diary[fmt(date)] || {};
-        const mood = entry.mood ? parseInt(entry.mood) : 0;
-        data.push({
-          label: i === 0 ? t("today") : DN(date.getDay()),
-          mood: mood,
-          isToday: i === 0
+      function addD(d, n) {
+        const r = new Date(d);
+        r.setDate(r.getDate() + n);
+        return r;
+      }
+      function DN(i) {
+        return ["Nd", "Pn", "Wt", "Śr", "Cz", "Pt", "So"][i];
+      }
+      function t(k) {
+        return k === "today" ? "Dziś" : k;
+      }
+
+      function buildMoodChartHtml() {
+        // Collect last 7 days
+        const data = [];
+        for (let i = 6; i >= 0; i--) {
+          const date = addD(new Date(), -i);
+          const entry = state.diary[fmt(date)] || {};
+          const mood = entry.mood ? parseInt(entry.mood) : 0;
+          data.push({
+            label: i === 0 ? t("today") : DN(date.getDay()),
+            mood: mood,
+            isToday: i === 0,
+          });
+        }
+
+        // Chart config
+        const w = 420;
+        const h = 160;
+        const pad = { t: 30, r: 20, b: 35, l: 45 };
+        const cw = w - pad.l - pad.r;
+        const ch = h - pad.t - pad.b;
+
+        const moods = ["", "😢", "😕", "😐", "🙂", "😄"];
+        const colors = ["#444", "#e74c3c", "#e67e22", "#f39c12", "#6c5ce7", "#27ae60"];
+
+        // Build SVG
+        let out = '<svg class="mood-chart-svg" viewBox="0 0 ' + w + " " + h + '">';
+
+        // Y-axis (mood scale)
+        for (let m = 1; m <= 5; m++) {
+          const yPos = pad.t + ch - ((m - 1) * ch) / 4;
+          out +=
+            '<text x="20" y="' +
+            (yPos + 4) +
+            '" font-size="16" text-anchor="middle">' +
+            moods[m] +
+            "</text>";
+          out +=
+            '<line x1="' +
+            pad.l +
+            '" y1="' +
+            yPos +
+            '" x2="' +
+            (w - pad.r) +
+            '" y2="' +
+            yPos +
+            '" stroke="#444" stroke-opacity="0.3"/>';
+        }
+
+        // Calculate point positions
+        const pts = data.map((d, i) => ({
+          x: pad.l + (i * cw) / 6,
+          y: d.mood > 0 ? pad.t + ch - ((d.mood - 1) * ch) / 4 : pad.t + ch,
+          ...d,
+        }));
+
+        // Line path
+        const validPts = pts.filter((p) => p.mood > 0);
+        if (validPts.length > 0) {
+          let path = "M " + validPts[0].x + " " + validPts[0].y;
+          for (let i = 1; i < validPts.length; i++) {
+            path += " L " + validPts[i].x + " " + validPts[i].y;
+          }
+          out += '<path d="' + path + '" fill="none" stroke="#6c5ce7" stroke-width="3"/>';
+        }
+
+        // Points
+        pts.forEach((p) => {
+          if (p.mood > 0) {
+            out +=
+              '<circle cx="' +
+              p.x +
+              '" cy="' +
+              p.y +
+              '" r="' +
+              (p.isToday ? "7" : "5") +
+              '" fill="' +
+              colors[p.mood] +
+              '"';
+            if (p.isToday) out += ' stroke="#fff" stroke-width="2"';
+            out += "/>";
+          }
         });
+
+        // X-axis (day labels)
+        pts.forEach((p) => {
+          out +=
+            '<text x="' +
+            p.x +
+            '" y="' +
+            (h - 12) +
+            '" text-anchor="middle" font-size="12" fill="#888" font-weight="600">' +
+            p.label +
+            "</text>";
+        });
+
+        out += "</svg>";
+        return '<div class="mood-chart">' + out + "</div>";
       }
-      
-      // Chart config
-      const w = 420;
-      const h = 160;
-      const pad = { t: 30, r: 20, b: 35, l: 45 };
-      const cw = w - pad.l - pad.r;
-      const ch = h - pad.t - pad.b;
-      
-      const moods = ["", "😢", "😕", "😐", "🙂", "😄"];
-      const colors = ["#444", "#e74c3c", "#e67e22", "#f39c12", "#6c5ce7", "#27ae60"];
-      
-      // Build SVG
-      let out = '<svg class="mood-chart-svg" viewBox="0 0 ' + w + ' ' + h + '">';
-      
-      // Y-axis (mood scale)
-      for (let m = 1; m <= 5; m++) {
-        const yPos = pad.t + ch - ((m - 1) * ch / 4);
-        out += '<text x="20" y="' + (yPos + 4) + '" font-size="16" text-anchor="middle">' + moods[m] + '</text>';
-        out += '<line x1="' + pad.l + '" y1="' + yPos + '" x2="' + (w - pad.r) + '" y2="' + yPos + '" stroke="#444" stroke-opacity="0.3"/>';
-      }
-      
-      // Calculate point positions
-      const pts = data.map((d, i) => ({
-        x: pad.l + (i * cw / 6),
-        y: d.mood > 0 ? pad.t + ch - ((d.mood - 1) * ch / 4) : pad.t + ch,
-        ...d
-      }));
-      
-      // Line path
-      const validPts = pts.filter(p => p.mood > 0);
-      if (validPts.length > 0) {
-        let path = 'M ' + validPts[0].x + ' ' + validPts[0].y;
-        for (let i = 1; i < validPts.length; i++) {
-          path += ' L ' + validPts[i].x + ' ' + validPts[i].y;
-        }
-        out += '<path d="' + path + '" fill="none" stroke="#6c5ce7" stroke-width="3"/>';
-      }
-      
-      // Points
-      pts.forEach(p => {
-        if (p.mood > 0) {
-          out += '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (p.isToday ? '7' : '5') + '" fill="' + colors[p.mood] + '"';
-          if (p.isToday) out += ' stroke="#fff" stroke-width="2"';
-          out += '/>';
-        }
+
+      const html = buildMoodChartHtml();
+      document.getElementById("chart").innerHTML = html;
+      document.getElementById("source").textContent = html;
+
+      // Count X-axis labels
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const svg = doc.querySelector("svg");
+      const allTexts = svg.querySelectorAll("text");
+      const xAxisLabels = Array.from(allTexts).filter((t) => {
+        const y = parseFloat(t.getAttribute("y"));
+        return y > 140; // X-axis labels are at y=148
       });
-      
-      // X-axis (day labels)
-      pts.forEach(p => {
-        out += '<text x="' + p.x + '" y="' + (h - 12) + '" text-anchor="middle" font-size="12" fill="#888" font-weight="600">' + p.label + '</text>';
-      });
-      
-      out += '</svg>';
-      return '<div class="mood-chart">' + out + '</div>';
-    }
-    
-    const html = buildMoodChartHtml();
-    document.getElementById('chart').innerHTML = html;
-    document.getElementById('source').textContent = html;
-    
-    // Count X-axis labels
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, 'text/html');
-    const svg = doc.querySelector('svg');
-    const allTexts = svg.querySelectorAll('text');
-    const xAxisLabels = Array.from(allTexts).filter(t => {
-      const y = parseFloat(t.getAttribute('y'));
-      return y > 140; // X-axis labels are at y=148
-    });
-    
-    document.getElementById('count').textContent = 
-      `Total <text> elements: ${allTexts.length}\n` +
-      `X-axis labels (y > 140): ${xAxisLabels.length}\n` +
-      `Labels: ${xAxisLabels.map(t => t.textContent).join(', ')}`;
-  </script>
-</body>
+
+      document.getElementById("count").textContent =
+        `Total <text> elements: ${allTexts.length}\n` +
+        `X-axis labels (y > 140): ${xAxisLabels.length}\n` +
+        `Labels: ${xAxisLabels.map((t) => t.textContent).join(", ")}`;
+    </script>
+  </body>
 </html>
