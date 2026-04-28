@@ -1718,7 +1718,7 @@ function saveHabit() {
 }
 
 // ═══ DIARY ═══
-const DIARY_FIELDS = ["grateful", "affirm", "good", "mood", "better"];
+const DIARY_FIELDS = ["grateful", "affirm", "good", "mood"];
 const DIARY_ICONS = { grateful: "🙏", affirm: "💪", good: "⭐", better: "🚀", mood: "😊" };
 
 function calcDiaryStep() {
@@ -1823,6 +1823,8 @@ function renderDiary() {
   let fieldUI;
   if (field === "mood") {
     const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
+    const betterValue = entry["better"] || "";
+    const showBetter = moodValue > 0 && moodValue < 5;
     fieldUI =
       '<div class="diary-mood-slider">' +
       '<div class="mood-emoji-display" id="mood-emoji-display">' +
@@ -1840,6 +1842,33 @@ function renderDiary() {
       '<div class="mood-labels">' +
       '<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>' +
       '</div>' +
+      '</div>' +
+      '<div class="diary-better-expand" id="diary-better-expand" style="' +
+      (showBetter ? "" : "display:none") +
+      '">' +
+      '<div class="diary-better-header" onclick="toggleBetterField()">' +
+      '<span class="better-chevron' +
+      (betterValue ? " expanded" : "") +
+      '" id="better-chevron">▼</span>' +
+      '<span>' +
+      esc(t("diary_better")) +
+      '</span>' +
+      '</div>' +
+      '<div class="diary-better-content" id="diary-better-content" style="' +
+      (betterValue ? "" : "display:none") +
+      '">' +
+      '<textarea class="diary-textarea" placeholder="' +
+      esc(t("diary_ph_better")) +
+      '" ' +
+      "oninput=\"saveDiary('" +
+      k +
+      "','better',this.value)\" id=\"d_better\">" +
+      esc(betterValue) +
+      "</textarea>" +
+      '<div class="diary-saved" id="ds_better">' +
+      t("diary_saved") +
+      " ✓</div>" +
+      "</div>" +
       "</div>";
   } else {
     fieldUI =
@@ -1881,22 +1910,19 @@ function renderDiary() {
         t("diary_back") +
         "</button>"
       : "<span></span>") +
-    (field !== "mood"
-      ? '<button class="diary-next-btn" onclick="diaryStepGo(1)">' +
-        (diaryStep < DIARY_FIELDS.length - 1 ? t("diary_next") + " →" : "✓ " + t("diary_done")) +
+    (field === "mood"
+      ? '<button class="diary-next-btn" onclick="switchPage(\'stats\')">✓ ' +
+        t("diary_done") +
         "</button>"
-      : "") +
+      : '<button class="diary-next-btn" onclick="diaryStepGo(1)">' +
+        (diaryStep < DIARY_FIELDS.length - 1 ? t("diary_next") + " →" : "✓ " + t("diary_done")) +
+        "</button>") +
     "</div>";
 
   if (field !== "mood") setTimeout(() => document.getElementById("d_" + field)?.focus(), 80);
 }
 
 function diaryStepGo(dir) {
-  // If completing better field (last), navigate to stats
-  if (dir > 0 && DIARY_FIELDS[diaryStep] === "better") {
-    switchPage("stats");
-    return;
-  }
   diaryStep = Math.max(0, Math.min(DIARY_FIELDS.length, diaryStep + dir));
   renderDiary();
 }
@@ -1908,12 +1934,23 @@ function updateMoodPreview(val) {
 }
 
 function handleMoodSelected(moodValue) {
-  // If mood is 5 (best), skip "better" field and go to stats
-  if (moodValue === 5) {
-    switchPage("stats");
-  } else {
-    // Otherwise proceed to "better" field
-    diaryStepGo(1);
+  // Show/hide "better" expandable section based on mood
+  const betterExpand = document.getElementById("diary-better-expand");
+  if (betterExpand) {
+    betterExpand.style.display = moodValue < 5 ? "" : "none";
+  }
+}
+
+function toggleBetterField() {
+  const content = document.getElementById("diary-better-content");
+  const chevron = document.getElementById("better-chevron");
+  if (content && chevron) {
+    const isVisible = content.style.display !== "none";
+    content.style.display = isVisible ? "none" : "";
+    chevron.classList.toggle("expanded", !isVisible);
+    if (!isVisible) {
+      setTimeout(() => document.getElementById("d_better")?.focus(), 80);
+    }
   }
 }
 

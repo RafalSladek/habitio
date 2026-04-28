@@ -56,7 +56,7 @@ test.describe("after onboarding", () => {
     // Mood slider should be present
     await expect(page.locator(".mood-slider")).toBeVisible();
     
-    // Select mood < 5 to see "better" field
+    // Select mood < 5 to see expandable "better" field
     const slider = page.locator(".mood-slider");
     await slider.evaluate((el) => {
       el.value = "3";
@@ -64,11 +64,14 @@ test.describe("after onboarding", () => {
       el.dispatchEvent(new Event("change", { bubbles: true }));
     });
     
-    // Wait for better field to appear
-    await page.waitForTimeout(200);
+    // Expandable "better" section should appear
+    await expect(page.locator(".diary-better-expand")).toBeVisible();
     
-    // Should proceed to "better" field
-    await expect(page.getByText(/make this day even better/)).toBeVisible();
+    // Click to expand it
+    await page.locator(".diary-better-header").click();
+    
+    // Better textarea should be visible
+    await expect(page.locator("#d_better")).toBeVisible();
   });
 
   test("stats tab shows key metrics", async ({ page }) => {
