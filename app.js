@@ -2455,18 +2455,18 @@ function buildMoodChartHtml() {
   }
   
   // SVG chart dimensions
-  const width = 400;
-  const height = 140;
-  const padding = { top: 20, right: 20, bottom: 30, left: 30 };
+  const width = 420;
+  const height = 160;
+  const padding = { top: 30, right: 20, bottom: 35, left: 45 };
   const chartWidth = width - padding.left - padding.right;
   const chartHeight = height - padding.top - padding.bottom;
   
-  // Calculate points
+  // Calculate points - X is day index, Y is mood value
   const points = days.map((d, i) => {
     const x = padding.left + (i * chartWidth) / 6;
     const y = d.mood > 0 
-      ? padding.top + chartHeight - (d.mood - 1) * (chartHeight / 4)
-      : padding.top + chartHeight / 2;
+      ? padding.top + chartHeight - ((d.mood - 1) * chartHeight) / 4
+      : padding.top + chartHeight;
     return { x, y, ...d };
   });
   
@@ -2481,31 +2481,37 @@ function buildMoodChartHtml() {
   
   let svg = '<svg class="mood-chart-svg" viewBox="0 0 ' + width + ' ' + height + '" xmlns="http://www.w3.org/2000/svg">';
   
-  // Draw line
-  if (pathData) {
-    svg += '<path d="' + pathData + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+  // Y-axis labels (mood emojis)
+  for (let i = 1; i <= 5; i++) {
+    const y = padding.top + chartHeight - ((i - 1) * chartHeight) / 4;
+    svg += '<text x="20" y="' + (y + 4) + '" font-size="16" text-anchor="middle">' + moodEmojis[i] + '</text>';
+    // Horizontal grid line
+    svg += '<line x1="' + padding.left + '" y1="' + y + '" x2="' + (width - padding.right) + '" y2="' + y + '" stroke="var(--border)" stroke-width="1" opacity="0.3"/>';
   }
   
-  // Draw points and labels
+  // Draw line
+  if (pathData) {
+    svg += '<path d="' + pathData + '" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>';
+  }
+  
+  // Draw points
   points.forEach(p => {
-    const color = p.mood > 0 ? moodColors[p.mood] : "#2d2f3e";
-    const emoji = p.mood > 0 ? moodEmojis[p.mood] : "";
-    
-    // Point circle
-    svg += '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (p.isToday ? '8' : '6') + '" fill="' + color + '" ';
-    if (p.isToday) {
-      svg += 'stroke="var(--accent)" stroke-width="3"';
+    if (p.mood > 0) {
+      const color = moodColors[p.mood];
+      
+      // Point circle
+      svg += '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (p.isToday ? '7' : '5') + '" fill="' + color + '" ';
+      if (p.isToday) {
+        svg += 'stroke="#fff" stroke-width="2"';
+      }
+      svg += '/>';
     }
-    svg += '/>';
-    
-    // Emoji above point
-    if (emoji) {
-      svg += '<text x="' + p.x + '" y="' + (p.y - 14) + '" text-anchor="middle" font-size="16" class="mood-emoji-label">' + emoji + '</text>';
-    }
-    
-    // Day label below
+  });
+  
+  // X-axis labels (days)
+  points.forEach(p => {
     const label = p.isToday ? t("today") : p.day;
-    svg += '<text x="' + p.x + '" y="' + (height - 10) + '" text-anchor="middle" font-size="11" fill="var(--text-muted)" font-weight="600">' + label + '</text>';
+    svg += '<text x="' + p.x + '" y="' + (height - 12) + '" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-weight="600">' + label + '</text>';
   });
   
   svg += '</svg>';

@@ -552,7 +552,7 @@ body {
 .mood-chart-svg {
   width: 100%;
   height: auto;
-  max-width: 400px;
+  max-width: 450px;
   margin: 0 auto;
   display: block;
 }
