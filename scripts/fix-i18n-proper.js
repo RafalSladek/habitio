@@ -6,7 +6,8 @@ const file = 'i18n.js';
 let content = fs.readFileSync(file, 'utf8');
 let lines = content.split('\n');
 
-// Parse to get all the keysconst sandbox = {};
+// Parse to get all the keys
+const sandbox = {};
 vm.runInNewContext(content + "\nthis.__translations = T;", sandbox);
 const translations = sandbox.__translations;
 const englishKeys = Object.keys(translations.en);

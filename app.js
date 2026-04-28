@@ -1833,71 +1833,20 @@ function renderDiary() {
     { v: 4, e: "🙂" },
     { v: 5, e: "😄" },
   ];
-  let fieldUI;
-  if (field === "mood") {
-    const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
-    const betterValue = entry["better"] || "";
-    const showBetter = moodValue > 0 && moodValue < 5;
-    fieldUI =
-      '<div class="diary-mood-slider">' +
-      '<div class="mood-emoji-display" id="mood-emoji-display">' +
-      currentEmoji +
-      "</div>" +
-      '<input type="range" min="1" max="5" value="' +
-      moodValue +
-      '" class="mood-slider" id="mood-slider" ' +
-      'oninput="updateMoodPreview(this.value)" ' +
-      "onchange=\"saveDiary('" +
-      k +
-      "','" +
-      field +
-      "',this.value);handleMoodSelected(parseInt(this.value))\" />" +
-      '<div class="mood-labels">' +
-      "<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>" +
-      "</div>" +
-      "</div>" +
-      '<div class="diary-better-expand" id="diary-better-expand" style="' +
-      (showBetter ? "" : "display:none") +
-      '">' +
-      '<div class="diary-better-header" onclick="toggleBetterField()">' +
-      '<span class="better-chevron' +
-      (betterValue ? " expanded" : "") +
-      '" id="better-chevron">▼</span>' +
-      "<span>" +
-      esc(t("diary_better")) +
-      "</span>" +
-      "</div>" +
-      '<div class="diary-better-content" id="diary-better-content" style="' +
-      (betterValue ? "" : "display:none") +
-      '">' +
-      '<textarea class="diary-textarea" placeholder="' +
-      esc(t("diary_ph_better")) +
-      '" ' +
-      "oninput=\"saveDiary('" +
-      k +
-      "','better',this.value)\" id=\"d_better\">" +
-      esc(betterValue) +
-      "</textarea>" +
-      '<div class="diary-saved" id="ds_better">' +
-      t("diary_saved") +
-      " ✓</div>" +
-      "</div>" +
-      "</div>";
-  } else {
-    fieldUI =
-      '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
-      esc(t("diary_ph_" + field)) +
-      '" ' +
-      "oninput=\"saveDiary('" +
-      k +
-      "','" +
-      field +
-      '\',this.value)" id="d_' +
-      field +
-      '">' +
-      esc(entry[field] || "") +
-      "</textarea>";
-  }
+
+  let fieldUI =
+    '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
+    esc(t("diary_ph_" + field)) +
+    '" ' +
+    "oninput=\"saveDiary('" +
+    k +
+    "','" +
+    field +
+    '\',this.value)" id="d_' +
+    field +
+    '">' +
+    esc(entry[field] || "") +
+    "</textarea>";
 
   // Add mood slider to "good" field
   if (field === "good") {
@@ -2061,8 +2010,10 @@ function saveDiary(k, field, val) {
   save();
   clearTimeout(diaryTimers[field]);
   const el = document.getElementById("ds_" + field);
-  el.classList.add("show");
-  diaryTimers[field] = setTimeout(() => el.classList.remove("show"), 1500);
+  if (el) {
+    el.classList.add("show");
+    diaryTimers[field] = setTimeout(() => el.classList.remove("show"), 1500);
+  }
 }
 
 // ═══ IMPORT / EXPORT ═══
