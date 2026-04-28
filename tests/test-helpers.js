@@ -4,6 +4,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const gaRouteInstalled = new WeakSet();
 
+/** Must match STORAGE_VERSION in app.js and CACHE in sw.js */
+const STORAGE_VERSION = "habitio_v10";
+
 const test = base.extend({
   coverageRecorder: [
     async ({ page, browserName }, use) => {
@@ -80,10 +83,10 @@ async function openClearedApp(page) {
 async function resetToDefaultState(page, overrides = {}) {
   await mockGoogleAnalytics(page);
   await page.goto("/");
-  await page.evaluate((state) => {
+  await page.evaluate(({ state, key }) => {
     localStorage.clear();
-    localStorage.setItem("habitio_v9", JSON.stringify(state));
-  }, createState(overrides));
+    localStorage.setItem(key, JSON.stringify(state));
+  }, { state: createState(overrides), key: STORAGE_VERSION });
   await page.reload({ waitUntil: "domcontentloaded" });
 }
 
@@ -228,14 +231,17 @@ async function spyOnGtag(page) {
 async function seedConsented(page, extra = {}) {
   await mockGoogleAnalytics(page);
   await page.evaluate(
-    (state) => {
-      localStorage.setItem("habitio_v9", JSON.stringify(state));
+    ({ state, key }) => {
+      localStorage.setItem(key, JSON.stringify(state));
     },
-    createState({
-      profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
-      consentAnalytics: true,
-      ...extra,
-    })
+    {
+      state: createState({
+        profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
+        consentAnalytics: true,
+        ...extra,
+      }),
+      key: STORAGE_VERSION,
+    }
   );
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.locator("#fab-add")).toBeVisible();
@@ -248,6 +254,7 @@ async function goToSettings(page) {
 }
 
 module.exports = {
+  STORAGE_VERSION,
   test,
   expect,
   createState,

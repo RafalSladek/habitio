@@ -7,7 +7,7 @@ const path = require("path");
 
 const BASE_URL = "http://localhost:3000";
 const DOCS_DIR = path.join(__dirname, "..", "docs");
-const STORAGE_KEY = "habitio_v10";
+const STORAGE_VERSION = "habitio_v10";
 
 // The app uses toISOString().slice(0,10) for date keys (UTC-based).
 // We must use the same UTC date so diary/checks align with "today" in the app.
@@ -156,7 +156,7 @@ async function seedState(page, state) {
     ([key, value]) => {
       localStorage.setItem(key, JSON.stringify(value));
     },
-    [STORAGE_KEY, state]
+    [STORAGE_VERSION, state]
   );
 }
 
@@ -166,7 +166,7 @@ async function loadWithState(page, state) {
   if (state) {
     await seedState(page, state);
   } else {
-    await page.evaluate((key) => localStorage.removeItem(key), STORAGE_KEY);
+    await page.evaluate((key) => localStorage.removeItem(key), STORAGE_VERSION);
   }
   await page.reload({ waitUntil: "networkidle" });
   await page.waitForTimeout(600);

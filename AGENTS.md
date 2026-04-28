@@ -61,7 +61,7 @@ Use the `model-router` skill when unsure. Quick reference for this project's com
 | `sonar-scanner` (run only) | **Haiku** | Mechanical scan execution |
 | Fix SonarCloud bugs/smells | **Sonnet** | Requires code quality judgment |
 | Security hotspot review | **Sonnet** | Security implications need reasoning |
-| Version bump (3 places) | **Haiku** | Find-and-replace across known files |
+| Version bump (3 places + tests) | **Haiku** | Find-and-replace across known files |
 | `gh run watch` / CI status | **Haiku** | Mechanical wait + report |
 | `wrangler deploy` | **Haiku** | Mechanical deploy |
 | Update `TODO.md` | **Haiku** | Append completed tasks |
@@ -126,13 +126,34 @@ localStorage key: habitio_v10
 
 When `app.js`, `styles.css`, `suggestions.js`, `i18n.js`, or `index.html` changes:
 
-1. localStorage key in `save()` and `load()` in `app.js` (e.g. `habitio_v10` → `habitio_v11`)
+1. `STORAGE_VERSION` in `app.js` (e.g. `"habitio_v10"` → `"habitio_v11"`)
 2. `CACHE` in `sw.js` (same value)
 3. `APP_VERSION` in `app.js` → `"v2.11"` (minor version = schema number)
 
-**CRITICAL:** The SW cache name (`CACHE` in `sw.js`) MUST match the localStorage key.
+**CRITICAL:** The SW cache name (`CACHE` in `sw.js`) MUST match `STORAGE_VERSION` in `app.js`.
 
 Always add a migration read in `load()` for the old key — never drop user data. This keeps a single version number across both systems.
+
+### 4th Place — Test & Script Constants
+
+The storage version is defined as a `STORAGE_VERSION` constant in these files (never hardcoded):
+- `tests/test-helpers.js` — `STORAGE_VERSION` constant, exported for other test files
+- `tests/sw.spec.js` — own `STORAGE_VERSION` constant (can't import from test-helpers)
+- `scripts/take-screenshots.js` — own `STORAGE_VERSION` constant
+
+After bumping, update the constant value in these 3 files:
+
+```bash
+# Find all occurrences
+grep -rn "STORAGE_VERSION" tests/ scripts/take-screenshots.js
+
+# Replace (PowerShell)
+foreach ($f in @('tests/test-helpers.js','tests/sw.spec.js','scripts/take-screenshots.js')) {
+  (Get-Content $f) -replace 'habitio_v10', 'habitio_v11' | Set-Content $f
+}
+```
+
+**Always run `yarn test` after the replacement to confirm zero regressions.**
 
 ## Service Worker
 
@@ -215,7 +236,7 @@ SonarCloud Quality Gate must pass before pushing.
 1. `yarn format` — Prettier on all source files
 2. `yarn test` — all 4 projects must pass (Desktop, Mobile, Tablet, iPhone)
 3. `sonar-scanner` — Quality Gate must pass (requires `SONAR_TOKEN` env var)
-4. Version bump (3 places) if any source file changed
+4. Version bump (3 places + tests) if any source file changed
 5. Retake affected screenshots in `docs/` if UI changed (see canonical set below); visually verify each
 6. Update `TODO.md` with completed tasks
 7. Update `AGENTS.md` + `README.md` if architecture/languages/instructions changed
