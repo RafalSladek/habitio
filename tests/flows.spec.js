@@ -74,7 +74,7 @@ test.describe("after onboarding", () => {
     await expect(page.getByRole("heading", { name: "Settings" })).toBeVisible();
     await expect(page.getByText("Profile", { exact: true })).toBeVisible();
     await expect(page.getByText("Data", { exact: true })).toBeVisible();
-    await expect(page.getByText("Export Backu10")).toBeVisible();
+    await expect(page.getByText("Export Backup")).toBeVisible();
     await expect(page.getByText("Import Backup")).toBeVisible();
     await expect(page.getByText("Reset All Data")).toBeVisible();
     await expect(page.getByText("habit.io v2.10")).toBeVisible();

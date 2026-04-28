@@ -164,7 +164,14 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
  */
 async function addSuggestedHabit(page, name = "Drink 2L Water") {
   await page.locator("#fab-add").click();
-  await page.locator(".suggestion-item", { hasText: name }).getByText("+").click();
+  // Suggestion categories are collapsed by default (accordion); expand the one containing the item
+  const item = page.locator(".suggestion-item", { hasText: name });
+  const container = item.locator("xpath=ancestor::div[contains(@class,'suggestion-cat-container')]");
+  const header = container.locator(".suggestion-cat-header");
+  if ((await header.count()) > 0) {
+    await header.click();
+  }
+  await item.getByText("+").click();
   await page.locator("#modal-done-bar").click();
 }
 

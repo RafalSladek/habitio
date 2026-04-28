@@ -1501,7 +1501,18 @@ body {
 .modal h3 {
   font-size: 18px;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 4px;
+}
+.modal-quote {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--text-muted);
+  margin: 0 0 14px;
+  line-height: 1.4;
+}
+.modal-quote span {
+  font-style: normal;
+  opacity: 0.7;
 }
 .modal-input {
   width: 100%;

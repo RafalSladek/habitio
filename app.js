@@ -1353,6 +1353,18 @@ function openAddModal(hid) {
   if (lbl) lbl.textContent = t("options_label");
   const nameInput = document.getElementById("habit-name-input");
   if (nameInput) nameInput.placeholder = t("type_own");
+  // Show motivational quote (new habit only, hidden for edit)
+  const mq = document.getElementById("modal-quote");
+  if (mq) {
+    if (!editId) {
+      const langQuotes = T[state.lang]?.quotes || T.en.quotes;
+      const q = langQuotes[Math.floor(Math.random() * langQuotes.length)];
+      mq.innerHTML = "&ldquo;" + esc(q.q) + "&rdquo; <span>— " + esc(q.a) + "</span>";
+      mq.style.display = "";
+    } else {
+      mq.style.display = "none";
+    }
+  }
   document.getElementById("add-modal").classList.add("show");
   document.getElementById("fab-add")?.classList.remove("visible");
   if (!editId) setTimeout(() => document.getElementById("habit-name-input")?.focus(), 300);
