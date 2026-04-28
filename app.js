@@ -1718,7 +1718,7 @@ function saveHabit() {
 }
 
 // ═══ DIARY ═══
-const DIARY_FIELDS = ["grateful", "affirm", "good", "mood"];
+const DIARY_FIELDS = ["grateful", "affirm", "good"];
 const DIARY_ICONS = { grateful: "🙏", affirm: "💪", good: "⭐", better: "🚀", mood: "😊" };
 
 function calcDiaryStep() {
@@ -1812,7 +1812,7 @@ function renderDiary() {
 
   // ── Single prompt step ──
   const field = DIARY_FIELDS[diaryStep];
-  const moodValue = entry[field] ? parseInt(entry[field]) : 3;
+  const moodValue = entry["mood"] ? parseInt(entry["mood"]) : 3;
   const moodEmojis = [
     { v: 1, e: "😢" },
     { v: 2, e: "😕" },
@@ -1885,6 +1885,68 @@ function renderDiary() {
       esc(entry[field] || "") +
       "</textarea>";
   }
+  
+  // Add mood slider to "good" field
+  if (field === "good") {
+    const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
+    const betterValue = entry["better"] || "";
+    const showBetter = moodValue > 0 && moodValue < 5;
+    
+    fieldUI +=
+      '<div class="diary-saved" id="ds_' +
+      field +
+      '">' +
+      t("diary_saved") +
+      " ✓</div>" +
+      '<div class="diary-mood-section">' +
+      '<div class="diary-step-label">' +
+      esc(t("diary_mood")) +
+      tipBtn("tip_diary_mood") +
+      '</div>' +
+      '<div class="diary-mood-slider">' +
+      '<div class="mood-emoji-display" id="mood-emoji-display">' +
+      currentEmoji +
+      '</div>' +
+      '<input type="range" min="1" max="5" value="' +
+      moodValue +
+      '" class="mood-slider" id="mood-slider" ' +
+      'oninput="updateMoodPreview(this.value)" ' +
+      "onchange=\"saveDiary('" +
+      k +
+      "','mood',this.value);handleMoodSelected(parseInt(this.value))\" />" +
+      '<div class="mood-labels">' +
+      '<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>' +
+      '</div>' +
+      '</div>' +
+      '<div class="diary-better-expand" id="diary-better-expand" style="' +
+      (showBetter ? "" : "display:none") +
+      '">' +
+      '<div class="diary-better-header" onclick="toggleBetterField()">' +
+      '<span class="better-chevron' +
+      (betterValue ? " expanded" : "") +
+      '" id="better-chevron">▼</span>' +
+      '<span>' +
+      esc(t("diary_better")) +
+      '</span>' +
+      '</div>' +
+      '<div class="diary-better-content" id="diary-better-content" style="' +
+      (betterValue ? "" : "display:none") +
+      '">' +
+      '<textarea class="diary-textarea" placeholder="' +
+      esc(t("diary_ph_better")) +
+      '" ' +
+      "oninput=\"saveDiary('" +
+      k +
+      "','better',this.value)\" id=\"d_better\">" +
+      esc(betterValue) +
+      "</textarea>" +
+      '<div class="diary-saved" id="ds_better">' +
+      t("diary_saved") +
+      " ✓</div>" +
+      "</div>" +
+      "</div>" +
+      "</div>";
+  }
 
   c.innerHTML =
     dateNav +
@@ -1898,11 +1960,7 @@ function renderDiary() {
     tipBtn("tip_diary_" + field) +
     "</div>" +
     fieldUI +
-    '<div class="diary-saved" id="ds_' +
-    field +
-    '">' +
-    t("diary_saved") +
-    " ✓</div>" +
+    (field !== "good" ? '<div class="diary-saved" id="ds_' + field + '">' + t("diary_saved") + " ✓</div>" : "") +
     "</div>" +
     '<div class="diary-step-nav">' +
     (diaryStep > 0
@@ -1910,16 +1968,16 @@ function renderDiary() {
         t("diary_back") +
         "</button>"
       : "<span></span>") +
-    (field === "mood"
+    (field === "good"
       ? '<button class="diary-next-btn" onclick="switchPage(\'stats\')">✓ ' +
         t("diary_done") +
         "</button>"
       : '<button class="diary-next-btn" onclick="diaryStepGo(1)">' +
-        (diaryStep < DIARY_FIELDS.length - 1 ? t("diary_next") + " →" : "✓ " + t("diary_done")) +
+        t("diary_next") + " →" +
         "</button>") +
     "</div>";
 
-  if (field !== "mood") setTimeout(() => document.getElementById("d_" + field)?.focus(), 80);
+  setTimeout(() => document.getElementById("d_" + field)?.focus(), 80);
 }
 
 function diaryStepGo(dir) {
