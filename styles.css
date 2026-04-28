@@ -1752,6 +1752,25 @@ body {
 .suggestion-cat-container {
   /* Wrapper for each category + its items */
 }
+.suggestions-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.suggestions-divider::before,
+.suggestions-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  opacity: 0.5;
+}
 .suggestion-cat-header {
   font-size: 11px;
   font-weight: 600;

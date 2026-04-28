@@ -1434,6 +1434,9 @@ function renderSuggestions() {
     "</button>" +
     "</div></div>"; // Close create-own-section and suggestion-cat-container
 
+  // Suggestions section title
+  html += '<div class="suggestions-divider"><span>' + t("suggestions_title") + "</span></div>";
+
   // Suggestion categories
   getSuggestions().forEach((cat, catIdx) => {
     const items = cat.items.filter((s) => !existing.has(s.name.toLowerCase()));
