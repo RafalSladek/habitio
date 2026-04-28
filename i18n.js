@@ -2565,7 +2565,8 @@ const T = {
     mood_7day: "Mood Trends",
     mood_sub: "Your emotional patterns over the past week",
     coach_stats_view: "AI Coach Reflection",
-    tip_diary_mood: "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "الروتين الصباحي",
     for_you: "لك",
     own_badge: "لي",
@@ -3739,17 +3740,20 @@ const T = {
     mood_7day: "Mood Trends",
     mood_sub: "Your emotional patterns over the past week",
     coach_stats_view: "AI Coach Reflection",
-    tip_diary_mood: "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     diary_ph_mood: "",
     mood_7day: "Mood Trends",
     mood_sub: "Your emotional patterns over the past week",
     coach_stats_view: "AI Coach Reflection",
-    tip_diary_mood: "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     diary_ph_mood: "",
     mood_7day: "Mood Trends",
     mood_sub: "Your emotional patterns over the past week",
     coach_stats_view: "AI Coach Reflection",
-    tip_diary_mood: "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
+    tip_diary_mood:
+      "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
     morning_routine: "Rutina matutina",
     for_you: "para ti",
     own_badge: "mío",
