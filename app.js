@@ -964,6 +964,12 @@ function render() {
   document.getElementById("h-greeting").textContent = getGreeting();
 }
 function renderWeekNav() {
+  const weekNav = document.getElementById("week-nav");
+  if (state.habits.length === 0) {
+    weekNav.style.display = "none";
+    return;
+  }
+  weekNav.style.display = "";
   const m = getMon(addD(new Date(), weekOffset * 7)),
     s = addD(m, 6);
   document.getElementById("week-label").textContent =
@@ -979,8 +985,13 @@ function renderWeekNav() {
   document.getElementById("next-week-btn").disabled = weekOffset >= 0;
 }
 function renderDays() {
-  const m = getMon(addD(new Date(), weekOffset * 7)),
-    c = document.getElementById("days-header");
+  const c = document.getElementById("days-header");
+  if (state.habits.length === 0) {
+    c.style.display = "none";
+    return;
+  }
+  c.style.display = "";
+  const m = getMon(addD(new Date(), weekOffset * 7));
   c.innerHTML = "";
   for (let i = 0; i < 7; i++) {
     const d = addD(m, i),
@@ -1008,6 +1019,12 @@ function renderDays() {
   }
 }
 function renderProgress() {
+  const progressSection = document.getElementById("progress-section");
+  if (state.habits.length === 0) {
+    progressSection.style.display = "none";
+    return;
+  }
+  progressSection.style.display = "";
   const k = fmt(selectedDate),
     ch = state.checks[k] || {},
     sched = state.habits.filter((h) => isScheduled(h, selectedDate)),
@@ -1019,21 +1036,16 @@ function renderProgress() {
   document.getElementById("ring-fill").style.stroke =
     pct === 100 ? "var(--success)" : "var(--accent)";
   document.getElementById("ring-text").textContent = pct + "%";
-  if (state.habits.length) {
-    document.getElementById("progress-title").textContent =
-      done + " / " + total + " " + t("scheduled");
-    const dn = isToday(selectedDate)
-      ? t("nav_today")
-      : DN()[dIdx(selectedDate)] +
-        ", " +
-        selectedDate.getDate() +
-        " " +
-        MN()[selectedDate.getMonth()];
-    document.getElementById("progress-subtitle").textContent = dn;
-  } else {
-    document.getElementById("progress-title").textContent = t("no_habits");
-    document.getElementById("progress-subtitle").textContent = t("tap_add");
-  }
+  document.getElementById("progress-title").textContent =
+    done + " / " + total + " " + t("scheduled");
+  const dn = isToday(selectedDate)
+    ? t("nav_today")
+    : DN()[dIdx(selectedDate)] +
+      ", " +
+      selectedDate.getDate() +
+      " " +
+      MN()[selectedDate.getMonth()];
+  document.getElementById("progress-subtitle").textContent = dn;
 }
 
 function buildHabitHtml(h, ch) {
