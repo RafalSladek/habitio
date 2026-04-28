@@ -48,6 +48,19 @@
 
 ---
 
+## Mood Tracking Feature v2.10 (April 2026)
+
+- [x] **Phase 1: Data model & migration** — Version bumped v9→v10. Added `mood` field to diary entries (1-5 integer scale). Migration reads v9, v8, v7 and removes old keys on first load. `APP_VERSION = "v2.10"`, `STORAGE_VERSION = "habitio_v10"`, SW cache `habitio_v10`.
+- [x] **Phase 2: Mood UI in diary** — Added mood step to 5-step journal flow. Mood selector displays 5 emoji buttons (😢 😕 😐 🙂 😄) with tap-to-select and auto-advance. Added to `DIARY_FIELDS` array and `DIARY_ICONS` object. Updated `saveDiary()` to handle mood integer values. Added `tip_diary_mood` tooltip with emotional awareness science.
+- [x] **Phase 3: Mood visualization in stats** — Created 7-day mood bar chart in Stats tab. `buildMoodChartHtml()` generates vertical bars (height = mood × 20%, max 100px). Color thresholds: green (5), purple (4), orange (3), red (1-2). Day labels use `DN()` helper. Chart displays after formation phase card.
+- [x] **Phase 4: Coach panel relocation** — Moved AI coach panel from Journal summary to Stats tab for better weekly context. Removed `renderCoachPanel()` call from diary view. Added coach card to Stats after mood chart. Updated i18n key `coach_stats_view`.
+- [x] **Phase 5: Collapsible suggestion categories** — Added clickable category headers with chevron icons to add-habit modal. Toggle expand/collapse with smooth animations (chevron rotate 0.25s, max-height transition). Track category state during modal session (resets on close). Display category name and item count. GA4 `category_toggle` event fires on toggle. Comprehensive Playwright tests added (3 test cases).
+- [x] **Phase 6: Test fixes** — Fixed 5 coach tests by adding `renderStats()` helper and updating selectors. Fixed 2 suggestion tests (flows + analytics) by using correct modal selectors. All 330 functional tests passing on Desktop Chromium.
+- [ ] **Phase 7: i18n coverage** — 6 mood keys added to English, German, Polish. **Remaining:** 17 languages need `diary_mood`, `diary_ph_mood`, `mood_7day`, `mood_sub`, `coach_stats_view`, `tip_diary_mood` keys (pt, ru, fr, hi, uk, ar, sq, sr, bar, es, it, ro, nl, tr, el, hr, ca).
+- [ ] **Phase 8: Verification & polish** — Manual testing on 4 browsers (Desktop/Pixel 5/Tablet/iPhone 12). Retake screenshots: `screenshot-journal.png`, `screenshot-journal-summary.png`, `screenshot-stats.png`, `screenshot-add-habit.png`, `desktop-stats.png`, `desktop-modal.png`. Update `CLAUDE.md`, `README.md`, `.github/copilot-instructions.md`. Run `yarn test` + `sonar-scanner` + CI verification.
+
+---
+
 ## In Progress / Planned
 
 - [ ] **Complete "Ideas & Starting Points" columns** for Digital Detox (5 habits), Relationships (7 habits), Productivity (10 habits), Micro Learning (10 habits) in `docs/affiliate.md`
