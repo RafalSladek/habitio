@@ -1154,7 +1154,9 @@ function renderHabits() {
         "beforeend",
         '<div class="first-habit-cta">' +
           '<div class="fhc-icon">👆</div>' +
-          '<div class="fhc-text">Tap the habit above to log your first check-in!</div>' +
+          '<div class="fhc-text">' +
+          t("first_checkin_cta") +
+          "</div>" +
           "</div>"
       );
     }
@@ -1829,7 +1831,7 @@ function renderDiary() {
       '<div class="diary-mood-slider">' +
       '<div class="mood-emoji-display" id="mood-emoji-display">' +
       currentEmoji +
-      '</div>' +
+      "</div>" +
       '<input type="range" min="1" max="5" value="' +
       moodValue +
       '" class="mood-slider" id="mood-slider" ' +
@@ -1840,9 +1842,9 @@ function renderDiary() {
       field +
       "',this.value);handleMoodSelected(parseInt(this.value))\" />" +
       '<div class="mood-labels">' +
-      '<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>' +
-      '</div>' +
-      '</div>' +
+      "<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>" +
+      "</div>" +
+      "</div>" +
       '<div class="diary-better-expand" id="diary-better-expand" style="' +
       (showBetter ? "" : "display:none") +
       '">' +
@@ -1850,10 +1852,10 @@ function renderDiary() {
       '<span class="better-chevron' +
       (betterValue ? " expanded" : "") +
       '" id="better-chevron">▼</span>' +
-      '<span>' +
+      "<span>" +
       esc(t("diary_better")) +
-      '</span>' +
-      '</div>' +
+      "</span>" +
+      "</div>" +
       '<div class="diary-better-content" id="diary-better-content" style="' +
       (betterValue ? "" : "display:none") +
       '">' +
@@ -1885,13 +1887,13 @@ function renderDiary() {
       esc(entry[field] || "") +
       "</textarea>";
   }
-  
+
   // Add mood slider to "good" field
   if (field === "good") {
     const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
     const betterValue = entry["better"] || "";
     const showBetter = moodValue > 0 && moodValue < 5;
-    
+
     fieldUI +=
       '<div class="diary-saved" id="ds_' +
       field +
@@ -1902,11 +1904,11 @@ function renderDiary() {
       '<div class="diary-step-label">' +
       esc(t("diary_mood")) +
       tipBtn("tip_diary_mood") +
-      '</div>' +
+      "</div>" +
       '<div class="diary-mood-slider">' +
       '<div class="mood-emoji-display" id="mood-emoji-display">' +
       currentEmoji +
-      '</div>' +
+      "</div>" +
       '<input type="range" min="1" max="5" value="' +
       moodValue +
       '" class="mood-slider" id="mood-slider" ' +
@@ -1915,9 +1917,9 @@ function renderDiary() {
       k +
       "','mood',this.value);handleMoodSelected(parseInt(this.value))\" />" +
       '<div class="mood-labels">' +
-      '<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>' +
-      '</div>' +
-      '</div>' +
+      "<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>" +
+      "</div>" +
+      "</div>" +
       '<div class="diary-better-expand" id="diary-better-expand" style="' +
       (showBetter ? "" : "display:none") +
       '">' +
@@ -1925,10 +1927,10 @@ function renderDiary() {
       '<span class="better-chevron' +
       (betterValue ? " expanded" : "") +
       '" id="better-chevron">▼</span>' +
-      '<span>' +
+      "<span>" +
       esc(t("diary_better")) +
-      '</span>' +
-      '</div>' +
+      "</span>" +
+      "</div>" +
       '<div class="diary-better-content" id="diary-better-content" style="' +
       (betterValue ? "" : "display:none") +
       '">' +
@@ -1960,7 +1962,9 @@ function renderDiary() {
     tipBtn("tip_diary_" + field) +
     "</div>" +
     fieldUI +
-    (field !== "good" ? '<div class="diary-saved" id="ds_' + field + '">' + t("diary_saved") + " ✓</div>" : "") +
+    (field !== "good"
+      ? '<div class="diary-saved" id="ds_' + field + '">' + t("diary_saved") + " ✓</div>"
+      : "") +
     "</div>" +
     '<div class="diary-step-nav">' +
     (diaryStep > 0
@@ -1973,7 +1977,8 @@ function renderDiary() {
         t("diary_done") +
         "</button>"
       : '<button class="diary-next-btn" onclick="diaryStepGo(1)">' +
-        t("diary_next") + " →" +
+        t("diary_next") +
+        " →" +
         "</button>") +
     "</div>";
 
@@ -2453,66 +2458,96 @@ function buildMoodChartHtml() {
     const entry = state.diary[fmt(date)] || {};
     const mood = entry.mood ? parseInt(entry.mood) : 0;
     data.push({
-      label: i === 0 ? t("today") : DN(date.getDay()),
+      label: i === 0 ? t("nav_today") : DN(date.getDay()),
       mood: mood,
-      isToday: i === 0
+      isToday: i === 0,
     });
   }
-  if (data.length !== 7) console.warn('Mood chart data length:', data.length);
-  
+  if (data.length !== 7) console.warn("Mood chart data length:", data.length);
+
   // Chart config
   const w = 420;
   const h = 160;
   const pad = { t: 30, r: 20, b: 35, l: 45 };
   const cw = w - pad.l - pad.r;
   const ch = h - pad.t - pad.b;
-  
+
   const moods = ["", "😢", "😕", "😐", "🙂", "😄"];
   const colors = ["#444", "#e74c3c", "#e67e22", "#f39c12", "#6c5ce7", "#27ae60"];
-  
+
   // Build SVG
-  let out = '<svg class="mood-chart-svg" viewBox="0 0 ' + w + ' ' + h + '">';
-  
+  let out = '<svg class="mood-chart-svg" viewBox="0 0 ' + w + " " + h + '">';
+
   // Y-axis (mood scale)
   for (let m = 1; m <= 5; m++) {
-    const yPos = pad.t + ch - ((m - 1) * ch / 4);
-    out += '<text x="20" y="' + (yPos + 4) + '" font-size="16" text-anchor="middle">' + moods[m] + '</text>';
-    out += '<line x1="' + pad.l + '" y1="' + yPos + '" x2="' + (w - pad.r) + '" y2="' + yPos + '" stroke="var(--border)" stroke-opacity="0.3"/>';
+    const yPos = pad.t + ch - ((m - 1) * ch) / 4;
+    out +=
+      '<text x="20" y="' +
+      (yPos + 4) +
+      '" font-size="16" text-anchor="middle">' +
+      moods[m] +
+      "</text>";
+    out +=
+      '<line x1="' +
+      pad.l +
+      '" y1="' +
+      yPos +
+      '" x2="' +
+      (w - pad.r) +
+      '" y2="' +
+      yPos +
+      '" stroke="var(--border)" stroke-opacity="0.3"/>';
   }
-  
+
   // Calculate point positions
   const pts = data.map((d, i) => ({
-    x: pad.l + (i * cw / 6),
-    y: d.mood > 0 ? pad.t + ch - ((d.mood - 1) * ch / 4) : pad.t + ch,
-    ...d
+    x: pad.l + (i * cw) / 6,
+    y: d.mood > 0 ? pad.t + ch - ((d.mood - 1) * ch) / 4 : pad.t + ch,
+    ...d,
   }));
-  
+
   // Line path
-  const validPts = pts.filter(p => p.mood > 0);
+  const validPts = pts.filter((p) => p.mood > 0);
   if (validPts.length > 0) {
-    let path = 'M ' + validPts[0].x + ' ' + validPts[0].y;
+    let path = "M " + validPts[0].x + " " + validPts[0].y;
     for (let i = 1; i < validPts.length; i++) {
-      path += ' L ' + validPts[i].x + ' ' + validPts[i].y;
+      path += " L " + validPts[i].x + " " + validPts[i].y;
     }
     out += '<path d="' + path + '" fill="none" stroke="var(--accent)" stroke-width="3"/>';
   }
-  
+
   // Points
-  pts.forEach(p => {
+  pts.forEach((p) => {
     if (p.mood > 0) {
-      out += '<circle cx="' + p.x + '" cy="' + p.y + '" r="' + (p.isToday ? '7' : '5') + '" fill="' + colors[p.mood] + '"';
+      out +=
+        '<circle cx="' +
+        p.x +
+        '" cy="' +
+        p.y +
+        '" r="' +
+        (p.isToday ? "7" : "5") +
+        '" fill="' +
+        colors[p.mood] +
+        '"';
       if (p.isToday) out += ' stroke="#fff" stroke-width="2"';
-      out += '/>';
+      out += "/>";
     }
   });
-  
+
   // X-axis (day labels)
-  pts.forEach(p => {
-    out += '<text x="' + p.x + '" y="' + (h - 12) + '" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-weight="600">' + p.label + '</text>';
+  pts.forEach((p) => {
+    out +=
+      '<text x="' +
+      p.x +
+      '" y="' +
+      (h - 12) +
+      '" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-weight="600">' +
+      p.label +
+      "</text>";
   });
-  
-  out += '</svg>';
-  return '<div class="mood-chart">' + out + '</div>';
+
+  out += "</svg>";
+  return '<div class="mood-chart">' + out + "</div>";
 }
 
 function renderStats() {
