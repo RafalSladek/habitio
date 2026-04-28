@@ -1472,11 +1472,14 @@ function renderSuggestions() {
   });
   html += "</div>";
   document.getElementById("suggestions-area").innerHTML = html;
-}
 
-function addSuggestion(el) {
-  const name = el.dataset.name,
-    emoji = el.dataset.emoji,
+// Attach Enter key handler to habit name input (created dynamically above)
+const nameInput = document.getElementById("habit-name-input");
+if (nameInput) {
+  nameInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") saveHabit();
+  });
+}
     cadence = JSON.parse(el.dataset.cadence);
   state.habits.push({
     id: uid(),
@@ -2881,9 +2884,6 @@ document.getElementById("import-modal").addEventListener("click", (e) => {
   if (e.target.id === "import-modal") closeImportModal();
 });
 document.getElementById("welcome-modal").addEventListener("click", () => {});
-document.getElementById("habit-name-input").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") saveHabit();
-});
 
 function showConsentBannerIfNeeded() {
   if (state.consentAnalytics !== null) return;

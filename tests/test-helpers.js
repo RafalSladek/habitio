@@ -92,14 +92,17 @@ async function resetToDefaultState(page, overrides = {}) {
  * @param {string} [name]
  */
 async function completeOnboarding(page, name = "Test") {
+  // Dismiss consent banner that appears at page load (before onboarding)
+  const consentBanner = page.locator(".consent-banner");
+  if (await consentBanner.isVisible()) {
+    await page.locator(".consent-btn.decline").click();
+    await consentBanner.waitFor({ state: "hidden" });
+  }
+  
   await page.locator("#welcome-name").fill(name);
   await page.locator(".age-chip[onclick*=\"'adult'\"]").click();
   await page.locator("#sex-male").click();
-  await page.getByRole("button", { name: "Let's go!" }).click({ force: true });
-  // Dismiss consent banner that appears after onboarding
-  await page.waitForSelector(".consent-banner", { state: "visible", timeout: 2000 });
-  await page.locator(".consent-btn.decline").click();
-  await page.waitForSelector(".consent-banner", { state: "hidden" });
+  await page.getByRole("button", { name: "Let's go!" }).click();
 }
 
 /**
