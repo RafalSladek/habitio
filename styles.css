@@ -547,10 +547,70 @@ body {
 }
 /* Mood chart */
 .mood-chart {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 7px;
-  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 16px 0;
+}
+.mood-week-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.mood-week-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 70px;
+  text-align: left;
+}
+.mood-dots-container {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+.mood-dot-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+.mood-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.mood-dot-today {
+  box-shadow: 0 0 0 3px var(--accent);
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+@keyframes pulse-ring {
+  0%, 100% {
+    box-shadow: 0 0 0 3px var(--accent);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 6px var(--accent);
+    opacity: 0.6;
+  }
+}
+.mood-dot-emoji {
+  font-size: 16px;
+  line-height: 1;
+}
+.mood-dot-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: center;
 }
 .mood-bar-container {
   display: flex;

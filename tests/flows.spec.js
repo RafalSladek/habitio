@@ -51,7 +51,7 @@ test.describe("after onboarding", () => {
     await expect(page.getByText(/3 good things/i)).toBeVisible();
     
     // Mood slider should be present on same page as "3 good things"
-    await expect(page.getByText(/How do you feel today/i)).toBeVisible();
+    await expect(page.getByText(/How was your day/i)).toBeVisible();
     await expect(page.locator(".mood-slider")).toBeVisible();
     
     // Select mood < 5 to see expandable "better" field
