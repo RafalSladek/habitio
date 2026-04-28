@@ -2446,55 +2446,38 @@ function buildHeatmapHtml() {
 }
 
 function buildMoodChartHtml() {
-  // Get last 14 days for current week + previous week comparison
-  const days = [];
-  for (let i = 13; i >= 0; i--) {
+  const moodEmojis = ["", "😢", "😕", "😐", "🙂", "😄"];
+  
+  let html = '<div class="mood-chart">';
+  
+  for (let i = 6; i >= 0; i--) {
     const d = addD(new Date(), -i);
     const entry = state.diary[fmt(d)] || {};
     const mood = entry.mood ? parseInt(entry.mood) : 0;
-    days.push({ date: d, mood, isToday: i === 0 });
+    const isToday = i === 0;
+    
+    const color = mood === 0 ? "var(--surface-2)" :
+                  mood === 5 ? "var(--success)" :
+                  mood === 4 ? "var(--accent)" :
+                  mood === 3 ? "var(--warn)" :
+                  "var(--danger)";
+    
+    const emoji = mood > 0 ? moodEmojis[mood] : "";
+    const dotClass = isToday ? "mood-dot mood-dot-today" : "mood-dot";
+    
+    html +=
+      '<div class="mood-dot-wrapper">' +
+      '<div class="' + dotClass + '" style="background:' + color + '">' +
+      (emoji ? '<span class="mood-dot-emoji">' + emoji + '</span>' : '') +
+      '</div>' +
+      '<div class="mood-dot-label">' +
+      (isToday ? t("today") : DN(d.getDay())) +
+      '</div>' +
+      '</div>';
   }
   
-  // Split into previous week (days 0-6) and current week (days 7-13)
-  const prevWeek = days.slice(0, 7);
-  const currWeek = days.slice(7, 14);
-  
-  const moodEmojis = ["", "😢", "😕", "😐", "🙂", "😄"];
-  
-  function buildWeekRow(weekDays, label) {
-    let html = '<div class="mood-week-row">';
-    html += '<div class="mood-week-label">' + label + '</div>';
-    html += '<div class="mood-dots-container">';
-    
-    for (const day of weekDays) {
-      const color = day.mood === 0 ? "var(--surface-2)" :
-                    day.mood === 5 ? "var(--success)" :
-                    day.mood === 4 ? "var(--accent)" :
-                    day.mood === 3 ? "var(--warn)" :
-                    "var(--danger)";
-      
-      const dotClass = day.isToday ? "mood-dot mood-dot-today" : "mood-dot";
-      const emoji = day.mood > 0 ? moodEmojis[day.mood] : "";
-      
-      html +=
-        '<div class="mood-dot-wrapper">' +
-        '<div class="' + dotClass + '" style="background:' + color + '">' +
-        (emoji ? '<span class="mood-dot-emoji">' + emoji + '</span>' : '') +
-        '</div>' +
-        '<div class="mood-dot-label">' + DN(day.date.getDay()) + '</div>' +
-        '</div>';
-    }
-    
-    html += '</div></div>';
-    return html;
-  }
-  
-  return (
-    '<div class="mood-chart">' +
-    buildWeekRow(currWeek, t("this_week_short")) +
-    buildWeekRow(prevWeek, t("prev_week_short")) +
-    '</div>'
-  );
+  html += '</div>';
+  return html;
 }
 
 function renderStats() {

@@ -229,7 +229,7 @@ const T = {
     streak_unit: "days in a row",
     heatmap_hint: "Each cell = 1 day · fill height = % of habits completed",
     hm_none: "None",
-    mood_7day: "Mood Trends",
+    mood_7day: "Mood Trends (Last 7 Days)",
     mood_sub: "Your emotional patterns over the past week",
     coach_stats_view: "AI Coach Reflection",
     hm_all: "All done",
@@ -909,8 +909,8 @@ const T = {
     tip_diary_better:
       "Intencje implementacyjne\n\nGollwitzer (1999): pisanie konkretnych planów zwiększa prawdopodobieństwo realizacji 2–3×.",
     diary_ph_mood: "",
-    mood_7day: "Mood Trends",
-    mood_sub: "Your emotional patterns over the past week",
+    mood_7day: "Trend nastroju (ostatnie 7 dni)",
+    mood_sub: "Twoje wzorce emocjonalne w ciągu ostatniego tygodnia",
     coach_stats_view: "AI Coach Reflection",
     tip_diary_mood:
       "Daily mood tracking\n\nResearch shows daily emotional awareness helps identify patterns, reduces stress, and improves mental health outcomes.",
