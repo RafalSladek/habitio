@@ -134,7 +134,7 @@ async function handleFeedback(request, env, cors) {
     return jsonResponse({ error: "Invalid JSON" }, 400, cors);
   }
 
-  const { type, message, rating, version, lang } = body;
+  const { type, message, rating, version, lang, name, buildSha } = body;
 
   if (!message || typeof message !== "string") {
     return jsonResponse({ error: "Message is required" }, 400, cors);
@@ -170,7 +170,9 @@ async function handleFeedback(request, env, cors) {
       ? `**Rating:** ${"★".repeat(rating)}${"☆".repeat(5 - rating)} (${rating}/5)`
       : "**Rating:** not rated",
     `**App version:** ${version || "unknown"}`,
+    `**Build:** ${buildSha && !buildSha.startsWith("__") ? buildSha : "dev"}`,
     `**Language:** ${lang || "unknown"}`,
+    `**User:** ${name || "anonymous"}`,
     "_Submitted via in-app feedback_",
   ].join("\n");
 
