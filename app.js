@@ -2867,6 +2867,8 @@ async function submitFeedback() {
         rating,
         version: APP_VERSION,
         lang: state.lang,
+        name: state.profile.name || "",
+        buildSha: BUILD_SHA,
       }),
     });
     if (!res.ok) throw new Error("HTTP " + res.status);

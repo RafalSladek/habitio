@@ -84,6 +84,8 @@ test.describe("feedback form", () => {
     expect(captured.message).toContain("dark mode");
     expect(captured.version).toBeTruthy();
     expect(captured.lang).toBe("en");
+    expect(captured.name).toBe("Test");
+    expect(captured.buildSha).toBeTruthy();
   });
 
   test("shows error toast when worker returns error", async ({ page }) => {
