@@ -2,6 +2,7 @@
 const {
   test,
   expect,
+  STORAGE_VERSION,
   createState,
   openClearedApp,
   spyOnGtag,
@@ -20,13 +21,16 @@ test.describe("GA4 event tracking", () => {
   test("no GA events fired before consent", async ({ page }) => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
-      (state) => {
-        localStorage.setItem("habitio_v9", JSON.stringify(state));
+      ({ state, key }) => {
+        localStorage.setItem(key, JSON.stringify(state));
       },
-      createState({
-        profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
-        consentAnalytics: null,
-      })
+      {
+        state: createState({
+          profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
+          consentAnalytics: null,
+        }),
+        key: STORAGE_VERSION,
+      }
     );
     await page.reload({ waitUntil: "domcontentloaded" });
     await expect(page.locator(".consent-banner")).toBeVisible();
@@ -40,13 +44,16 @@ test.describe("GA4 event tracking", () => {
   test("page_view fired after accepting consent", async ({ page }) => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
-      (state) => {
-        localStorage.setItem("habitio_v9", JSON.stringify(state));
+      ({ state, key }) => {
+        localStorage.setItem(key, JSON.stringify(state));
       },
-      createState({
-        profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
-        consentAnalytics: null,
-      })
+      {
+        state: createState({
+          profile: { name: "Test", age: 30, ageGroup: "adult", sex: "male" },
+          consentAnalytics: null,
+        }),
+        key: STORAGE_VERSION,
+      }
     );
 
     await page.reload({ waitUntil: "domcontentloaded" });
@@ -123,6 +130,10 @@ test.describe("GA4 event tracking", () => {
     const before = (await getCalls()).length;
 
     await page.locator("#fab-add").click();
+    // "Create Your Own" is the first .suggestion-cat-header and starts expanded;
+    // target a suggestion category header (has .cat-count) to expand it
+    const catHeader = page.locator(".suggestion-cat-header:has(.cat-count)").first();
+    await catHeader.click();
     await expect(page.locator(".suggestion-item").first()).toBeVisible();
     await page.locator(".suggestion-item").first().click();
     await waitForTrackedCall(getCalls, (call) => call[0] === "event" && call[1] === "habit_add");
@@ -165,13 +176,16 @@ test.describe("GA4 event tracking", () => {
   test("no GA events fired after declining consent", async ({ page }) => {
     const getCalls = await spyOnGtag(page);
     await page.evaluate(
-      (state) => {
-        localStorage.setItem("habitio_v9", JSON.stringify(state));
+      ({ state, key }) => {
+        localStorage.setItem(key, JSON.stringify(state));
       },
-      createState({
-        profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
-        consentAnalytics: null,
-      })
+      {
+        state: createState({
+          profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
+          consentAnalytics: null,
+        }),
+        key: STORAGE_VERSION,
+      }
     );
 
     await page.reload({ waitUntil: "domcontentloaded" });

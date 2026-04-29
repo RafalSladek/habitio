@@ -4,6 +4,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const gaRouteInstalled = new WeakSet();
 
+/** Must match STORAGE_VERSION in app.js and CACHE in sw.js */
+const STORAGE_VERSION = "habitio_v10";
+
 const test = base.extend({
   coverageRecorder: [
     async ({ page, browserName }, use) => {
@@ -80,10 +83,10 @@ async function openClearedApp(page) {
 async function resetToDefaultState(page, overrides = {}) {
   await mockGoogleAnalytics(page);
   await page.goto("/");
-  await page.evaluate((state) => {
+  await page.evaluate(({ state, key }) => {
     localStorage.clear();
-    localStorage.setItem("habitio_v9", JSON.stringify(state));
-  }, createState(overrides));
+    localStorage.setItem(key, JSON.stringify(state));
+  }, { state: createState(overrides), key: STORAGE_VERSION });
   await page.reload({ waitUntil: "domcontentloaded" });
 }
 
@@ -92,6 +95,16 @@ async function resetToDefaultState(page, overrides = {}) {
  * @param {string} [name]
  */
 async function completeOnboarding(page, name = "Test") {
+  // Dismiss consent banner that may overlay the welcome modal
+  const consentBanner = page.locator(".consent-banner");
+  try {
+    await consentBanner.waitFor({ state: "visible", timeout: 2000 });
+    await page.locator(".consent-btn.decline").click();
+    await consentBanner.waitFor({ state: "hidden" });
+  } catch {
+    // Banner may not appear if consent was already set
+  }
+  
   await page.locator("#welcome-name").fill(name);
   await page.locator(".age-chip[onclick*=\"'adult'\"]").click();
   await page.locator("#sex-male").click();
@@ -154,7 +167,14 @@ async function seedHabit(page, daysOld, checkedDaysBack = 0) {
  */
 async function addSuggestedHabit(page, name = "Drink 2L Water") {
   await page.locator("#fab-add").click();
-  await page.locator(".suggestion-item", { hasText: name }).getByText("+").click();
+  // Suggestion categories are collapsed by default (accordion); expand the one containing the item
+  const item = page.locator(".suggestion-item", { hasText: name });
+  const container = item.locator("xpath=ancestor::div[contains(@class,'suggestion-cat-container')]");
+  const header = container.locator(".suggestion-cat-header");
+  if ((await header.count()) > 0) {
+    await header.click();
+  }
+  await item.getByText("+").click();
   await page.locator("#modal-done-bar").click();
 }
 
@@ -211,14 +231,17 @@ async function spyOnGtag(page) {
 async function seedConsented(page, extra = {}) {
   await mockGoogleAnalytics(page);
   await page.evaluate(
-    (state) => {
-      localStorage.setItem("habitio_v9", JSON.stringify(state));
+    ({ state, key }) => {
+      localStorage.setItem(key, JSON.stringify(state));
     },
-    createState({
-      profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
-      consentAnalytics: true,
-      ...extra,
-    })
+    {
+      state: createState({
+        profile: { name: "Test", age: "25", ageGroup: "young", sex: "male" },
+        consentAnalytics: true,
+        ...extra,
+      }),
+      key: STORAGE_VERSION,
+    }
   );
   await page.reload({ waitUntil: "domcontentloaded" });
   await expect(page.locator("#fab-add")).toBeVisible();
@@ -231,6 +254,7 @@ async function goToSettings(page) {
 }
 
 module.exports = {
+  STORAGE_VERSION,
   test,
   expect,
   createState,

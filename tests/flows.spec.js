@@ -49,9 +49,27 @@ test.describe("after onboarding", () => {
 
     await page.getByRole("button", { name: /Next/i }).click();
     await expect(page.getByText(/3 good things/i)).toBeVisible();
-
-    await page.getByRole("button", { name: /Next/i }).click();
-    await expect(page.getByText(/make this day even better/)).toBeVisible();
+    
+    // Mood slider should be present on same page as "3 good things"
+    await expect(page.getByText(/How was your day/i)).toBeVisible();
+    await expect(page.locator(".mood-slider")).toBeVisible();
+    
+    // Select mood < 5 to see expandable "better" field
+    const slider = page.locator(".mood-slider");
+    await slider.evaluate((el) => {
+      el.value = "3";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+    
+    // Expandable "better" section should appear
+    await expect(page.locator(".diary-better-expand")).toBeVisible();
+    
+    // Click to expand it
+    await page.locator(".diary-better-header").click();
+    
+    // Better textarea should be visible
+    await expect(page.locator("#d_better")).toBeVisible();
   });
 
   test("stats tab shows key metrics", async ({ page }) => {
@@ -74,7 +92,7 @@ test.describe("after onboarding", () => {
     await expect(page.getByText("Export Backup")).toBeVisible();
     await expect(page.getByText("Import Backup")).toBeVisible();
     await expect(page.getByText("Reset All Data")).toBeVisible();
-    await expect(page.getByText("habit.io v2.9")).toBeVisible();
+    await expect(page.getByText("habit.io v2.10")).toBeVisible();
   });
 
   test("settings shows saved profile", async ({ page }) => {

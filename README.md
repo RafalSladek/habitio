@@ -230,6 +230,52 @@ Required configuration in `worker/wrangler.toml`:
 - optional `COACH_BUDGETS` KV namespace for durable daily budget tracking
 - optional coach vars like `COACH_MAX_DAILY_REQUESTS` and `COACH_MAX_OUTPUT_TOKENS`
 
+#### Test Detection
+
+The worker automatically detects and blocks test requests to prevent creating GitHub issues during Playwright test runs:
+
+- Checks `User-Agent` header for Playwright/HeadlessChrome
+- Filters common test message patterns
+- Returns fake success response for tests without creating issues
+
+This runs on every feedback submission with no configuration needed.
+
+#### Deploying the Worker
+
+**Verify your Cloudflare account:**
+
+```bash
+cd worker
+npx wrangler whoami
+```
+
+Ensure the output shows:
+- **Account Name:** rafal-sladek Account
+- **Account ID:** `ec54fc24baed2216d78fece71a99d28f`
+
+If you see a different account, switch accounts:
+
+```bash
+npx wrangler logout
+npx wrangler login  # Select the rafal-sladek account in the browser
+```
+
+**Deploy manually:**
+
+```bash
+cd worker
+npx wrangler deploy
+```
+
+**Set GitHub token secret (first-time only):**
+
+```bash
+npx wrangler secret put GITHUB_TOKEN
+# Paste a fine-grained PAT with Issues: Read & Write on RafalSladek/habitio
+```
+
+**Automatic deployment:** GitHub Actions deploys the worker automatically on push to `main` using `CLOUDFLARE_API_TOKEN` secret.
+
 ### Scripts
 
 | Script                             | Purpose                                                      | Requirements                            |

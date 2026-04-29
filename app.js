@@ -1,4 +1,5 @@
-const APP_VERSION = "v2.9";
+const STORAGE_VERSION = "habitio_v10";
+const APP_VERSION = "v2.10";
 const BUILD_SHA = "__BUILD_SHA__";
 // Replace with your deployed worker URL after running: wrangler deploy
 const WORKER_BASE_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
@@ -164,6 +165,29 @@ function setConsent(granted) {
   document.getElementById("consent-banner")?.remove();
   renderSettings();
 }
+
+const LANGUAGES = [
+  ["ar", "🇪🇬 عربي مصري"],
+  ["bar", "🏔️ Bayrisch"],
+  ["ca", "🏴󠁥󠁳󠁣󠁴󠁿 Català"],
+  ["de", "🇩🇪 Deutsch"],
+  ["el", "🇬🇷 Ελληνικά"],
+  ["en", "🇬🇧 English"],
+  ["es", "🇪🇸 Español"],
+  ["fr", "🇫🇷 Français"],
+  ["hi", "🇮🇳 हिन्दी"],
+  ["hr", "🇭🇷 Hrvatski"],
+  ["it", "🇮🇹 Italiano"],
+  ["nl", "🇳🇱 Nederlands"],
+  ["pl", "🇵🇱 Polski"],
+  ["pt", "🇧🇷 Português"],
+  ["ro", "🇷🇴 Română"],
+  ["ru", "🇷🇺 Русский"],
+  ["sq", "🇦🇱 Shqip"],
+  ["sr", "🇷🇸 Srpski"],
+  ["tr", "🇹🇷 Türkçe"],
+  ["uk", "🇺🇦 Українська"],
+];
 
 const EMOJIS = [
   "⏰",
@@ -544,7 +568,8 @@ let modalEmoji = "🎯",
   modalFreqPeriod = "week",
   modalMorning = false,
   editId = null,
-  modalAddedCount = 0;
+  modalAddedCount = 0,
+  collapsedCategories = {};
 
 function getFormationPhase(h) {
   if (!h.createdAt) return null;
@@ -620,12 +645,13 @@ function getCoachDeviceId() {
   return id;
 }
 function save() {
-  localStorage.setItem("habitio_v9", JSON.stringify(state));
+  localStorage.setItem(STORAGE_VERSION, JSON.stringify(state));
 }
 function load() {
   try {
     // Migration: read from older keys if current key is absent
     const raw =
+      localStorage.getItem(STORAGE_VERSION) ||
       localStorage.getItem("habitio_v9") ||
       localStorage.getItem("habitio_v8") ||
       localStorage.getItem("habitio_v7") ||
@@ -649,7 +675,8 @@ function load() {
       d.aiCoach = { ...defaultCoachState(), ...(d.aiCoach || {}) };
       state = d;
       // Persist under new key and clean up old keys
-      localStorage.setItem("habitio_v9", JSON.stringify(state));
+      localStorage.setItem(STORAGE_VERSION, JSON.stringify(state));
+      localStorage.removeItem("habitio_v9");
       localStorage.removeItem("habitio_v8");
       localStorage.removeItem("habitio_v7");
       localStorage.removeItem("habitio_v6");
@@ -937,6 +964,12 @@ function render() {
   document.getElementById("h-greeting").textContent = getGreeting();
 }
 function renderWeekNav() {
+  const weekNav = document.getElementById("week-nav");
+  if (state.habits.length === 0) {
+    weekNav.style.display = "none";
+    return;
+  }
+  weekNav.style.display = "";
   const m = getMon(addD(new Date(), weekOffset * 7)),
     s = addD(m, 6);
   document.getElementById("week-label").textContent =
@@ -952,8 +985,13 @@ function renderWeekNav() {
   document.getElementById("next-week-btn").disabled = weekOffset >= 0;
 }
 function renderDays() {
-  const m = getMon(addD(new Date(), weekOffset * 7)),
-    c = document.getElementById("days-header");
+  const c = document.getElementById("days-header");
+  if (state.habits.length === 0) {
+    c.style.display = "none";
+    return;
+  }
+  c.style.display = "";
+  const m = getMon(addD(new Date(), weekOffset * 7));
   c.innerHTML = "";
   for (let i = 0; i < 7; i++) {
     const d = addD(m, i),
@@ -981,6 +1019,12 @@ function renderDays() {
   }
 }
 function renderProgress() {
+  const progressSection = document.getElementById("progress-section");
+  if (state.habits.length === 0) {
+    progressSection.style.display = "none";
+    return;
+  }
+  progressSection.style.display = "";
   const k = fmt(selectedDate),
     ch = state.checks[k] || {},
     sched = state.habits.filter((h) => isScheduled(h, selectedDate)),
@@ -992,21 +1036,16 @@ function renderProgress() {
   document.getElementById("ring-fill").style.stroke =
     pct === 100 ? "var(--success)" : "var(--accent)";
   document.getElementById("ring-text").textContent = pct + "%";
-  if (state.habits.length) {
-    document.getElementById("progress-title").textContent =
-      done + " / " + total + " " + t("scheduled");
-    const dn = isToday(selectedDate)
-      ? t("nav_today")
-      : DN()[dIdx(selectedDate)] +
-        ", " +
-        selectedDate.getDate() +
-        " " +
-        MN()[selectedDate.getMonth()];
-    document.getElementById("progress-subtitle").textContent = dn;
-  } else {
-    document.getElementById("progress-title").textContent = t("no_habits");
-    document.getElementById("progress-subtitle").textContent = t("tap_add");
-  }
+  document.getElementById("progress-title").textContent =
+    done + " / " + total + " " + t("scheduled");
+  const dn = isToday(selectedDate)
+    ? t("nav_today")
+    : DN()[dIdx(selectedDate)] +
+      ", " +
+      selectedDate.getDate() +
+      " " +
+      MN()[selectedDate.getMonth()];
+  document.getElementById("progress-subtitle").textContent = dn;
 }
 
 function buildHabitHtml(h, ch) {
@@ -1150,7 +1189,9 @@ function renderHabits() {
         "beforeend",
         '<div class="first-habit-cta">' +
           '<div class="fhc-icon">👆</div>' +
-          '<div class="fhc-text">Tap the habit above to log your first check-in!</div>' +
+          '<div class="fhc-text">' +
+          t("first_checkin_cta") +
+          "</div>" +
           "</div>"
       );
     }
@@ -1212,42 +1253,18 @@ function showWelcome() {
   welcomeAgeGroup = state.profile.ageGroup || "";
   renderAgeChips();
   const lc = document.getElementById("welcome-lang-chips");
-  const LANGS = {
-    ar: "🇪🇬 عربي مصري",
-    bar: "🏔️ Bayrisch",
-    ca: "🏴󠁥󠁳󠁣󠁴󠁿 Català",
-    de: "🇩🇪 Deutsch",
-    el: "🇬🇷 Ελληνικά",
-    en: "🇬🇧 English",
-    es: "🇪🇸 Español",
-    fr: "🇫🇷 Français",
-    hi: "🇮🇳 हिन्दी",
-    hr: "🇭🇷 Hrvatski",
-    it: "🇮🇹 Italiano",
-    nl: "🇳🇱 Nederlands",
-    pl: "🇵🇱 Polski",
-    pt: "🇧🇷 Português",
-    ro: "🇷🇴 Română",
-    ru: "🇷🇺 Русский",
-    sq: "🇦🇱 Shqip",
-    sr: "🇷🇸 Srpski",
-    tr: "🇹🇷 Türkçe",
-    uk: "🇺🇦 Українська",
-  };
   lc.innerHTML =
-    '<select class="lang-select lang-list" size="5" onchange="setWelcomeLang(this.value)">' +
-    Object.keys(LANGS)
-      .map(
-        (l) =>
-          '<option value="' +
-          l +
-          '"' +
-          (state.lang === l ? " selected" : "") +
-          ">" +
-          LANGS[l] +
-          "</option>"
-      )
-      .join("") +
+    '<select class="lang-select" onchange="setWelcomeLang(this.value)">' +
+    LANGUAGES.map(
+      ([l, label]) =>
+        '<option value="' +
+        l +
+        '"' +
+        (state.lang === l ? " selected" : "") +
+        ">" +
+        label +
+        "</option>"
+    ).join("") +
     "</select>";
   document.getElementById("welcome-name").value = state.profile.name || "";
   wl.classList.add("show");
@@ -1293,7 +1310,6 @@ function openAddModal(hid) {
   const sa = document.getElementById("suggestions-area");
   if (editId) {
     const h = state.habits.find((x) => x.id === editId);
-    document.getElementById("habit-name-input").value = h.name;
     modalEmoji = h.emoji;
     const c = h.cadence || { type: "daily" };
     modalCadenceType = c.type;
@@ -1301,11 +1317,22 @@ function openAddModal(hid) {
     modalFreqCount = c.type === "x_per" ? c.count || 2 : 2;
     modalFreqPeriod = c.type === "x_per" ? c.period || "week" : "week";
     modalMorning = !!h.morning;
+    // Render the form fields first (they live inside suggestions-area now)
+    collapsedCategories = { cat_own: false };
+    renderSuggestions();
+    renderEmojiPicker();
+    renderCadence();
+    // Now set values on dynamically-created elements
+    const ni = document.getElementById("habit-name-input");
+    if (ni) ni.value = h.name;
     document.getElementById("modal-title").textContent = t("edit_habit");
-    document.getElementById("modal-save-btn").textContent = t("save_changes");
-    sa.innerHTML = "";
+    const saveBtn = document.getElementById("modal-save-btn");
+    if (saveBtn) saveBtn.textContent = t("save_changes");
+    // Hide suggestion categories in edit mode
+    sa.querySelectorAll(".suggestion-cat-container").forEach((el, i) => {
+      if (i > 0) el.style.display = "none";
+    });
   } else {
-    document.getElementById("habit-name-input").value = "";
     modalEmoji = "🎯";
     modalCadenceType = "daily";
     modalDays = [];
@@ -1313,10 +1340,23 @@ function openAddModal(hid) {
     modalFreqPeriod = "week";
     modalMorning = false;
     modalAddedCount = 0;
+    // Initialize all categories as collapsed except "cat_own" (create your own)
+    collapsedCategories = {};
+    getSuggestions().forEach((_, idx) => {
+      collapsedCategories["cat_" + idx] = true; // All suggestion categories start collapsed
+    });
+    collapsedCategories["cat_own"] = false; // "Create your own" starts open
     updateModalDoneState();
     document.getElementById("modal-title").textContent = t("new_habit");
-    document.getElementById("modal-save-btn").textContent = t("add_habit");
     renderSuggestions();
+    // Render emoji picker and cadence AFTER suggestions (since they're now inside suggestions-area)
+    renderEmojiPicker();
+    renderCadence();
+    // Set values on dynamically-created elements AFTER renderSuggestions()
+    const saveBtn = document.getElementById("modal-save-btn");
+    if (saveBtn) saveBtn.textContent = t("add_habit");
+    const ni = document.getElementById("habit-name-input");
+    if (ni) ni.value = "";
   }
   const mc = document.getElementById("morning-chip");
   if (mc) mc.classList.toggle("selected", modalMorning);
@@ -1324,12 +1364,23 @@ function openAddModal(hid) {
   if (mcl) mcl.textContent = t("morning_routine");
   const lbl = document.getElementById("lbl-morning");
   if (lbl) lbl.textContent = t("options_label");
-  document.getElementById("habit-name-input").placeholder = t("type_own");
-  renderEmojiPicker();
-  renderCadence();
+  const nameInput = document.getElementById("habit-name-input");
+  if (nameInput) nameInput.placeholder = t("type_own");
+  // Show motivational quote (new habit only, hidden for edit)
+  const mq = document.getElementById("modal-quote");
+  if (mq) {
+    if (!editId) {
+      const langQuotes = T[state.lang]?.quotes || T.en.quotes;
+      const q = langQuotes[Math.floor(Math.random() * langQuotes.length)];
+      mq.innerHTML = "&ldquo;" + esc(q.q) + "&rdquo; <span>— " + esc(q.a) + "</span>";
+      mq.style.display = "";
+    } else {
+      mq.style.display = "none";
+    }
+  }
   document.getElementById("add-modal").classList.add("show");
   document.getElementById("fab-add")?.classList.remove("visible");
-  if (!editId) setTimeout(() => document.getElementById("habit-name-input").focus(), 300);
+  if (!editId) setTimeout(() => document.getElementById("habit-name-input")?.focus(), 300);
 }
 function closeAddModal() {
   document.getElementById("add-modal").classList.remove("show");
@@ -1362,10 +1413,84 @@ function updateModalDoneState() {
 function renderSuggestions() {
   const existing = new Set(state.habits.map((h) => h.name.toLowerCase()));
   let html = '<div class="suggestions">';
-  getSuggestions().forEach((cat) => {
+
+  // "Create your own" category (always first, open by default)
+  const ownCollapsed = collapsedCategories["cat_own"];
+  html +=
+    '<div class="suggestion-cat-container">' +
+    '<div class="suggestion-cat-header" onclick="toggleSuggestionCategory(\'cat_own\')" data-cat-key="cat_own">' +
+    '<span class="cat-chevron' +
+    (ownCollapsed ? " collapsed" : "") +
+    '">▼</span>' +
+    '<span class="cat-name">' +
+    t("create_own_habit") +
+    "</span>" +
+    "</div>";
+  html +=
+    '<div class="suggestion-items create-own-section" id="cat-items-cat_own"' +
+    (ownCollapsed ? ' style="display:none"' : "") +
+    ">" +
+    '<input class="modal-input" id="habit-name-input" type="text" maxlength="40" autocomplete="off" placeholder="' +
+    esc(t("type_own")) +
+    '" aria-label="Habit name" />' +
+    '<div class="section-label">' +
+    t("lbl_icon") +
+    "</div>" +
+    '<div class="emoji-picker" id="emoji-picker"></div>' +
+    '<div class="section-label">' +
+    t("lbl_cadence") +
+    "</div>" +
+    '<div class="cadence-picker">' +
+    '<div class="cadence-chips" id="cadence-chips"></div>' +
+    '<div id="cadence-detail"></div>' +
+    "</div>" +
+    '<div style="margin-top: 12px; margin-bottom: 14px">' +
+    '<div class="section-label" id="lbl-morning">' +
+    t("options_label") +
+    "</div>" +
+    '<button class="morning-chip" id="morning-chip" type="button" onclick="toggleModalMorning()">' +
+    '☀️ <span id="morning-chip-lbl">' +
+    t("morning_routine") +
+    "</span>" +
+    "</button>" +
+    "</div>" +
+    '<button class="modal-btn primary" id="modal-save-btn" onclick="saveHabit()">' +
+    t("add_habit") +
+    "</button>" +
+    "</div></div>"; // Close create-own-section and suggestion-cat-container
+
+  // Suggestions section title
+  html += '<div class="suggestions-divider"><span>' + t("suggestions_title") + "</span></div>";
+
+  // Suggestion categories
+  getSuggestions().forEach((cat, catIdx) => {
     const items = cat.items.filter((s) => !existing.has(s.name.toLowerCase()));
     if (!items.length) return;
-    html += '<div class="suggestion-cat">' + esc(cat.cat) + "</div>";
+    const catKey = "cat_" + catIdx; // Use index as unique key during session
+    const isCollapsed = collapsedCategories[catKey];
+    html +=
+      '<div class="suggestion-cat-container">' +
+      '<div class="suggestion-cat-header" onclick="toggleSuggestionCategory(\'' +
+      catKey +
+      '\')" data-cat-key="' +
+      catKey +
+      '">' +
+      '<span class="cat-chevron' +
+      (isCollapsed ? " collapsed" : "") +
+      '">▼</span>' +
+      '<span class="cat-name">' +
+      esc(cat.cat) +
+      "</span>" +
+      '<span class="cat-count">(' +
+      items.length +
+      ")</span>" +
+      "</div>";
+    html +=
+      '<div class="suggestion-items" id="cat-items-' +
+      catKey +
+      '"' +
+      (isCollapsed ? ' style="display:none"' : "") +
+      ">";
     items.forEach((s) => {
       const cL = cadenceLabel(s.cadence) || t("cad_daily");
       html +=
@@ -1385,10 +1510,20 @@ function renderSuggestions() {
         (s._p > 0 ? '<span class="s-for-you">★ ' + t("for_you") + "</span>" : "") +
         '</span></span><span class="s-add">+</span></div>';
     });
+    html += "</div></div>"; // Close suggestion-items and suggestion-cat-container
   });
   html += "</div>";
   document.getElementById("suggestions-area").innerHTML = html;
+
+  // Attach Enter key handler to habit name input (created dynamically above)
+  const nameInput = document.getElementById("habit-name-input");
+  if (nameInput) {
+    nameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") saveHabit();
+    });
+  }
 }
+
 function addSuggestion(el) {
   const name = el.dataset.name,
     emoji = el.dataset.emoji,
@@ -1414,6 +1549,44 @@ function addSuggestion(el) {
     source: "suggestion",
   });
   showToast(emoji + " " + name + "!");
+}
+function toggleSuggestionCategory(catKey) {
+  const isCollapsed = collapsedCategories[catKey];
+  const newCollapsed = !isCollapsed;
+
+  // Accordion behavior: close all other categories when opening one
+  if (!newCollapsed) {
+    // Opening this category - close all others
+    Object.keys(collapsedCategories).forEach((key) => {
+      if (key !== catKey && !collapsedCategories[key]) {
+        collapsedCategories[key] = true;
+        const otherContainer = document.getElementById("cat-items-" + key);
+        const otherHeader = document.querySelector('[data-cat-key="' + key + '"]');
+        if (otherContainer) {
+          otherContainer.style.display = "none";
+          otherHeader?.querySelector(".cat-chevron")?.classList.add("collapsed");
+        }
+      }
+    });
+  }
+
+  // Toggle current category
+  collapsedCategories[catKey] = newCollapsed;
+  const itemsContainer = document.getElementById("cat-items-" + catKey);
+  const header = document.querySelector('[data-cat-key="' + catKey + '"]');
+  if (itemsContainer) {
+    if (newCollapsed) {
+      itemsContainer.style.display = "none";
+      header?.querySelector(".cat-chevron")?.classList.add("collapsed");
+    } else {
+      itemsContainer.style.display = "block";
+      header?.querySelector(".cat-chevron")?.classList.remove("collapsed");
+    }
+    trackEvent("category_toggle", {
+      category: header?.querySelector(".cat-name")?.textContent || catKey,
+      expanded: !newCollapsed,
+    });
+  }
 }
 function renderEmojiPicker() {
   document.getElementById("emoji-picker").innerHTML = EMOJIS.map(
@@ -1558,8 +1731,8 @@ function saveHabit() {
 }
 
 // ═══ DIARY ═══
-const DIARY_FIELDS = ["grateful", "affirm", "good", "better"];
-const DIARY_ICONS = { grateful: "🙏", affirm: "💪", good: "⭐", better: "🚀" };
+const DIARY_FIELDS = ["grateful", "affirm", "good"];
+const DIARY_ICONS = { grateful: "🙏", affirm: "💪", good: "⭐", better: "🚀", mood: "😊" };
 
 function calcDiaryStep() {
   const entry = state.diary[fmt(diaryDate)] || {};
@@ -1643,7 +1816,6 @@ function renderDiary() {
             .join("") +
           "</div>"
         : "") +
-      renderCoachPanel() +
       '<button class="diary-edit-btn" onclick="diaryStep=0;renderDiary()">← ' +
       t("diary_edit") +
       "</button>" +
@@ -1653,17 +1825,8 @@ function renderDiary() {
 
   // ── Single prompt step ──
   const field = DIARY_FIELDS[diaryStep];
-  c.innerHTML =
-    dateNav +
-    progress +
-    '<div class="diary-step-card">' +
-    '<div class="diary-step-icon">' +
-    DIARY_ICONS[field] +
-    "</div>" +
-    '<div class="diary-step-label">' +
-    esc(t("diary_" + field)) +
-    tipBtn("tip_diary_" + field) +
-    "</div>" +
+
+  let fieldUI =
     '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
     esc(t("diary_ph_" + field)) +
     '" ' +
@@ -1675,12 +1838,93 @@ function renderDiary() {
     field +
     '">' +
     esc(entry[field] || "") +
-    "</textarea>" +
-    '<div class="diary-saved" id="ds_' +
-    field +
-    '">' +
-    t("diary_saved") +
-    " ✓</div>" +
+    "</textarea>";
+
+  // Add mood slider to "good" field
+  if (field === "good") {
+    const moodValue = entry["mood"] ? Number.parseInt(entry["mood"]) : 3;
+    const moodEmojis = [
+      { v: 1, e: "😢" },
+      { v: 2, e: "😕" },
+      { v: 3, e: "😐" },
+      { v: 4, e: "🙂" },
+      { v: 5, e: "😄" },
+    ];
+    const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
+    const betterValue = entry["better"] || "";
+    const showBetter = moodValue > 0 && moodValue < 5;
+
+    fieldUI +=
+      '<div class="diary-saved" id="ds_' +
+      field +
+      '">' +
+      t("diary_saved") +
+      " ✓</div>" +
+      '<div class="diary-mood-section">' +
+      '<div class="diary-step-label">' +
+      esc(t("diary_mood")) +
+      tipBtn("tip_diary_mood") +
+      "</div>" +
+      '<div class="diary-mood-slider">' +
+      '<div class="mood-emoji-display" id="mood-emoji-display">' +
+      currentEmoji +
+      "</div>" +
+      '<input type="range" min="1" max="5" value="' +
+      moodValue +
+      '" class="mood-slider" id="mood-slider" ' +
+      'oninput="updateMoodPreview(this.value)" ' +
+      "onchange=\"saveDiary('" +
+      k +
+      "','mood',this.value);handleMoodSelected(parseInt(this.value))\" />" +
+      '<div class="mood-labels">' +
+      "<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>" +
+      "</div>" +
+      "</div>" +
+      '<div class="diary-better-expand" id="diary-better-expand" style="' +
+      (showBetter ? "" : "display:none") +
+      '">' +
+      '<div class="diary-better-header" onclick="toggleBetterField()">' +
+      '<span class="better-chevron' +
+      (betterValue ? " expanded" : "") +
+      '" id="better-chevron">▼</span>' +
+      "<span>" +
+      esc(t("diary_better")) +
+      "</span>" +
+      "</div>" +
+      '<div class="diary-better-content" id="diary-better-content" style="' +
+      (betterValue ? "" : "display:none") +
+      '">' +
+      '<textarea class="diary-textarea" placeholder="' +
+      esc(t("diary_ph_better")) +
+      '" ' +
+      "oninput=\"saveDiary('" +
+      k +
+      "','better',this.value)\" id=\"d_better\">" +
+      esc(betterValue) +
+      "</textarea>" +
+      '<div class="diary-saved" id="ds_better">' +
+      t("diary_saved") +
+      " ✓</div>" +
+      "</div>" +
+      "</div>" +
+      "</div>";
+  }
+
+  c.innerHTML =
+    dateNav +
+    progress +
+    '<div class="diary-step-card">' +
+    '<div class="diary-step-icon">' +
+    DIARY_ICONS[field] +
+    "</div>" +
+    '<div class="diary-step-label">' +
+    esc(t("diary_" + field)) +
+    tipBtn("tip_diary_" + field) +
+    "</div>" +
+    fieldUI +
+    (field === "good"
+      ? ""
+      : '<div class="diary-saved" id="ds_' + field + '">' + t("diary_saved") + " ✓</div>") +
     "</div>" +
     '<div class="diary-step-nav">' +
     (diaryStep > 0
@@ -1688,9 +1932,14 @@ function renderDiary() {
         t("diary_back") +
         "</button>"
       : "<span></span>") +
-    '<button class="diary-next-btn" onclick="diaryStepGo(1)">' +
-    (diaryStep < DIARY_FIELDS.length - 1 ? t("diary_next") + " →" : "✓ " + t("diary_done")) +
-    "</button>" +
+    (field === "good"
+      ? '<button class="diary-next-btn" onclick="switchPage(\'stats\')">✓ ' +
+        t("diary_done") +
+        "</button>"
+      : '<button class="diary-next-btn" onclick="diaryStepGo(1)">' +
+        t("diary_next") +
+        " →" +
+        "</button>") +
     "</div>";
 
   setTimeout(() => document.getElementById("d_" + field)?.focus(), 80);
@@ -1699,6 +1948,33 @@ function renderDiary() {
 function diaryStepGo(dir) {
   diaryStep = Math.max(0, Math.min(DIARY_FIELDS.length, diaryStep + dir));
   renderDiary();
+}
+
+function updateMoodPreview(val) {
+  const emojis = ["😢", "😕", "😐", "🙂", "😄"];
+  const display = document.getElementById("mood-emoji-display");
+  if (display) display.textContent = emojis[Number.parseInt(val) - 1];
+}
+
+function handleMoodSelected(moodValue) {
+  // Show/hide "better" expandable section based on mood
+  const betterExpand = document.getElementById("diary-better-expand");
+  if (betterExpand) {
+    betterExpand.style.display = moodValue < 5 ? "" : "none";
+  }
+}
+
+function toggleBetterField() {
+  const content = document.getElementById("diary-better-content");
+  const chevron = document.getElementById("better-chevron");
+  if (content && chevron) {
+    const isVisible = content.style.display !== "none";
+    content.style.display = isVisible ? "none" : "";
+    chevron.classList.toggle("expanded", !isVisible);
+    if (!isVisible) {
+      setTimeout(() => document.getElementById("d_better")?.focus(), 80);
+    }
+  }
 }
 
 function changeDiaryDay(dir) {
@@ -1725,15 +2001,19 @@ function addFromDiary(nameKey, emoji) {
   renderDiary();
 }
 function saveDiary(k, field, val) {
-  if (!state.diary[k]) state.diary[k] = { grateful: "", affirm: "", good: "", better: "" };
-  const wasEmpty = !state.diary[k][field]?.trim();
-  state.diary[k][field] = val;
-  if (wasEmpty && val.trim()) trackEvent("journal_write", { section: field, date: k });
+  if (!state.diary[k])
+    state.diary[k] = { grateful: "", affirm: "", good: "", better: "", mood: "" };
+  const wasEmpty = field === "mood" ? !state.diary[k][field] : !state.diary[k][field]?.trim();
+  state.diary[k][field] = field === "mood" ? String(val) : val;
+  if (wasEmpty && (field === "mood" ? val : val.trim()))
+    trackEvent("journal_write", { section: field, date: k });
   save();
   clearTimeout(diaryTimers[field]);
   const el = document.getElementById("ds_" + field);
-  el.classList.add("show");
-  diaryTimers[field] = setTimeout(() => el.classList.remove("show"), 1500);
+  if (el) {
+    el.classList.add("show");
+    diaryTimers[field] = setTimeout(() => el.classList.remove("show"), 1500);
+  }
 }
 
 // ═══ IMPORT / EXPORT ═══
@@ -2132,6 +2412,106 @@ function buildHeatmapHtml() {
   return hm;
 }
 
+function buildMoodChartHtml() {
+  // Collect last 7 days (exactly 7 data points)
+  const data = [];
+  const now = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const date = addD(now, -i);
+    const entry = state.diary[fmt(date)] || {};
+    const mood = entry.mood ? Number.parseInt(entry.mood, 10) : 0;
+    data.push({
+      label: i === 0 ? t("nav_today") : DN(date.getDay()),
+      mood: mood,
+      isToday: i === 0,
+    });
+  }
+
+  // Chart config
+  const w = 420;
+  const h = 160;
+  const pad = { t: 30, r: 20, b: 35, l: 45 };
+  const cw = w - pad.l - pad.r;
+  const ch = h - pad.t - pad.b;
+
+  const moods = ["", "😢", "😕", "😐", "🙂", "😄"];
+  const colors = ["#444", "#e74c3c", "#e67e22", "#f39c12", "#6c5ce7", "#27ae60"];
+
+  // Build SVG
+  let out = '<svg class="mood-chart-svg" viewBox="0 0 ' + w + " " + h + '">';
+
+  // Y-axis (mood scale)
+  for (let m = 1; m <= 5; m++) {
+    const yPos = pad.t + ch - ((m - 1) * ch) / 4;
+    out +=
+      '<text x="20" y="' +
+      (yPos + 4) +
+      '" font-size="16" text-anchor="middle">' +
+      moods[m] +
+      "</text>";
+    out +=
+      '<line x1="' +
+      pad.l +
+      '" y1="' +
+      yPos +
+      '" x2="' +
+      (w - pad.r) +
+      '" y2="' +
+      yPos +
+      '" stroke="var(--border)" stroke-opacity="0.3"/>';
+  }
+
+  // Calculate point positions
+  const pts = data.map((d, i) => ({
+    x: pad.l + (i * cw) / 6,
+    y: d.mood > 0 ? pad.t + ch - ((d.mood - 1) * ch) / 4 : pad.t + ch,
+    ...d,
+  }));
+
+  // Line path
+  const validPts = pts.filter((p) => p.mood > 0);
+  if (validPts.length > 0) {
+    let path = "M " + validPts[0].x + " " + validPts[0].y;
+    for (let i = 1; i < validPts.length; i++) {
+      path += " L " + validPts[i].x + " " + validPts[i].y;
+    }
+    out += '<path d="' + path + '" fill="none" stroke="var(--accent)" stroke-width="3"/>';
+  }
+
+  // Points
+  pts.forEach((p) => {
+    if (p.mood > 0) {
+      out +=
+        '<circle cx="' +
+        p.x +
+        '" cy="' +
+        p.y +
+        '" r="' +
+        (p.isToday ? "7" : "5") +
+        '" fill="' +
+        colors[p.mood] +
+        '"';
+      if (p.isToday) out += ' stroke="#fff" stroke-width="2"';
+      out += "/>";
+    }
+  });
+
+  // X-axis (day labels)
+  pts.forEach((p) => {
+    out +=
+      '<text x="' +
+      p.x +
+      '" y="' +
+      (h - 12) +
+      '" text-anchor="middle" font-size="12" fill="var(--text-muted)" font-weight="600">' +
+      p.label +
+      "</text>";
+  });
+
+  out += "</svg>";
+  return '<div class="mood-chart">' + out + "</div>";
+}
+
 function renderStats() {
   const c = document.getElementById("stats-content");
   document.getElementById("stats-header").textContent = t("nav_stats");
@@ -2320,6 +2700,18 @@ function renderStats() {
         );
       })
       .join("") +
+    "</div>" +
+    '<div class="stat-card">' +
+    '<div class="stat-card-title">' +
+    t("mood_7day") +
+    "</div>" +
+    '<div class="stat-card-sub">' +
+    t("mood_sub") +
+    "</div>" +
+    buildMoodChartHtml() +
+    "</div>" +
+    '<div class="stat-card">' +
+    renderCoachPanel() +
     "</div>";
 }
 
@@ -2341,40 +2733,17 @@ function renderSettings() {
         )
       : "") +
     '</span><span class="setting-action" style="margin-left:auto">›</span></div><div style="width:100%;padding-left:32px;padding-top:6px">' +
-    '<select class="lang-select lang-list" size="5" onclick="event.stopPropagation()" onchange="event.stopPropagation();changeLang(this.value)">' +
-    [
-      ["ar", "🇪🇬 عربي مصري"],
-      ["bar", "🏔️ Bayrisch"],
-      ["ca", "🏴󠁥󠁳󠁣󠁴󠁿 Català"],
-      ["de", "🇩🇪 Deutsch"],
-      ["el", "🇬🇷 Ελληνικά"],
-      ["en", "🇬🇧 English"],
-      ["es", "🇪🇸 Español"],
-      ["fr", "🇫🇷 Français"],
-      ["hi", "🇮🇳 हिन्दी"],
-      ["hr", "🇭🇷 Hrvatski"],
-      ["it", "🇮🇹 Italiano"],
-      ["nl", "🇳🇱 Nederlands"],
-      ["pl", "🇵🇱 Polski"],
-      ["pt", "🇧🇷 Português"],
-      ["ro", "🇷🇴 Română"],
-      ["ru", "🇷🇺 Русский"],
-      ["sq", "🇦🇱 Shqip"],
-      ["sr", "🇷🇸 Srpski"],
-      ["tr", "🇹🇷 Türkçe"],
-      ["uk", "🇺🇦 Українська"],
-    ]
-      .map(
-        ([l, label]) =>
-          '<option value="' +
-          l +
-          '"' +
-          (state.lang === l ? " selected" : "") +
-          ">" +
-          label +
-          "</option>"
-      )
-      .join("") +
+    '<select class="lang-select" onclick="event.stopPropagation()" onchange="event.stopPropagation();changeLang(this.value)">' +
+    LANGUAGES.map(
+      ([l, label]) =>
+        '<option value="' +
+        l +
+        '"' +
+        (state.lang === l ? " selected" : "") +
+        ">" +
+        label +
+        "</option>"
+    ).join("") +
     "</select></div></div></div></div></div>" +
     '<div class="settings-section"><div class="settings-title" style="display:flex;align-items:center;justify-content:space-between">' +
     "<span>" +
@@ -2432,7 +2801,7 @@ function renderSettings() {
     '<div class="settings-section"><div class="settings-title">' +
     t("settings_feedback") +
     '</div><div class="settings-list"><div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">' +
-    '<select id="feedback-type" class="lang-select">' +
+    '<select id="feedback-type" class="form-select">' +
     '<option value="bug">' +
     t("feedback_type_bug") +
     "</option>" +
@@ -2543,7 +2912,7 @@ async function requestCoachFeedback() {
       if (data?.budget) {
         state.aiCoach.lastBudget = data.budget;
         save();
-        renderDiary();
+        renderStats();
       }
       throw new Error(data?.code || "HTTP_" + res.status);
     }
@@ -2553,7 +2922,7 @@ async function requestCoachFeedback() {
     state.aiCoach.lastModel = data.model || "";
     state.aiCoach.lastRequestedAt = new Date().toISOString();
     save();
-    renderDiary();
+    renderStats();
     showToast(t("coach_done"));
     trackEvent("ai_coach_success", {
       include_diary: state.aiCoach.includeDiary,
@@ -2685,9 +3054,6 @@ document.getElementById("import-modal").addEventListener("click", (e) => {
   if (e.target.id === "import-modal") closeImportModal();
 });
 document.getElementById("welcome-modal").addEventListener("click", () => {});
-document.getElementById("habit-name-input").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") saveHabit();
-});
 
 function showConsentBannerIfNeeded() {
   if (state.consentAnalytics !== null) return;

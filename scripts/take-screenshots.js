@@ -7,7 +7,7 @@ const path = require("path");
 
 const BASE_URL = "http://localhost:3000";
 const DOCS_DIR = path.join(__dirname, "..", "docs");
-const STORAGE_KEY = "habitio_v9";
+const STORAGE_VERSION = "habitio_v10";
 
 // The app uses toISOString().slice(0,10) for date keys (UTC-based).
 // We must use the same UTC date so diary/checks align with "today" in the app.
@@ -25,6 +25,45 @@ const D1 = utcDaysAgo(1);
 const D2 = utcDaysAgo(2);
 const D3 = utcDaysAgo(3);
 const D4 = utcDaysAgo(4);
+const D5 = utcDaysAgo(5);
+const D6 = utcDaysAgo(6);
+
+// Simple seeded PRNG (mulberry32) for deterministic screenshot data
+function seededRng(seed) {
+  let s = seed | 0;
+  return function () {
+    s = (s + 0x6d2b79f5) | 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Generate checks for a habit over N days with a success rate
+function generateChecks(habitId, daysBack, successRate = 0.8) {
+  // Seed from habitId for reproducible screenshots
+  const seed = habitId.split("").reduce((a, c) => a + c.codePointAt(0), 0);
+  const rng = seededRng(seed);
+  const checks = {};
+  for (let i = 0; i <= daysBack; i++) {
+    if (rng() < successRate) {
+      const date = utcDaysAgo(i);
+      if (!checks[date]) checks[date] = {};
+      checks[date][habitId] = true;
+    }
+  }
+  return checks;
+}
+
+// Merge multiple check objects
+function mergeChecks(...checkObjects) {
+  return checkObjects.reduce((acc, obj) => {
+    Object.keys(obj).forEach((date) => {
+      acc[date] = { ...(acc[date] || {}), ...obj[date] };
+    });
+    return acc;
+  }, {});
+}
 
 const SEED_STATE = {
   habits: [
@@ -35,7 +74,7 @@ const SEED_STATE = {
       cadence: { type: "daily" },
       morning: true,
       source: "suggested",
-      createdAt: "2026-01-10",
+      createdAt: utcDaysAgo(85), // ✨ Mastered (75+ checks over ~85 days)
     },
     {
       id: "h2",
@@ -44,7 +83,7 @@ const SEED_STATE = {
       cadence: { type: "daily" },
       morning: false,
       source: "suggested",
-      createdAt: "2026-01-10",
+      createdAt: utcDaysAgo(45), // ⚡ Power (35 checks over ~45 days)
     },
     {
       id: "h3",
@@ -53,7 +92,7 @@ const SEED_STATE = {
       cadence: { type: "daily" },
       morning: false,
       source: "suggested",
-      createdAt: "2026-02-01",
+      createdAt: utcDaysAgo(20), // 🔨 Building (15 checks over ~20 days)
     },
     {
       id: "h4",
@@ -62,28 +101,68 @@ const SEED_STATE = {
       cadence: { type: "specific_days", days: [1, 2, 3, 4, 5] },
       morning: true,
       source: "custom",
-      createdAt: "2026-02-15",
+      createdAt: utcDaysAgo(7), // 🌱 Seedling (5 checks over ~7 days)
     },
   ],
-  checks: {
-    [TODAY]: { h1: true, h2: true },
-    [D1]: { h1: true, h2: true, h3: true, h4: true },
-    [D2]: { h1: true, h3: true },
-    [D3]: { h1: true, h2: true, h3: true },
-    [D4]: { h2: true, h3: true, h4: true },
-  },
+  checks: mergeChecks(
+    generateChecks("h1", 85, 0.9), // Very consistent
+    generateChecks("h2", 45, 0.75), // Good but not perfect
+    generateChecks("h3", 20, 0.7), // Building momentum
+    generateChecks("h4", 7, 0.65) // Just starting
+  ),
   diary: {
     [TODAY]: {
-      grateful: "My morning coffee, sunshine, good health",
-      affirm: "I am resilient, I am growing every day",
-      good: "Finished a great workout, read 30 pages, called a friend",
-      better: "Sleep earlier tonight, plan meals for the week",
+      grateful: "Beautiful sunrise, productive meeting, family dinner",
+      affirm: "I am capable, I am focused, I am growing stronger every day",
+      good: "Completed workout, finished project milestone, called mom",
+      mood: "4",
+      better: "Get 8 hours of sleep tonight",
+    },
+    [D1]: {
+      grateful: "Good coffee, finished book, nice weather",
+      affirm: "I am resilient and adaptable",
+      good: "Morning run, healthy meals, quality time with kids",
+      mood: "5",
+    },
+    [D2]: {
+      grateful: "Progress on goals, supportive friends, health",
+      affirm: "I trust the process",
+      good: "Meditated 20 minutes, cooked healthy dinner, read 40 pages",
+      mood: "3",
+      better: "Take a break from screens after 9pm",
+    },
+    [D3]: {
+      grateful: "Peaceful morning, good workout, inspiring podcast",
+      affirm: "I am exactly where I need to be",
+      good: "Hit all habits, great conversation, solved tough problem",
+      mood: "4",
+      better: "Drink more water throughout the day",
+    },
+    [D4]: {
+      grateful: "Learning opportunities, warm home, creativity",
+      affirm: "I embrace challenges as growth",
+      good: "Learned new skill, helped colleague, organized workspace",
+      mood: "2",
+      better: "Set clearer boundaries with work time",
+    },
+    [D5]: {
+      grateful: "Restful sleep, sunshine, laughter with friends",
+      affirm: "I am present and mindful",
+      good: "Long walk in nature, journaling, stretched 15 min",
+      mood: "4",
+      better: "Plan weekend activities in advance",
+    },
+    [D6]: {
+      grateful: "New insights, delicious meal, music",
+      affirm: "I am worthy of my goals",
+      good: "Early morning routine, creative project, connected with mentor",
+      mood: "5",
     },
   },
   profile: { name: "Alex", age: "32", ageGroup: "adult", sex: "male" },
   lang: "en",
   kitsDismissed: {},
-  consentAnalytics: false,
+  consentAnalytics: true, // Dismissed - won't show banner except for consent screenshots
 };
 
 async function seedState(page, state) {
@@ -91,7 +170,7 @@ async function seedState(page, state) {
     ([key, value]) => {
       localStorage.setItem(key, JSON.stringify(value));
     },
-    [STORAGE_KEY, state]
+    [STORAGE_VERSION, state]
   );
 }
 
@@ -101,7 +180,7 @@ async function loadWithState(page, state) {
   if (state) {
     await seedState(page, state);
   } else {
-    await page.evaluate((key) => localStorage.removeItem(key), STORAGE_KEY);
+    await page.evaluate((key) => localStorage.removeItem(key), STORAGE_VERSION);
   }
   await page.reload({ waitUntil: "networkidle" });
   await page.waitForTimeout(600);
@@ -128,13 +207,12 @@ async function main() {
     await mobile.waitForTimeout(400);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-onboarding.png") });
 
-    // 2. Tracker — seeded state, Today tab
+    // 2. Tracker — seeded state, Today tab, full page
     console.log("  screenshot-tracker.png");
     await loadWithState(mobile, SEED_STATE);
-    // Today tab is first nav-tab and active by default
     await mobile.waitForSelector("#habits-list", { timeout: 3000 }).catch(() => {});
     await mobile.waitForTimeout(400);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-tracker.png") });
+    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-tracker.png"), fullPage: true });
 
     // 3. Add-habit modal open — 1 habit seeded so FAB is visible, modal scrolled to CTA
     console.log("  screenshot-add-habit.png");
@@ -151,46 +229,32 @@ async function main() {
     await mobile.waitForTimeout(300);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-add-habit.png") });
 
-    // 4. Journal step 1 (gratitude prompt) — no diary data today
+    // 4. Journal — show first step (grateful)
     console.log("  screenshot-journal.png");
     const stateNoDiary = { ...SEED_STATE, diary: {} };
     await loadWithState(mobile, stateNoDiary);
-    // Click Journal tab (second nav-tab)
     await mobile.locator(".nav-tab").nth(1).click();
     await mobile.waitForTimeout(600);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-journal.png") });
 
-    // 5. Journal summary — diary data pre-filled for today, so calcDiaryStep()
-    //    returns 4 and the summary screen renders immediately on tab switch.
-    console.log("  screenshot-journal-summary.png");
-    await loadWithState(mobile, SEED_STATE);
-    await mobile.locator(".nav-tab").nth(1).click();
-    // Wait for the summary div that renders when all 4 diary fields are filled
-    await mobile.waitForSelector(".diary-summary", { timeout: 4000 }).catch(() => {});
-    await mobile.waitForTimeout(600);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-journal-summary.png") });
-
-    // 6. Stats page
+    // 5. Stats page — scroll to show all graphs
     console.log("  screenshot-stats.png");
     await loadWithState(mobile, SEED_STATE);
     await mobile.locator(".nav-tab").nth(2).click();
     await mobile.waitForTimeout(800);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-stats.png") });
+    // Scroll down to show mood trends and other charts
+    await mobile.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+    await mobile.waitForTimeout(400);
+    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-stats.png"), fullPage: true });
 
-    // 7. Settings page
+    // 6. Settings page — full page capture
     console.log("  screenshot-settings.png");
     await loadWithState(mobile, SEED_STATE);
     await mobile.locator(".nav-tab").nth(3).click();
     await mobile.waitForTimeout(600);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-settings.png") });
-
-    // 8. Consent banner — seeded with consentAnalytics: null so the banner appears
-    console.log("  screenshot-consent.png");
-    const stateConsent = { ...SEED_STATE, consentAnalytics: null };
-    await loadWithState(mobile, stateConsent);
-    await mobile.waitForSelector(".consent-banner", { timeout: 3000 }).catch(() => {});
-    await mobile.waitForTimeout(400);
-    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-consent.png") });
+    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-settings.png"), fullPage: true });
 
     await mobileCtx.close();
 
@@ -203,19 +267,24 @@ async function main() {
     });
     const desktop = await desktopCtx.newPage();
 
-    // 8. Desktop tracker
+    // 8. Desktop tracker — full page
     console.log("  desktop-preview.png");
     await loadWithState(desktop, SEED_STATE);
     await desktop.waitForSelector("#habits-list", { timeout: 3000 }).catch(() => {});
     await desktop.waitForTimeout(400);
-    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-preview.png") });
+    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-preview.png"), fullPage: true });
 
-    // 9. Desktop stats
+    // 9. Desktop stats — scroll to show all graphs
     console.log("  desktop-stats.png");
     await loadWithState(desktop, SEED_STATE);
     await desktop.locator(".nav-tab").nth(2).click();
     await desktop.waitForTimeout(800);
-    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-stats.png") });
+    // Scroll down to show mood trends and other charts
+    await desktop.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+    await desktop.waitForTimeout(400);
+    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-stats.png"), fullPage: true });
 
     // 10. Desktop journal (step 1, no diary)
     console.log("  desktop-journal.png");
@@ -224,12 +293,12 @@ async function main() {
     await desktop.waitForTimeout(800);
     await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-journal.png") });
 
-    // 11. Desktop settings
+    // 11. Desktop settings — full page capture
     console.log("  desktop-settings.png");
     await loadWithState(desktop, SEED_STATE);
     await desktop.locator(".nav-tab").nth(3).click();
     await desktop.waitForTimeout(600);
-    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-settings.png") });
+    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-settings.png"), fullPage: true });
 
     // 12. Desktop modal (add habit open)
     console.log("  desktop-modal.png");
@@ -237,14 +306,6 @@ async function main() {
     await desktop.click("#fab-add");
     await desktop.waitForTimeout(600);
     await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-modal.png") });
-
-    // 13. Desktop consent banner
-    console.log("  desktop-consent.png");
-    const desktopConsent = { ...SEED_STATE, consentAnalytics: null };
-    await loadWithState(desktop, desktopConsent);
-    await desktop.waitForSelector(".consent-banner", { timeout: 3000 }).catch(() => {});
-    await desktop.waitForTimeout(400);
-    await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-consent.png") });
 
     await desktopCtx.close();
 
@@ -257,16 +318,16 @@ async function main() {
     });
     const tablet = await tabletCtx.newPage();
 
-    // 13. Tablet tracker
+    // 13. Tablet tracker — full page
     console.log("  tablet-preview.png");
     await loadWithState(tablet, SEED_STATE);
     await tablet.waitForSelector("#habits-list", { timeout: 3000 }).catch(() => {});
     await tablet.waitForTimeout(400);
-    await tablet.screenshot({ path: path.join(DOCS_DIR, "tablet-preview.png") });
+    await tablet.screenshot({ path: path.join(DOCS_DIR, "tablet-preview.png"), fullPage: true });
 
     await tabletCtx.close();
 
-    console.log("\n✅ All 15 screenshots saved to docs/");
+    console.log("\n✅ All 13 screenshots saved to docs/");
   } finally {
     await browser.close();
   }

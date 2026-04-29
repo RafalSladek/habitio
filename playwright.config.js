@@ -4,7 +4,7 @@ const { defineConfig, devices } = require("@playwright/test");
 module.exports = defineConfig({
   testDir: "./tests",
   workers: process.env.CI ? 4 : 8,
-  timeout: 30000,
+  timeout: 20000,
   reporter: process.env.CI
     ? [["html", { open: "never" }], ["list"], ["json", { outputFile: "test-results-summary.json" }]]
     : [["list"], ["json", { outputFile: "test-results-summary.json" }]],

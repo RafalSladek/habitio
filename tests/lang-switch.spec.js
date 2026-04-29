@@ -21,20 +21,21 @@ test.describe("language switching", () => {
   for (const { code, nav } of NEW_LANGS) {
     test(`switching to ${code} translates nav`, async ({ page }) => {
       await page.getByRole("button", { name: /Settings/ }).click();
-      await page.locator("#settings-content .lang-list").selectOption(code);
+      await page.locator("#settings-content .lang-select").selectOption(code);
       await expect(page.getByRole("button", { name: nav })).toBeVisible();
     });
   }
 
-  test("settings language selector is scrollable listbox", async ({ page }) => {
+  test("settings language selector is native dropdown", async ({ page }) => {
     await page.getByRole("button", { name: /Settings/ }).click();
-    const sel = page.locator("#settings-content .lang-list");
-    await expect(sel).toHaveAttribute("size", "5");
+    const sel = page.locator("#settings-content .lang-select");
+    await expect(sel).toBeVisible();
+    await expect(sel).toHaveAttribute("onchange", /.+/);
   });
 
   test("lang persists after reload", async ({ page }) => {
     await page.getByRole("button", { name: /Settings/ }).click();
-    await page.locator("#settings-content .lang-list").selectOption("es");
+    await page.locator("#settings-content .lang-select").selectOption("es");
     await page.goto(page.url(), { waitUntil: "domcontentloaded" });
     await expect(page.getByRole("button", { name: "Hoy" })).toBeVisible();
   });

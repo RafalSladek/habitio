@@ -4,6 +4,9 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 
+/** Must match CACHE in sw.js and STORAGE_VERSION in app.js */
+const STORAGE_VERSION = "habitio_v10";
+
 function cloneResponse(response) {
   return response ? response.clone() : undefined;
 }
@@ -25,7 +28,7 @@ function createServiceWorkerHarness({
       new Response(body, { status: 200, headers: { "Content-Type": "text/plain" } }),
     ])
   );
-  cacheBuckets.set("habitio_v9", defaultCache);
+  cacheBuckets.set(STORAGE_VERSION, defaultCache);
 
   const cachesApi = {
     async open(name) {
@@ -113,7 +116,7 @@ function createServiceWorkerHarness({
       await Promise.allSettled(waitUntilPromises);
       return response;
     },
-    async readCachedText(url, cacheName = "habitio_v9") {
+    async readCachedText(url, cacheName = STORAGE_VERSION) {
       const bucket = cacheBuckets.get(cacheName);
       const response = bucket?.get(url);
       return response ? response.clone().text() : undefined;

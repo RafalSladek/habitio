@@ -126,13 +126,13 @@
             </button>
           </div>
         </div>
-        <div class="week-nav">
+        <div class="week-nav" id="week-nav">
           <button class="nav-btn" onclick="changeWeek(-1)">&lsaquo;</button
           ><span class="week-label" id="week-label"></span
           ><button class="nav-btn" id="next-week-btn" onclick="changeWeek(1)">&rsaquo;</button>
         </div>
         <div class="days-header" id="days-header"></div>
-        <div class="progress-section">
+        <div class="progress-section" id="progress-section">
           <div class="ring-container">
             <svg width="64" height="64" viewBox="0 0 64 64">
               <circle class="ring-bg" cx="32" cy="32" r="27" />
@@ -194,34 +194,8 @@
       <div class="modal">
         <div class="modal-handle"></div>
         <h3 id="modal-title">Add habit</h3>
+        <p class="modal-quote" id="modal-quote"></p>
         <div id="suggestions-area"></div>
-        <input
-          class="modal-input"
-          id="habit-name-input"
-          type="text"
-          maxlength="40"
-          autocomplete="off"
-          aria-label="Habit name"
-        />
-        <div class="section-label" data-t="lbl_icon">Icon</div>
-        <div class="emoji-picker" id="emoji-picker"></div>
-        <div class="section-label" data-t="lbl_cadence">Cadence</div>
-        <div class="cadence-picker">
-          <div class="cadence-chips" id="cadence-chips"></div>
-          <div id="cadence-detail"></div>
-        </div>
-        <div style="margin-top: 12px; margin-bottom: 14px">
-          <div class="section-label" id="lbl-morning">Options</div>
-          <button
-            class="morning-chip"
-            id="morning-chip"
-            type="button"
-            onclick="toggleModalMorning()"
-          >
-            ☀️ <span id="morning-chip-lbl">Morning routine</span>
-          </button>
-        </div>
-        <button class="modal-btn primary" id="modal-save-btn" onclick="saveHabit()"></button>
         <button class="modal-done-bar" id="modal-done-bar" type="button" onclick="closeAddModal()">
           <span id="modal-done-label"></span>
           <span class="modal-done-arrow" data-t="start_tracking">Start tracking →</span>
