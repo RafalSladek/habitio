@@ -638,7 +638,7 @@ function getCoachDeviceId() {
   let id = localStorage.getItem(COACH_DEVICE_KEY);
   if (!id) {
     id = uid()
-      .replace(/[^a-zA-Z0-9_-]/g, "")
+      .replaceAll(/[^a-zA-Z0-9_-]/g, "")
       .slice(0, 32);
     localStorage.setItem(COACH_DEVICE_KEY, id);
   }
@@ -647,6 +647,32 @@ function getCoachDeviceId() {
 function save() {
   localStorage.setItem(STORAGE_VERSION, JSON.stringify(state));
 }
+function applyDataMigration(d) {
+  d.habits = (d.habits || []).map((h) => ({
+    cadence: { type: "daily" },
+    ...h,
+  }));
+  if (!d.diary) d.diary = {};
+  if (!d.profile) d.profile = { name: "", age: "", sex: "male" };
+  if (!d.profile.sex) d.profile.sex = "male";
+  if (!d.lang) d.lang = "en";
+  if (!d.kitsDismissed) d.kitsDismissed = {};
+  if (d.consentAnalytics === undefined) d.consentAnalytics = null;
+  d.aiCoach = d.aiCoach ? { ...defaultCoachState(), ...d.aiCoach } : defaultCoachState();
+  return d;
+}
+
+function cleanupOldStorageKeys() {
+  localStorage.removeItem("habitio_v9");
+  localStorage.removeItem("habitio_v8");
+  localStorage.removeItem("habitio_v7");
+  localStorage.removeItem("habitio_v6");
+  localStorage.removeItem("habitio_v5");
+  localStorage.removeItem("habitio_v4");
+  localStorage.removeItem("habitio_v3");
+  localStorage.removeItem("habitio_v2");
+}
+
 function load() {
   try {
     // Migration: read from older keys if current key is absent
@@ -662,28 +688,10 @@ function load() {
       localStorage.getItem("habitio_v2");
     const d = JSON.parse(raw);
     if (d?.habits) {
-      d.habits = (d.habits || []).map((h) => ({
-        cadence: { type: "daily" },
-        ...h,
-      }));
-      if (!d.diary) d.diary = {};
-      if (!d.profile) d.profile = { name: "", age: "", sex: "male" };
-      if (!d.profile.sex) d.profile.sex = "male";
-      if (!d.lang) d.lang = "en";
-      if (!d.kitsDismissed) d.kitsDismissed = {};
-      if (d.consentAnalytics === undefined) d.consentAnalytics = null;
-      d.aiCoach = { ...defaultCoachState(), ...(d.aiCoach || {}) };
-      state = d;
+      state = applyDataMigration(d);
       // Persist under new key and clean up old keys
       localStorage.setItem(STORAGE_VERSION, JSON.stringify(state));
-      localStorage.removeItem("habitio_v9");
-      localStorage.removeItem("habitio_v8");
-      localStorage.removeItem("habitio_v7");
-      localStorage.removeItem("habitio_v6");
-      localStorage.removeItem("habitio_v5");
-      localStorage.removeItem("habitio_v4");
-      localStorage.removeItem("habitio_v3");
-      localStorage.removeItem("habitio_v2");
+      cleanupOldStorageKeys();
       return;
     }
   } catch (e) {
@@ -1305,59 +1313,60 @@ function finishWelcome() {
 }
 
 // ═══ ADD MODAL ═══
-function openAddModal(hid) {
-  editId = hid || null;
+function setupEditMode(habit) {
+  modalEmoji = habit.emoji;
+  const c = habit.cadence || { type: "daily" };
+  modalCadenceType = c.type;
+  modalDays = c.type === "specific_days" ? [...(c.days || [])] : [];
+  modalFreqCount = c.type === "x_per" ? c.count || 2 : 2;
+  modalFreqPeriod = c.type === "x_per" ? c.period || "week" : "week";
+  modalMorning = !!habit.morning;
+
+  collapsedCategories = { cat_own: false };
+  renderSuggestions();
+  renderEmojiPicker();
+  renderCadence();
+
+  const ni = document.getElementById("habit-name-input");
+  if (ni) ni.value = habit.name;
+  document.getElementById("modal-title").textContent = t("edit_habit");
+  const saveBtn = document.getElementById("modal-save-btn");
+  if (saveBtn) saveBtn.textContent = t("save_changes");
+
   const sa = document.getElementById("suggestions-area");
-  if (editId) {
-    const h = state.habits.find((x) => x.id === editId);
-    modalEmoji = h.emoji;
-    const c = h.cadence || { type: "daily" };
-    modalCadenceType = c.type;
-    modalDays = c.type === "specific_days" ? [...(c.days || [])] : [];
-    modalFreqCount = c.type === "x_per" ? c.count || 2 : 2;
-    modalFreqPeriod = c.type === "x_per" ? c.period || "week" : "week";
-    modalMorning = !!h.morning;
-    // Render the form fields first (they live inside suggestions-area now)
-    collapsedCategories = { cat_own: false };
-    renderSuggestions();
-    renderEmojiPicker();
-    renderCadence();
-    // Now set values on dynamically-created elements
-    const ni = document.getElementById("habit-name-input");
-    if (ni) ni.value = h.name;
-    document.getElementById("modal-title").textContent = t("edit_habit");
-    const saveBtn = document.getElementById("modal-save-btn");
-    if (saveBtn) saveBtn.textContent = t("save_changes");
-    // Hide suggestion categories in edit mode
-    sa.querySelectorAll(".suggestion-cat-container").forEach((el, i) => {
-      if (i > 0) el.style.display = "none";
-    });
-  } else {
-    modalEmoji = "🎯";
-    modalCadenceType = "daily";
-    modalDays = [];
-    modalFreqCount = 2;
-    modalFreqPeriod = "week";
-    modalMorning = false;
-    modalAddedCount = 0;
-    // Initialize all categories as collapsed except "cat_own" (create your own)
-    collapsedCategories = {};
-    getSuggestions().forEach((_, idx) => {
-      collapsedCategories["cat_" + idx] = true; // All suggestion categories start collapsed
-    });
-    collapsedCategories["cat_own"] = false; // "Create your own" starts open
-    updateModalDoneState();
-    document.getElementById("modal-title").textContent = t("new_habit");
-    renderSuggestions();
-    // Render emoji picker and cadence AFTER suggestions (since they're now inside suggestions-area)
-    renderEmojiPicker();
-    renderCadence();
-    // Set values on dynamically-created elements AFTER renderSuggestions()
-    const saveBtn = document.getElementById("modal-save-btn");
-    if (saveBtn) saveBtn.textContent = t("add_habit");
-    const ni = document.getElementById("habit-name-input");
-    if (ni) ni.value = "";
-  }
+  sa.querySelectorAll(".suggestion-cat-container").forEach((el, i) => {
+    if (i > 0) el.style.display = "none";
+  });
+}
+
+function setupCreateMode() {
+  modalEmoji = "🎯";
+  modalCadenceType = "daily";
+  modalDays = [];
+  modalFreqCount = 2;
+  modalFreqPeriod = "week";
+  modalMorning = false;
+  modalAddedCount = 0;
+
+  collapsedCategories = {};
+  getSuggestions().forEach((_, idx) => {
+    collapsedCategories["cat_" + idx] = true;
+  });
+  collapsedCategories["cat_own"] = false;
+
+  updateModalDoneState();
+  document.getElementById("modal-title").textContent = t("new_habit");
+  renderSuggestions();
+  renderEmojiPicker();
+  renderCadence();
+
+  const saveBtn = document.getElementById("modal-save-btn");
+  if (saveBtn) saveBtn.textContent = t("add_habit");
+  const ni = document.getElementById("habit-name-input");
+  if (ni) ni.value = "";
+}
+
+function updateModalCommonElements() {
   const mc = document.getElementById("morning-chip");
   if (mc) mc.classList.toggle("selected", modalMorning);
   const mcl = document.getElementById("morning-chip-lbl");
@@ -1366,18 +1375,32 @@ function openAddModal(hid) {
   if (lbl) lbl.textContent = t("options_label");
   const nameInput = document.getElementById("habit-name-input");
   if (nameInput) nameInput.placeholder = t("type_own");
-  // Show motivational quote (new habit only, hidden for edit)
+
   const mq = document.getElementById("modal-quote");
   if (mq) {
-    if (!editId) {
+    if (editId) {
+      mq.style.display = "none";
+    } else {
       const langQuotes = T[state.lang]?.quotes || T.en.quotes;
       const q = langQuotes[Math.floor(Math.random() * langQuotes.length)];
       mq.innerHTML = "&ldquo;" + esc(q.q) + "&rdquo; <span>— " + esc(q.a) + "</span>";
       mq.style.display = "";
-    } else {
-      mq.style.display = "none";
     }
   }
+}
+
+function openAddModal(hid) {
+  editId = hid || null;
+
+  if (editId) {
+    const h = state.habits.find((x) => x.id === editId);
+    setupEditMode(h);
+  } else {
+    setupCreateMode();
+  }
+
+  updateModalCommonElements();
+
   document.getElementById("add-modal").classList.add("show");
   document.getElementById("fab-add")?.classList.remove("visible");
   if (!editId) setTimeout(() => document.getElementById("habit-name-input")?.focus(), 300);
@@ -1740,17 +1763,12 @@ function calcDiaryStep() {
   return first < 0 ? DIARY_FIELDS.length : first; // all answered → summary
 }
 
-function renderDiary() {
-  const c = document.getElementById("diary-content");
-  document.getElementById("diary-header").textContent = t("nav_journal");
-  const k = fmt(diaryDate);
-  const entry = state.diary[k] || { grateful: "", affirm: "", good: "", better: "" };
-
+function buildDiaryDateNav() {
   const dn = isToday(diaryDate)
     ? t("nav_today")
     : DN()[dIdx(diaryDate)] + ", " + diaryDate.getDate() + " " + MN()[diaryDate.getMonth()];
 
-  const dateNav =
+  return (
     '<div class="diary-date-nav">' +
     '<button class="nav-btn" onclick="changeDiaryDay(-1)">&lsaquo;</button>' +
     '<span class="diary-date">' +
@@ -1759,73 +1777,144 @@ function renderDiary() {
     '<button class="nav-btn" onclick="changeDiaryDay(1)" ' +
     (isToday(diaryDate) ? "disabled" : "") +
     ">&rsaquo;</button>" +
-    "</div>";
+    "</div>"
+  );
+}
 
+function buildDiaryProgress() {
   const dots = DIARY_FIELDS.map((_, i) => {
     let cl = "";
     if (i < diaryStep) cl = "done";
     else if (i === diaryStep) cl = "active";
     return '<div class="diary-dot ' + cl + '"></div>';
   }).join("");
-  const progress = '<div class="diary-progress">' + dots + "</div>";
+  return '<div class="diary-progress">' + dots + "</div>";
+}
 
-  // ── Summary screen ──
-  if (diaryStep >= DIARY_FIELDS.length) {
-    const filled = DIARY_FIELDS.filter((f) => entry[f]?.trim()).length;
-    const suggestions = SUGGESTION_DATA.flatMap((cat) =>
-      cat.items.map((s) => ({ name: t(s.nameKey), emoji: s.emoji, nameKey: s.nameKey }))
-    )
-      .filter((s) => !state.habits.some((h) => h.name === s.name))
-      .slice(0, 3);
+function buildMoodSliderHTML(k, entry, field) {
+  const moodValue = entry["mood"] ? Number.parseInt(entry["mood"]) : 3;
+  const moodEmojis = [
+    { v: 1, e: "😢" },
+    { v: 2, e: "😕" },
+    { v: 3, e: "😐" },
+    { v: 4, e: "🙂" },
+    { v: 5, e: "😄" },
+  ];
+  const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
+  const betterValue = entry["better"] || "";
+  const showBetter = moodValue > 0 && moodValue < 5;
 
-    c.innerHTML =
-      dateNav +
-      progress +
-      '<div class="diary-summary">' +
-      '<div class="diary-summary-icon">✨</div>' +
-      '<div class="diary-summary-title">' +
-      t("diary_complete") +
-      "</div>" +
-      '<div class="diary-summary-meta">' +
-      filled +
-      " / " +
-      DIARY_FIELDS.length +
-      " " +
-      t("diary_filled") +
-      "</div>" +
-      (suggestions.length
-        ? '<div class="diary-suggest-wrap">' +
-          '<div class="diary-suggest-lbl">' +
-          t("diary_suggest_label") +
-          "</div>" +
-          suggestions
-            .map(
-              (s) =>
-                '<button class="diary-habit-chip" onclick="addFromDiary(\'' +
-                s.nameKey +
-                "'," +
-                '"' +
-                s.emoji +
-                '"' +
-                ')">' +
-                s.emoji +
-                " " +
-                esc(s.name) +
-                ' <span class="chip-add">+ Add</span></button>'
-            )
-            .join("") +
-          "</div>"
-        : "") +
-      '<button class="diary-edit-btn" onclick="diaryStep=0;renderDiary()">← ' +
-      t("diary_edit") +
-      "</button>" +
-      "</div>";
-    return;
-  }
+  return (
+    '<div class="diary-saved" id="ds_' +
+    field +
+    '">' +
+    t("diary_saved") +
+    " ✓</div>" +
+    '<div class="diary-mood-section">' +
+    '<div class="diary-step-label">' +
+    esc(t("diary_mood")) +
+    tipBtn("tip_diary_mood") +
+    "</div>" +
+    '<div class="diary-mood-slider">' +
+    '<div class="mood-emoji-display" id="mood-emoji-display">' +
+    currentEmoji +
+    "</div>" +
+    '<input type="range" min="1" max="5" value="' +
+    moodValue +
+    '" class="mood-slider" id="mood-slider" ' +
+    'oninput="updateMoodPreview(this.value)" ' +
+    "onchange=\"saveDiary('" +
+    k +
+    "','mood',this.value);handleMoodSelected(parseInt(this.value))\" />" +
+    '<div class="mood-labels">' +
+    "<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>" +
+    "</div>" +
+    "</div>" +
+    '<div class="diary-better-expand" id="diary-better-expand" style="' +
+    (showBetter ? "" : "display:none") +
+    '">' +
+    '<div class="diary-better-header" onclick="toggleBetterField()">' +
+    '<span class="better-chevron' +
+    (betterValue ? " expanded" : "") +
+    '" id="better-chevron">▼</span>' +
+    "<span>" +
+    esc(t("diary_better")) +
+    "</span>" +
+    "</div>" +
+    '<div class="diary-better-content" id="diary-better-content" style="' +
+    (betterValue ? "" : "display:none") +
+    '">' +
+    '<textarea class="diary-textarea" placeholder="' +
+    esc(t("diary_ph_better")) +
+    '" ' +
+    "oninput=\"saveDiary('" +
+    k +
+    "','better',this.value)\" id=\"d_better\">" +
+    esc(betterValue) +
+    "</textarea>" +
+    '<div class="diary-saved" id="ds_better">' +
+    t("diary_saved") +
+    " ✓</div>" +
+    "</div>" +
+    "</div>" +
+    "</div>"
+  );
+}
 
-  // ── Single prompt step ──
-  const field = DIARY_FIELDS[diaryStep];
+function renderDiarySummary(entry, dateNav, progress) {
+  const filled = DIARY_FIELDS.filter((f) => entry[f]?.trim()).length;
+  const suggestions = SUGGESTION_DATA.flatMap((cat) =>
+    cat.items.map((s) => ({ name: t(s.nameKey), emoji: s.emoji, nameKey: s.nameKey }))
+  )
+    .filter((s) => !state.habits.some((h) => h.name === s.name))
+    .slice(0, 3);
 
+  return (
+    dateNav +
+    progress +
+    '<div class="diary-summary">' +
+    '<div class="diary-summary-icon">✨</div>' +
+    '<div class="diary-summary-title">' +
+    t("diary_complete") +
+    "</div>" +
+    '<div class="diary-summary-meta">' +
+    filled +
+    " / " +
+    DIARY_FIELDS.length +
+    " " +
+    t("diary_filled") +
+    "</div>" +
+    (suggestions.length
+      ? '<div class="diary-suggest-wrap">' +
+        '<div class="diary-suggest-lbl">' +
+        t("diary_suggest_label") +
+        "</div>" +
+        suggestions
+          .map(
+            (s) =>
+              '<button class="diary-habit-chip" onclick="addFromDiary(\'' +
+              s.nameKey +
+              "'," +
+              '"' +
+              s.emoji +
+              '"' +
+              ')">' +
+              s.emoji +
+              " " +
+              esc(s.name) +
+              ' <span class="chip-add">+ Add</span></button>'
+          )
+          .join("") +
+        "</div>"
+      : "") +
+    '<button class="diary-edit-btn" onclick="diaryStep=0;renderDiary()">← ' +
+    t("diary_edit") +
+    "</button>" +
+    "</div>"
+  );
+}
+
+function renderDiaryPrompt(field, entry, k, dateNav, progress) {
   let fieldUI =
     '<textarea class="diary-textarea diary-textarea-lg" placeholder="' +
     esc(t("diary_ph_" + field)) +
@@ -1840,77 +1929,11 @@ function renderDiary() {
     esc(entry[field] || "") +
     "</textarea>";
 
-  // Add mood slider to "good" field
   if (field === "good") {
-    const moodValue = entry["mood"] ? Number.parseInt(entry["mood"]) : 3;
-    const moodEmojis = [
-      { v: 1, e: "😢" },
-      { v: 2, e: "😕" },
-      { v: 3, e: "😐" },
-      { v: 4, e: "🙂" },
-      { v: 5, e: "😄" },
-    ];
-    const currentEmoji = moodEmojis.find((m) => m.v === moodValue).e;
-    const betterValue = entry["better"] || "";
-    const showBetter = moodValue > 0 && moodValue < 5;
-
-    fieldUI +=
-      '<div class="diary-saved" id="ds_' +
-      field +
-      '">' +
-      t("diary_saved") +
-      " ✓</div>" +
-      '<div class="diary-mood-section">' +
-      '<div class="diary-step-label">' +
-      esc(t("diary_mood")) +
-      tipBtn("tip_diary_mood") +
-      "</div>" +
-      '<div class="diary-mood-slider">' +
-      '<div class="mood-emoji-display" id="mood-emoji-display">' +
-      currentEmoji +
-      "</div>" +
-      '<input type="range" min="1" max="5" value="' +
-      moodValue +
-      '" class="mood-slider" id="mood-slider" ' +
-      'oninput="updateMoodPreview(this.value)" ' +
-      "onchange=\"saveDiary('" +
-      k +
-      "','mood',this.value);handleMoodSelected(parseInt(this.value))\" />" +
-      '<div class="mood-labels">' +
-      "<span>😢</span><span>😕</span><span>😐</span><span>🙂</span><span>😄</span>" +
-      "</div>" +
-      "</div>" +
-      '<div class="diary-better-expand" id="diary-better-expand" style="' +
-      (showBetter ? "" : "display:none") +
-      '">' +
-      '<div class="diary-better-header" onclick="toggleBetterField()">' +
-      '<span class="better-chevron' +
-      (betterValue ? " expanded" : "") +
-      '" id="better-chevron">▼</span>' +
-      "<span>" +
-      esc(t("diary_better")) +
-      "</span>" +
-      "</div>" +
-      '<div class="diary-better-content" id="diary-better-content" style="' +
-      (betterValue ? "" : "display:none") +
-      '">' +
-      '<textarea class="diary-textarea" placeholder="' +
-      esc(t("diary_ph_better")) +
-      '" ' +
-      "oninput=\"saveDiary('" +
-      k +
-      "','better',this.value)\" id=\"d_better\">" +
-      esc(betterValue) +
-      "</textarea>" +
-      '<div class="diary-saved" id="ds_better">' +
-      t("diary_saved") +
-      " ✓</div>" +
-      "</div>" +
-      "</div>" +
-      "</div>";
+    fieldUI += buildMoodSliderHTML(k, entry, field);
   }
 
-  c.innerHTML =
+  return (
     dateNav +
     progress +
     '<div class="diary-step-card">' +
@@ -1940,8 +1963,26 @@ function renderDiary() {
         t("diary_next") +
         " →" +
         "</button>") +
-    "</div>";
+    "</div>"
+  );
+}
 
+function renderDiary() {
+  const c = document.getElementById("diary-content");
+  document.getElementById("diary-header").textContent = t("nav_journal");
+  const k = fmt(diaryDate);
+  const entry = state.diary[k] || { grateful: "", affirm: "", good: "", better: "" };
+
+  const dateNav = buildDiaryDateNav();
+  const progress = buildDiaryProgress();
+
+  if (diaryStep >= DIARY_FIELDS.length) {
+    c.innerHTML = renderDiarySummary(entry, dateNav, progress);
+    return;
+  }
+
+  const field = DIARY_FIELDS[diaryStep];
+  c.innerHTML = renderDiaryPrompt(field, entry, k, dateNav, progress);
   setTimeout(() => document.getElementById("d_" + field)?.focus(), 80);
 }
 
@@ -3153,8 +3194,8 @@ function initPullToRefresh() {
     pulling = false;
 
     const currentTransform = el.style.transform;
-    const match = currentTransform.match(/translateY\(([^p]+)px\)/);
-    const currentOffset = match ? parseFloat(match[1]) : -64;
+    const match = /translateY\(([^p]+)px\)/.exec(currentTransform);
+    const currentOffset = match ? Number.parseFloat(match[1]) : -64;
     const dy = currentOffset + 64;
 
     if (dy >= THRESHOLD) {

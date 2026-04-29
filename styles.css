@@ -1141,7 +1141,7 @@ body {
   margin-top: 2px;
 }
 .coach-submit {
-  background: linear-gradient(135deg, var(--accent), var(--accent-2, #4ea8ff));
+  background: linear-gradient(135deg, var(--accent), var(--accent-2, #2563a8));
   color: #fff;
   border: none;
   border-radius: 12px;
