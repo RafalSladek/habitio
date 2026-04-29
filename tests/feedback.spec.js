@@ -57,7 +57,7 @@ test.describe("feedback form", () => {
   test("submits and shows success toast", async ({ page }) => {
     await page.locator("#feedback-type").selectOption("bug");
     await page.locator('#feedback-stars button[data-star="4"]').click();
-    await page.locator("#feedback-msg").fill("This is a test bug report with enough characters.");
+    await page.locator("#feedback-msg").fill("This is a test feedback from Playwright automated tests.");
     await page.locator("#feedback-submit").click();
     await expect(page.locator(".toast")).toBeVisible();
     // textarea cleared after success
@@ -94,7 +94,7 @@ test.describe("feedback form", () => {
       await route.fulfill({ status: 502, body: "Bad Gateway" });
     });
 
-    await page.locator("#feedback-msg").fill("This is a test message that should fail to send.");
+    await page.locator("#feedback-msg").fill("This is a test error scenario from Playwright tests.");
     await page.locator("#feedback-submit").click();
     await expect(page.locator(".toast")).toBeVisible();
   });
