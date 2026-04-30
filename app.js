@@ -659,7 +659,7 @@ function applyDataMigration(d) {
   if (!d.lang) d.lang = "en";
   if (!d.kitsDismissed) d.kitsDismissed = {};
   if (d.consentAnalytics === undefined) d.consentAnalytics = null;
-  if (!d.reminder) d.reminder = { enabled: false, time: "08:00" };
+  if (!d.reminder) d.reminder = { enabled: false, time: "20:00" };
   d.aiCoach = d.aiCoach ? { ...defaultCoachState(), ...d.aiCoach } : defaultCoachState();
   return d;
 }
@@ -709,7 +709,7 @@ function load() {
     lang: "en",
     kitsDismissed: {},
     consentAnalytics: null,
-    reminder: { enabled: false, time: "08:00" },
+    reminder: { enabled: false, time: "20:00" },
     aiCoach: defaultCoachState(),
   };
 }
@@ -2764,34 +2764,39 @@ function renderStats() {
 // ═══ REMINDERS ═══
 function scheduleReminder() {
   clearTimeout(reminderTimer);
-  if (!state.reminder?.enabled) return;
-  if (!("Notification" in window) || Notification.permission !== "granted") return;
-  const [h, m] = state.reminder.time.split(":").map(Number);
+  if (!state.reminder?.enabled || !state.reminder?.time) return;
+  if (!("Notification" in globalThis) || Notification.permission !== "granted") return;
+  const parts = state.reminder.time.split(":");
+  if (parts.length !== 2) return;
+  const [h, m] = parts.map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return;
   const now = new Date();
   const next = new Date(now);
   next.setHours(h, m, 0, 0);
   if (next <= now) next.setDate(next.getDate() + 1);
+  const delay = next - now;
+  if (!delay || delay <= 0) return;
   reminderTimer = setTimeout(() => {
     showHabitReminder();
     scheduleReminder();
-  }, next - now);
+  }, delay);
 }
 function showHabitReminder() {
-  navigator.serviceWorker?.ready
-    .then((reg) =>
-      reg.showNotification(t("reminder_title"), {
-        body: t("reminder_body"),
-        icon: "./icons/icon-192.png",
-        badge: "./icons/icon-192.png",
-        tag: "habit-reminder",
-      })
-    )
-    .catch(() => {
-      new Notification(t("reminder_title"), {
-        body: t("reminder_body"),
-        icon: "./icons/icon-192.png",
-      });
-    });
+  const today = fmt(new Date());
+  if (localStorage.getItem("habitio_last_reminder") === today) return;
+  localStorage.setItem("habitio_last_reminder", today);
+  const title = t("reminder_title");
+  const opts = {
+    body: t("reminder_body"),
+    icon: "./icons/icon-192.png",
+    badge: "./icons/icon-192.png",
+    tag: "habit-reminder",
+  };
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.ready.then((reg) => reg.showNotification(title, opts));
+  } else if (Notification.permission === "granted") {
+    new Notification(title, opts);
+  }
 }
 async function toggleReminder() {
   if (state.reminder.enabled) {
@@ -2801,7 +2806,7 @@ async function toggleReminder() {
     renderSettings();
     return;
   }
-  if (!("Notification" in window)) {
+  if (!("Notification" in globalThis)) {
     alert(t("reminder_blocked"));
     return;
   }
@@ -2910,7 +2915,11 @@ function renderSettings() {
     '</div><div class="settings-list"><div class="setting-item" onclick="toggleReminder()"><div class="setting-left"><span class="setting-emoji">' +
     (state.reminder.enabled ? "🔔" : "🔕") +
     '</span><span class="setting-label">' +
-    t(state.reminder.enabled ? "reminder_on" : "reminder_off") +
+    t(
+      state.reminder.enabled && "Notification" in globalThis && Notification.permission === "granted"
+        ? "reminder_on"
+        : "reminder_off"
+    ) +
     '</span></div><span class="setting-action">›</span></div>' +
     (state.reminder.enabled
       ? '<div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🕐</span><span class="setting-label">' +
