@@ -46,6 +46,7 @@
       "src": "docs/screenshot-tracker.png",
       "sizes": "786x1704",
       "type": "image/png",
+      "form_factor": "narrow",
       "label": "habit.io — daily tracker"
     },
     {
