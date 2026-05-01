@@ -7,7 +7,7 @@ const path = require("path");
 
 const BASE_URL = "http://localhost:3000";
 const DOCS_DIR = path.join(__dirname, "..", "docs");
-const STORAGE_VERSION = "habitio_v10";
+const STORAGE_VERSION = "habitio_v11";
 
 // The app uses toISOString().slice(0,10) for date keys (UTC-based).
 // We must use the same UTC date so diary/checks align with "today" in the app.

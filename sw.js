@@ -1,4 +1,4 @@
-const CACHE = "habitio_v10";
+const CACHE = "habitio_v11";
 
 const PRECACHE = [
   "./",
@@ -125,4 +125,16 @@ globalThis.addEventListener("fetch", (e) => {
 
   // Default — network with cache fallback
   e.respondWith(fetch(request).catch(() => caches.match(request)));
+});
+
+globalThis.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  e.waitUntil(
+    globalThis.clients.matchAll({ type: "window", includeUncontrolled: true }).then((cs) => {
+      for (const c of cs) {
+        if (c.url.includes(globalThis.location.origin) && "focus" in c) return c.focus();
+      }
+      return globalThis.clients.openWindow("./");
+    })
+  );
 });

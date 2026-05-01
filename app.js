@@ -1,5 +1,5 @@
-const STORAGE_VERSION = "habitio_v10";
-const APP_VERSION = "v2.10";
+const STORAGE_VERSION = "habitio_v11";
+const APP_VERSION = "v2.11";
 const BUILD_SHA = "__BUILD_SHA__";
 // Replace with your deployed worker URL after running: wrangler deploy
 const WORKER_BASE_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
@@ -26,6 +26,7 @@ const GA_CONSENT_GRANTED = {
 
 let analyticsLoadPromise = null;
 let analyticsConfigured = false;
+let reminderTimer = null;
 
 function ensureAnalyticsStub() {
   globalThis.dataLayer = globalThis.dataLayer || [];
@@ -658,11 +659,13 @@ function applyDataMigration(d) {
   if (!d.lang) d.lang = "en";
   if (!d.kitsDismissed) d.kitsDismissed = {};
   if (d.consentAnalytics === undefined) d.consentAnalytics = null;
+  if (!d.reminder) d.reminder = { enabled: false, time: "20:00" };
   d.aiCoach = d.aiCoach ? { ...defaultCoachState(), ...d.aiCoach } : defaultCoachState();
   return d;
 }
 
 function cleanupOldStorageKeys() {
+  localStorage.removeItem("habitio_v10");
   localStorage.removeItem("habitio_v9");
   localStorage.removeItem("habitio_v8");
   localStorage.removeItem("habitio_v7");
@@ -678,6 +681,7 @@ function load() {
     // Migration: read from older keys if current key is absent
     const raw =
       localStorage.getItem(STORAGE_VERSION) ||
+      localStorage.getItem("habitio_v10") ||
       localStorage.getItem("habitio_v9") ||
       localStorage.getItem("habitio_v8") ||
       localStorage.getItem("habitio_v7") ||
@@ -705,6 +709,7 @@ function load() {
     lang: "en",
     kitsDismissed: {},
     consentAnalytics: null,
+    reminder: { enabled: false, time: "20:00" },
     aiCoach: defaultCoachState(),
   };
 }
@@ -2756,6 +2761,122 @@ function renderStats() {
     "</div>";
 }
 
+// ═══ REMINDERS ═══
+function scheduleReminder() {
+  clearTimeout(reminderTimer);
+  if (!state.reminder?.enabled || !state.reminder?.time) return;
+  if (!("Notification" in globalThis) || Notification.permission !== "granted") return;
+  
+  // Validate time format and bounds strictly
+  const parts = state.reminder.time.split(":");
+  if (parts.length !== 2) return;
+  const [h, m] = parts.map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return;
+  if (h < 0 || h > 23 || m < 0 || m > 59) return;
+  
+  // Use tab coordination: only schedule if no other tab has scheduled for today
+  const today = fmt(new Date());
+  const scheduledKey = "habitio_reminder_scheduled_" + today;
+  if (localStorage.getItem(scheduledKey)) return;
+  localStorage.setItem(scheduledKey, "true");
+  
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(h, m, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  const delay = next - now;
+  if (delay <= 0 || !isFinite(delay)) return;
+  
+  reminderTimer = setTimeout(() => {
+    showHabitReminder();
+    scheduleReminder();
+  }, delay);
+}
+function showHabitReminder() {
+  const today = fmt(new Date());
+  if (localStorage.getItem("habitio_last_reminder") === today) return;
+  localStorage.setItem("habitio_last_reminder", today);
+  
+  const title = t("reminder_title");
+  const opts = {
+    body: t("reminder_body"),
+    icon: "./icons/icon-192.png",
+    badge: "./icons/icon-192.png",
+    tag: "habit-reminder",
+  };
+  
+  // Only use service worker if available and ready
+  if ("serviceWorker" in navigator && "ready" in navigator.serviceWorker) {
+    navigator.serviceWorker.ready
+      .then((reg) => {
+        if (reg && typeof reg.showNotification === "function") {
+          return reg.showNotification(title, opts);
+        }
+      })
+      .catch(() => {
+        // Fallback to direct notification if service worker fails
+        if ("Notification" in globalThis && Notification.permission === "granted") {
+          try {
+            new Notification(title, opts);
+          } catch (e) {
+            console.warn("[habitio] Failed to show notification:", e);
+          }
+        }
+      });
+  } else if ("Notification" in globalThis && Notification.permission === "granted") {
+    // Direct notification as fallback
+    try {
+      new Notification(title, opts);
+    } catch (e) {
+      console.warn("[habitio] Failed to show notification:", e);
+    }
+  }
+}
+function getNotificationPermissionStatus() {
+  if (!("Notification" in globalThis)) return "unavailable";
+  return Notification.permission;
+}
+
+function isNotificationPermissionGranted() {
+  return "Notification" in globalThis && Notification.permission === "granted";
+}
+async function toggleReminder() {
+  if (state.reminder.enabled) {
+    state.reminder.enabled = false;
+    save();
+    clearTimeout(reminderTimer);
+    renderSettings();
+    return;
+  }
+  if (!("Notification" in globalThis)) {
+    alert(t("reminder_blocked"));
+    return;
+  }
+  let perm = Notification.permission;
+  if (perm === "default") {
+    try {
+      perm = await Notification.requestPermission();
+    } catch (e) {
+      console.warn("[habitio] Permission request failed:", e);
+      alert(t("reminder_blocked"));
+      return;
+    }
+  }
+  if (perm !== "granted") {
+    alert(t("reminder_blocked"));
+    return;
+  }
+  state.reminder.enabled = true;
+  save();
+  scheduleReminder();
+  renderSettings();
+}
+function setReminderTime(val) {
+  state.reminder.time = val;
+  save();
+  scheduleReminder();
+}
+
 // ═══ SETTINGS ═══
 function renderSettings() {
   const c = document.getElementById("settings-content");
@@ -2839,6 +2960,26 @@ function renderSettings() {
     '</span><span class="setting-label">' +
     t(state.consentAnalytics ? "analytics_on" : "analytics_off") +
     '</span></div><span class="setting-action">›</span></div></div></div>' +
+    '<div class="settings-section"><div class="settings-title">' +
+    t("settings_reminder") +
+    '</div><div class="settings-list"><div class="setting-item" onclick="toggleReminder()"><div class="setting-left"><span class="setting-emoji">' +
+    (state.reminder.enabled && isNotificationPermissionGranted() ? "🔔" : "🔕") +
+    '</span><span class="setting-label">' +
+    t(
+      state.reminder.enabled && isNotificationPermissionGranted()
+        ? "reminder_on"
+        : "reminder_off"
+    ) +
+    (getNotificationPermissionStatus() === "denied" ? ' (' + t("reminder_blocked") + ')' : '') +
+    '</span></div><span class="setting-action">›</span></div>' +
+    (state.reminder.enabled && isNotificationPermissionGranted()
+      ? '<div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🕐</span><span class="setting-label">' +
+        t("reminder_time") +
+        '</span></div><input type="time" value="' +
+        state.reminder.time +
+        '" onchange="setReminderTime(this.value)" style="background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:4px 8px;font-size:14px;font-family:inherit"></div>'
+      : "") +
+    "</div></div>" +
     '<div class="settings-section"><div class="settings-title">' +
     t("settings_feedback") +
     '</div><div class="settings-list"><div style="padding:12px 16px;display:flex;flex-direction:column;gap:10px">' +
@@ -3126,6 +3267,7 @@ function showConsentBannerIfNeeded() {
 
 load();
 setAnalyticsDisabled(state.consentAnalytics !== true);
+scheduleReminder();
 render();
 setFabVisible(true);
 const needsWelcome = !state.profile.name && !state.habits.length;
