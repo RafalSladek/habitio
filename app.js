@@ -2766,16 +2766,27 @@ function scheduleReminder() {
   clearTimeout(reminderTimer);
   if (!state.reminder?.enabled || !state.reminder?.time) return;
   if (!("Notification" in globalThis) || Notification.permission !== "granted") return;
+  
+  // Validate time format and bounds strictly
   const parts = state.reminder.time.split(":");
   if (parts.length !== 2) return;
   const [h, m] = parts.map(Number);
   if (Number.isNaN(h) || Number.isNaN(m)) return;
+  if (h < 0 || h > 23 || m < 0 || m > 59) return;
+  
+  // Use tab coordination: only schedule if no other tab has scheduled for today
+  const today = fmt(new Date());
+  const scheduledKey = "habitio_reminder_scheduled_" + today;
+  if (localStorage.getItem(scheduledKey)) return;
+  localStorage.setItem(scheduledKey, "true");
+  
   const now = new Date();
   const next = new Date(now);
   next.setHours(h, m, 0, 0);
   if (next <= now) next.setDate(next.getDate() + 1);
   const delay = next - now;
-  if (!delay || delay <= 0) return;
+  if (delay <= 0 || !isFinite(delay)) return;
+  
   reminderTimer = setTimeout(() => {
     showHabitReminder();
     scheduleReminder();
@@ -2785,6 +2796,7 @@ function showHabitReminder() {
   const today = fmt(new Date());
   if (localStorage.getItem("habitio_last_reminder") === today) return;
   localStorage.setItem("habitio_last_reminder", today);
+  
   const title = t("reminder_title");
   const opts = {
     body: t("reminder_body"),
@@ -2792,11 +2804,41 @@ function showHabitReminder() {
     badge: "./icons/icon-192.png",
     tag: "habit-reminder",
   };
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.ready.then((reg) => reg.showNotification(title, opts));
-  } else if (Notification.permission === "granted") {
-    new Notification(title, opts);
+  
+  // Only use service worker if available and ready
+  if ("serviceWorker" in navigator && "ready" in navigator.serviceWorker) {
+    navigator.serviceWorker.ready
+      .then((reg) => {
+        if (reg && typeof reg.showNotification === "function") {
+          return reg.showNotification(title, opts);
+        }
+      })
+      .catch(() => {
+        // Fallback to direct notification if service worker fails
+        if ("Notification" in globalThis && Notification.permission === "granted") {
+          try {
+            new Notification(title, opts);
+          } catch (e) {
+            console.warn("[habitio] Failed to show notification:", e);
+          }
+        }
+      });
+  } else if ("Notification" in globalThis && Notification.permission === "granted") {
+    // Direct notification as fallback
+    try {
+      new Notification(title, opts);
+    } catch (e) {
+      console.warn("[habitio] Failed to show notification:", e);
+    }
   }
+}
+function getNotificationPermissionStatus() {
+  if (!("Notification" in globalThis)) return "unavailable";
+  return Notification.permission;
+}
+
+function isNotificationPermissionGranted() {
+  return "Notification" in globalThis && Notification.permission === "granted";
 }
 async function toggleReminder() {
   if (state.reminder.enabled) {
@@ -2811,7 +2853,15 @@ async function toggleReminder() {
     return;
   }
   let perm = Notification.permission;
-  if (perm === "default") perm = await Notification.requestPermission();
+  if (perm === "default") {
+    try {
+      perm = await Notification.requestPermission();
+    } catch (e) {
+      console.warn("[habitio] Permission request failed:", e);
+      alert(t("reminder_blocked"));
+      return;
+    }
+  }
   if (perm !== "granted") {
     alert(t("reminder_blocked"));
     return;
@@ -2913,15 +2963,16 @@ function renderSettings() {
     '<div class="settings-section"><div class="settings-title">' +
     t("settings_reminder") +
     '</div><div class="settings-list"><div class="setting-item" onclick="toggleReminder()"><div class="setting-left"><span class="setting-emoji">' +
-    (state.reminder.enabled ? "🔔" : "🔕") +
+    (state.reminder.enabled && isNotificationPermissionGranted() ? "🔔" : "🔕") +
     '</span><span class="setting-label">' +
     t(
-      state.reminder.enabled && "Notification" in globalThis && Notification.permission === "granted"
+      state.reminder.enabled && isNotificationPermissionGranted()
         ? "reminder_on"
         : "reminder_off"
     ) +
+    (getNotificationPermissionStatus() === "denied" ? ' (' + t("reminder_blocked") + ')' : '') +
     '</span></div><span class="setting-action">›</span></div>' +
-    (state.reminder.enabled
+    (state.reminder.enabled && isNotificationPermissionGranted()
       ? '<div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🕐</span><span class="setting-label">' +
         t("reminder_time") +
         '</span></div><input type="time" value="' +
