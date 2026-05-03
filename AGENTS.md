@@ -41,8 +41,22 @@ npx playwright test --project="iPhone 12 Safari"
 yarn format          # write
 yarn format:check    # verify only
 
+# Validate i18n key parity across all 20 languages
+node scripts/validate-i18n.js
+
 # SonarCloud analysis (requires SONAR_TOKEN env var)
 sonar-scanner
+
+# Regenerate docs screenshots / GIF / badges
+yarn screenshots        # node scripts/take-screenshots.js (requires local server on :3000)
+yarn gif                # node scripts/generate-gif.js (requires ffmpeg)
+yarn badges:generate    # node scripts/generate-badges.js
+
+# Update Lighthouse performance table in README.md
+node scripts/update-pagespeed.js
+
+# All-in-one pre-commit check (format:check + test)
+yarn precommit
 
 # Worker deploy
 cd worker && npx wrangler whoami  # Verify account
@@ -299,18 +313,24 @@ To add a new language (e.g., Spanish `es`):
    - Review the `name`, `short_name`, and `description` fields
    - If they're in English, consider adding localized versions if supported by the PWA spec, or leave as-is for universal recognition
 
-5. **Test thoroughly**:
+5. **Validate key parity:**
+   ```bash
+   node scripts/validate-i18n.js
+   ```
+   Must output `✓ All languages have all keys!` before proceeding.
+
+6. **Test thoroughly**:
    - Manually switch to the new language in the app (Settings → Language)
    - Verify all UI elements render correctly (no text overflow, emoji displays properly)
    - Check that habit suggestions work with the new language
    - Verify translations are contextually appropriate (test on mobile, tablet, and desktop)
    - Test language persistence across page reloads (localStorage saves selection)
 
-6. **Update documentation**:
+7. **Update documentation**:
    - Update `AGENTS.md` to list the new language count (e.g., "20 languages" → "21 languages")
    - Update `README.md` if language count is mentioned
 
-7. **Commit with version bump**:
+8. **Commit with version bump**:
    - No localStorage schema change needed — just new translation strings
    - However, if new UI copy was added, may need version bump for cache invalidation
    - Run `yarn test` to ensure all tests still pass with the new language
