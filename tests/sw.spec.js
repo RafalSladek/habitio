@@ -5,7 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 
 /** Must match CACHE in sw.js and STORAGE_VERSION in app.js */
-const STORAGE_VERSION = "habitio_v11";
+const STORAGE_VERSION = "habitio_v12";
 
 function cloneResponse(response) {
   return response ? response.clone() : undefined;

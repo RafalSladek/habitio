@@ -92,7 +92,7 @@ test.describe("after onboarding", () => {
     await expect(page.getByText("Export Backup")).toBeVisible();
     await expect(page.getByText("Import Backup")).toBeVisible();
     await expect(page.getByText("Reset All Data")).toBeVisible();
-    await expect(page.getByText("habit.io v2.11")).toBeVisible();
+    await expect(page.getByText("habit.io v2.12")).toBeVisible();
   });
 
   test("settings shows saved profile", async ({ page }) => {

@@ -5,7 +5,7 @@ const path = require("node:path");
 const gaRouteInstalled = new WeakSet();
 
 /** Must match STORAGE_VERSION in app.js and CACHE in sw.js */
-const STORAGE_VERSION = "habitio_v11";
+const STORAGE_VERSION = "habitio_v12";
 
 const test = base.extend({
   coverageRecorder: [

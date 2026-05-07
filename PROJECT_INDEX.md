@@ -262,7 +262,7 @@ localStorage key: habitio_v9
 - `POST /coach` — rate-limited LLM proxy via Cloudflare AI
 
 **Config:**
-- Model: `@cf/meta/llama-3.1-8b-instruct-fast`
+- Model: `@cf/qwen/qwen3-30b-a3b-fp8`
 - Default budget: 5 requests/day, 4500 estimated tokens/day per device
 - CORS whitelist: `habitio.rafal-sladek.com`, `rafalsladek.github.io`, `localhost:3000`
 - Secrets: `GITHUB_TOKEN` (Cloudflare), `CLOUDFLARE_API_TOKEN` (GitHub repo secret for CI)

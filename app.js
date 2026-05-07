@@ -1,5 +1,5 @@
-const STORAGE_VERSION = "habitio_v11";
-const APP_VERSION = "v2.11";
+const STORAGE_VERSION = "habitio_v12";
+const APP_VERSION = "v2.12";
 const BUILD_SHA = "__BUILD_SHA__";
 // Replace with your deployed worker URL after running: wrangler deploy
 const WORKER_BASE_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
@@ -665,6 +665,7 @@ function applyDataMigration(d) {
 }
 
 function cleanupOldStorageKeys() {
+  localStorage.removeItem("habitio_v11");
   localStorage.removeItem("habitio_v10");
   localStorage.removeItem("habitio_v9");
   localStorage.removeItem("habitio_v8");
@@ -681,6 +682,7 @@ function load() {
     // Migration: read from older keys if current key is absent
     const raw =
       localStorage.getItem(STORAGE_VERSION) ||
+      localStorage.getItem("habitio_v11") ||
       localStorage.getItem("habitio_v10") ||
       localStorage.getItem("habitio_v9") ||
       localStorage.getItem("habitio_v8") ||
@@ -2276,7 +2278,7 @@ function buildCoachPayload(focus) {
       };
     })
     .sort((a, b) => a.completion_30d_pct - b.completion_30d_pct)
-    .slice(0, 8);
+    .slice(0, 3);
   const bestHabit = [...habits].sort(
     (a, b) => b.completion_30d_pct - a.completion_30d_pct || b.streak - a.streak
   )[0];
@@ -2785,7 +2787,7 @@ function scheduleReminder() {
   next.setHours(h, m, 0, 0);
   if (next <= now) next.setDate(next.getDate() + 1);
   const delay = next - now;
-  if (delay <= 0 || !isFinite(delay)) return;
+  if (delay <= 0 || !Number.isFinite(delay)) return;
   
   reminderTimer = setTimeout(() => {
     showHabitReminder();

@@ -2,7 +2,7 @@
 const { test, expect } = require("./test-helpers");
 
 const OLD_KEY = "habitio_v9";
-const NEW_KEY = "habitio_v11";
+const NEW_KEY = "habitio_v12";
 
 /** Ensure `load()` migrates old state keys into the current storage key */
 test("migrates old storage key into new key on load", async ({ page }) => {

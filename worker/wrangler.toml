@@ -15,7 +15,7 @@ binding = "AI"
 # preview_id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 [vars]
-COACH_MODEL = "@cf/meta/llama-3.1-8b-instruct-fast"
+COACH_MODEL = "@cf/qwen/qwen3-30b-a3b-fp8"
 COACH_MAX_DAILY_REQUESTS = "5"
 COACH_MAX_DAILY_ESTIMATED_TOKENS = "4500"
 COACH_MAX_INPUT_CHARS = "4000"

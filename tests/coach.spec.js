@@ -115,7 +115,7 @@ test.describe("ai coach", () => {
             estimatedTokensUsed: 700,
             estimatedTokensLimit: 4500,
           },
-          model: "@cf/meta/llama-3.1-8b-instruct-fast",
+          model: "@cf/qwen/qwen3-30b-a3b-fp8",
         }),
       });
     });
@@ -155,7 +155,7 @@ test.describe("ai coach", () => {
             estimatedTokensUsed: 850,
             estimatedTokensLimit: 4500,
           },
-          model: "@cf/meta/llama-3.1-8b-instruct-fast",
+          model: "@cf/qwen/qwen3-30b-a3b-fp8",
         }),
       });
     });
