@@ -100,3 +100,78 @@ test.describe("daily reminders", () => {
     await expect(page.locator(".setting-label", { hasText: "Daily reminder: On" })).toBeVisible();
   });
 });
+
+test.describe("reminder error paths", () => {
+  test("toggleReminder shows alert when Notification API is unavailable", async ({ page }) => {
+    await page.addInitScript(() => {
+      delete globalThis.Notification;
+    });
+    await resetToDefaultState(page);
+    await completeOnboarding(page, "Test");
+    await page.getByRole("button", { name: "⚙ Settings" }).click();
+    page.on("dialog", (d) => d.dismiss());
+    await page
+      .locator(".setting-item", {
+        has: page.locator(".setting-label", { hasText: /Daily reminder/i }),
+      })
+      .first()
+      .click();
+    await expect(page.locator(".setting-label", { hasText: "Daily reminder: Off" })).toBeVisible();
+  });
+
+  test("toggleReminder shows alert when permission is denied", async ({ page }) => {
+    await page.addInitScript(() => {
+      class DeniedNotification {
+        static get permission() {
+          return "denied";
+        }
+        static requestPermission() {
+          return Promise.resolve("denied");
+        }
+      }
+      Object.defineProperty(globalThis, "Notification", {
+        value: DeniedNotification,
+        writable: true,
+        configurable: true,
+      });
+    });
+    await resetToDefaultState(page);
+    await completeOnboarding(page, "Test");
+    await page.getByRole("button", { name: "⚙ Settings" }).click();
+    page.on("dialog", (d) => d.dismiss());
+    await page
+      .locator(".setting-item", {
+        has: page.locator(".setting-label", { hasText: /Daily reminder/i }),
+      })
+      .first()
+      .click();
+    await expect(page.locator(".setting-label", { hasText: "Daily reminder: Off" })).toBeVisible();
+  });
+
+  test("showHabitReminder sends notification via direct Notification API when SW unavailable", async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      globalThis.__notifFired = false;
+      function TrackingNotif() {
+        globalThis.__notifFired = true;
+      }
+      TrackingNotif.permission = "granted";
+      TrackingNotif.requestPermission = () => Promise.resolve("granted");
+      Object.defineProperty(globalThis, "Notification", {
+        value: TrackingNotif,
+        writable: true,
+        configurable: true,
+      });
+    });
+    await resetToDefaultState(page);
+    await completeOnboarding(page, "Test");
+    await page.evaluate(() => {
+      Object.defineProperty(navigator, "serviceWorker", { value: {}, configurable: true });
+      localStorage.removeItem("habitio_last_reminder");
+      showHabitReminder();
+    });
+    const fired = await page.evaluate(() => globalThis.__notifFired);
+    expect(fired).toBe(true);
+  });
+});

@@ -222,4 +222,40 @@ test.describe("export / import", () => {
     expect(state.habits.map((habit) => habit.name)).toContain("Drink Water");
     expect(Object.values(state.checks["2024-01-15"] || {}).some((value) => value)).toBe(true);
   });
+
+  test("import modal closes when clicking the backdrop", async ({ page }) => {
+    await seedAndGoToSettings(page);
+    await page.locator(".setting-item", { has: page.locator(".setting-label", { hasText: /Import/ }) }).click();
+    await expect(page.locator("#import-modal")).toHaveClass(/show/);
+
+    // Click the backdrop (the modal overlay itself, not its children)
+    await page.locator("#import-modal").click({ position: { x: 5, y: 5 } });
+    await expect(page.locator("#import-modal")).not.toHaveClass(/show/);
+  });
+
+  test("toggleImpOpt deselects and reselects tracking option", async ({ page }) => {
+    await seedAndGoToSettings(page);
+    await page.locator(".setting-item", { has: page.locator(".setting-label", { hasText: /Import/ }) }).click();
+
+    const trackingOpt = page.locator("#imp-tracking");
+    await expect(trackingOpt).toHaveClass(/selected/);
+
+    // Deselect tracking
+    await trackingOpt.click();
+    await expect(trackingOpt).not.toHaveClass(/selected/);
+
+    // Re-select tracking
+    await trackingOpt.click();
+    await expect(trackingOpt).toHaveClass(/selected/);
+  });
+
+  test("toggleImpOpt keeps at least one option selected", async ({ page }) => {
+    await seedAndGoToSettings(page);
+    await page.locator(".setting-item", { has: page.locator(".setting-label", { hasText: /Import/ }) }).click();
+
+    // Deselect tracking, then deselect habits — habits should re-enable automatically
+    await page.locator("#imp-tracking").click();
+    await page.locator("#imp-habits").click();
+    await expect(page.locator("#imp-habits")).toHaveClass(/selected/);
+  });
 });
