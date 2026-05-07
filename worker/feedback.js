@@ -9,7 +9,7 @@ const ALLOWED_ORIGINS = new Set([
   "http://127.0.0.1:3000",
 ]);
 const COACH_DEVICE_RE = /^[a-zA-Z0-9_-]{8,64}$/;
-const MODEL_DEFAULT = "@cf/meta/llama-3.1-8b-instruct-fast";
+const MODEL_DEFAULT = "@cf/qwen/qwen3-30b-a3b-fp8";
 const budgetCache = new Map();
 
 function getOrigin(request) {

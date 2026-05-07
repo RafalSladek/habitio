@@ -196,7 +196,7 @@ Do not load GA4 script unconditionally or reintroduce GTM.
 - **Live URL:** `https://habitio-feedback.rafal-sladek.workers.dev`
 - Routes: `POST /` (feedback → GitHub Issue), `POST /coach` (Cloudflare AI LLM proxy)
 - Coach budget: 5 req/day, 4500 estimated tokens/day per device (env-configurable)
-- Model: `@cf/meta/llama-3.1-8b-instruct-fast`
+- Model: `@cf/qwen/qwen3-30b-a3b-fp8`
 - CORS whitelist: `habitio.rafal-sladek.com`, `rafalsladek.github.io`, `localhost:3000`
 - Secrets: `GITHUB_TOKEN` in Cloudflare; `CLOUDFLARE_API_TOKEN` in GitHub repo secrets
 - **Test detection:** Worker automatically blocks Playwright test requests (via User-Agent + message patterns) to prevent creating GitHub issues during test runs
