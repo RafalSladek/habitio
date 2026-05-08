@@ -168,6 +168,27 @@ test.describe("ai coach", () => {
     expect(captured.summary.recent_journal[0].grateful).toContain("Sunny walk");
   });
 
+  test("shows coach_error toast on generic worker error (e.g. 502)", async ({ page }, testInfo) => {
+    if (testInfo.project.name === "iPhone 12 Safari") {
+      testInfo.skip();
+    }
+
+    await page.route(COACH_URL, async (route) => {
+      await route.fulfill({
+        status: 502,
+        contentType: "application/json",
+        body: JSON.stringify({ error: "Invalid coach response" }),
+      });
+    });
+
+    await page.locator("#coach-submit").click();
+
+    await expect(page.locator(".toast")).toBeVisible();
+    await expect(page.locator(".toast")).not.toContainText(/limit/i);
+    // Button must be re-enabled after the error
+    await expect(page.locator("#coach-submit")).toBeEnabled();
+  });
+
   test("shows a toast when the daily coach limit is reached", async ({ page }) => {
     await page.route(COACH_URL, async (route) => {
       await route.fulfill({
