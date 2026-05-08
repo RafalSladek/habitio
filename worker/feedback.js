@@ -110,8 +110,28 @@ function coachLanguageLabel(summary) {
 }
 
 function normalizeCoachResponse(payload) {
-  const raw =
-    payload?.response && typeof payload.response === "object" ? payload.response : payload;
+  // Cloudflare Workers AI returns OpenAI-compatible chat.completion for chat models
+  let raw;
+  if (Array.isArray(payload?.choices) && payload.choices[0]?.message?.content) {
+    const content = payload.choices[0].message.content;
+    try {
+      raw = typeof content === "string" ? JSON.parse(content) : content;
+    } catch {
+      raw = null;
+    }
+  } else if (payload?.response && typeof payload.response === "object") {
+    raw = payload.response;
+  } else if (typeof payload?.response === "string") {
+    try {
+      raw = JSON.parse(payload.response);
+    } catch {
+      raw = payload;
+    }
+  } else {
+    raw = payload;
+  }
+
+  if (!raw) return null;
   const encouragement = String(raw?.encouragement || "").trim();
   const candidFeedback = String(raw?.candid_feedback || raw?.candidFeedback || "").trim();
   const nextSteps = Array.isArray(raw?.next_steps || raw?.nextSteps)
@@ -276,6 +296,7 @@ async function handleCoach(request, env, cors) {
 
   const replyLanguage = coachLanguageLabel(summary);
   const systemPrompt = [
+    "/no_think",
     "You are an encouraging but candid habit coach inside a privacy-first habit tracker.",
     `Reply only in ${replyLanguage}.`,
     "Be warm, honest, specific, and concise.",
