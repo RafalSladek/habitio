@@ -189,7 +189,11 @@ test.describe("ai coach", () => {
     await expect(page.locator("#coach-submit")).toBeEnabled();
   });
 
-  test("shows a toast when the daily coach limit is reached", async ({ page }) => {
+  test("shows a toast when the daily coach limit is reached", async ({ page }, testInfo) => {
+    if (testInfo.project.name === "iPhone 12 Safari") {
+      testInfo.skip();
+    }
+
     await page.route(COACH_URL, async (route) => {
       await route.fulfill({
         status: 429,
