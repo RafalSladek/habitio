@@ -2396,7 +2396,7 @@ function shareApp() {
   const url = "https://habitio.rafal-sladek.com/";
   if (navigator.share) {
     navigator
-      .share({ title: "habit.io", text: t("share_text"), url })
+      .share({ title: "habit.io", text: t("share_text").replace(/habit\.io/g, "habit​.io"), url })
       .then(() => trackEvent("share", { method: "web_share_api", content_type: "app" }))
       .catch(() => {});
   } else {
