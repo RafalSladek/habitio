@@ -1,6 +1,7 @@
-const STORAGE_VERSION = "habitio_v12";
-const APP_VERSION = "v2.12";
+const STORAGE_VERSION = "habitio_v13";
+const APP_VERSION = "v2.13";
 const BUILD_SHA = "__BUILD_SHA__";
+let _updateStatus = null; // null | 'checking' | 'up-to-date' | 'available' | 'error'
 // Replace with your deployed worker URL after running: wrangler deploy
 const WORKER_BASE_URL = "https://habitio-feedback.rafal-sladek.workers.dev";
 const FEEDBACK_WORKER_URL = WORKER_BASE_URL;
@@ -665,6 +666,7 @@ function applyDataMigration(d) {
 }
 
 function cleanupOldStorageKeys() {
+  localStorage.removeItem("habitio_v12");
   localStorage.removeItem("habitio_v11");
   localStorage.removeItem("habitio_v10");
   localStorage.removeItem("habitio_v9");
@@ -682,6 +684,7 @@ function load() {
     // Migration: read from older keys if current key is absent
     const raw =
       localStorage.getItem(STORAGE_VERSION) ||
+      localStorage.getItem("habitio_v12") ||
       localStorage.getItem("habitio_v11") ||
       localStorage.getItem("habitio_v10") ||
       localStorage.getItem("habitio_v9") ||
@@ -2953,7 +2956,27 @@ function renderSettings() {
     t("about_on_device") +
     '</span></div><div class="setting-item" style="cursor:default"><div class="setting-left"><span class="setting-emoji">🔨</span><span class="setting-label">Build</span></div><span class="setting-action" style="font-family:monospace;font-size:12px">' +
     (BUILD_SHA.startsWith("__") ? "dev" : BUILD_SHA) +
-    '</span></div><div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
+    "</span></div>" +
+    (BUILD_SHA.startsWith("__")
+      ? ""
+      : '<div id="update-row" class="setting-item" style="cursor:' +
+        (_updateStatus === "available" ? "pointer" : "default") +
+        '"' +
+        (_updateStatus === "available" ? ' onclick="forceUpdate()"' : "") +
+        '><div class="setting-left"><span class="setting-emoji">🔄</span><span class="setting-label" id="update-label">' +
+        (_updateStatus === "available"
+          ? t("update_available")
+          : _updateStatus === "up-to-date"
+            ? t("update_up_to_date")
+            : t("update_checking")) +
+        '</span></div><span class="setting-action" id="update-action">' +
+        (_updateStatus === "available"
+          ? t("update_now")
+          : _updateStatus === "up-to-date"
+            ? "✓"
+            : "") +
+        "</span></div>") +
+    '<div class="setting-item" onclick="shareApp()"><div class="setting-left"><span class="setting-emoji">🔗</span><span class="setting-label">' +
     t("share_app") +
     '</span></div><span class="setting-action">›</span></div><div class="setting-item" onclick="setConsent(' +
     !state.consentAnalytics +
@@ -3017,6 +3040,48 @@ function renderSettings() {
     '<button id="feedback-submit" onclick="submitFeedback()" style="background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer">' +
     t("feedback_submit") +
     "</button></div></div></div>";
+  if (!BUILD_SHA.startsWith("__") && _updateStatus === null) {
+    _updateStatus = "checking";
+    setTimeout(checkForUpdate, 0);
+  }
+}
+async function checkForUpdate() {
+  try {
+    const res = await fetch("./app.js?_v=" + Date.now(), { cache: "no-store" });
+    if (!res.ok) throw new Error("fetch failed");
+    const text = await res.text();
+    const match = text.match(/BUILD_SHA\s*=\s*"([^"]+)"/);
+    const serverSha = match ? match[1] : null;
+    _updateStatus = serverSha && serverSha !== BUILD_SHA ? "available" : "up-to-date";
+  } catch {
+    _updateStatus = "error";
+  }
+  const rowEl = document.getElementById("update-row");
+  const labelEl = document.getElementById("update-label");
+  const actionEl = document.getElementById("update-action");
+  if (!rowEl) return;
+  if (_updateStatus === "available") {
+    if (labelEl) labelEl.textContent = t("update_available");
+    if (actionEl) actionEl.textContent = t("update_now");
+    rowEl.style.cursor = "pointer";
+    rowEl.setAttribute("onclick", "forceUpdate()");
+  } else if (_updateStatus === "up-to-date") {
+    if (labelEl) labelEl.textContent = t("update_up_to_date");
+    if (actionEl) actionEl.textContent = "✓";
+  } else {
+    rowEl.style.display = "none";
+  }
+}
+async function forceUpdate() {
+  if ("caches" in window) {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+  }
+  if ("serviceWorker" in navigator) {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(regs.map((r) => r.unregister()));
+  }
+  location.reload();
 }
 function setFeedbackStar(n) {
   document.querySelectorAll("#feedback-stars button").forEach((btn) => {

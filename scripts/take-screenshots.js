@@ -7,7 +7,7 @@ const path = require("path");
 
 const BASE_URL = "http://localhost:3000";
 const DOCS_DIR = path.join(__dirname, "..", "docs");
-const STORAGE_VERSION = "habitio_v12";
+const STORAGE_VERSION = "habitio_v13";
 
 // The app uses toISOString().slice(0,10) for date keys (UTC-based).
 // We must use the same UTC date so diary/checks align with "today" in the app.
@@ -214,12 +214,12 @@ async function main() {
     await mobile.waitForTimeout(400);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-tracker.png"), fullPage: true });
 
-    // 3. Add-habit modal open — 1 habit seeded so FAB is visible, modal scrolled to CTA
+    // 3. Add-habit modal open — invoke openAddModal() directly, scroll CTA into view
     console.log("  screenshot-add-habit.png");
     const stateOneHabit = { ...SEED_STATE, habits: [SEED_STATE.habits[0]] };
     await loadWithState(mobile, stateOneHabit);
-    await mobile.click("#fab-add");
-    await mobile.waitForSelector("#add-modal.show", { timeout: 3000 }).catch(() => {});
+    await mobile.evaluate(() => window.openAddModal());
+    await mobile.waitForSelector("#add-modal.show", { timeout: 5000 }).catch(() => {});
     await mobile.waitForTimeout(400);
     // Scroll the modal to the bottom so the Save CTA button is visible
     await mobile.evaluate(() => {
@@ -229,7 +229,7 @@ async function main() {
     await mobile.waitForTimeout(300);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-add-habit.png") });
 
-    // 4. Journal — show first step (grateful)
+    // 4. Journal — show first step (grateful, empty diary)
     console.log("  screenshot-journal.png");
     const stateNoDiary = { ...SEED_STATE, diary: {} };
     await loadWithState(mobile, stateNoDiary);
@@ -237,19 +237,21 @@ async function main() {
     await mobile.waitForTimeout(600);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-journal.png") });
 
-    // 5. Stats page — scroll to show all graphs
+    // 5. Journal summary — all fields filled → switchPage auto-calls calcDiaryStep() → shows ✨ summary
+    console.log("  screenshot-journal-summary.png");
+    await loadWithState(mobile, SEED_STATE); // SEED_STATE has today's diary complete
+    await mobile.locator(".nav-tab").nth(1).click();
+    await mobile.waitForTimeout(600);
+    await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-journal-summary.png") });
+
+    // 6. Stats page — full page (includes mood trend + AI coach panel at bottom)
     console.log("  screenshot-stats.png");
     await loadWithState(mobile, SEED_STATE);
     await mobile.locator(".nav-tab").nth(2).click();
     await mobile.waitForTimeout(800);
-    // Scroll down to show mood trends and other charts
-    await mobile.evaluate(() => {
-      window.scrollTo(0, document.body.scrollHeight);
-    });
-    await mobile.waitForTimeout(400);
     await mobile.screenshot({ path: path.join(DOCS_DIR, "screenshot-stats.png"), fullPage: true });
 
-    // 6. Settings page — full page capture
+    // 7. Settings page — full page capture
     console.log("  screenshot-settings.png");
     await loadWithState(mobile, SEED_STATE);
     await mobile.locator(".nav-tab").nth(3).click();
@@ -303,7 +305,7 @@ async function main() {
     // 12. Desktop modal (add habit open)
     console.log("  desktop-modal.png");
     await loadWithState(desktop, SEED_STATE);
-    await desktop.click("#fab-add");
+    await desktop.evaluate(() => window.openAddModal());
     await desktop.waitForTimeout(600);
     await desktop.screenshot({ path: path.join(DOCS_DIR, "desktop-modal.png") });
 
@@ -327,7 +329,7 @@ async function main() {
 
     await tabletCtx.close();
 
-    console.log("\n✅ All 13 screenshots saved to docs/");
+    console.log("\n✅ All 14 screenshots saved to docs/");
   } finally {
     await browser.close();
   }

@@ -341,6 +341,10 @@ const T = {
         a: "James Clear",
       },
     ],
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
   },
   de: {
     nav_today: "Heute",
@@ -627,6 +631,10 @@ const T = {
     coach_unlock_toast:
       "Mach erst 3 getrackte Tage voll, dann wird deine Coach-Reflexion freigeschaltet.",
     coach_budget_status: "{used} / {limit} KI-Coach-Anfragen heute genutzt",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Jede Handlung, die du tust, ist eine Stimme für die Person, die du sein möchtest.",
@@ -946,6 +954,10 @@ const T = {
     coach_unlock_note: "Po 3 dniach śledzenia pojawi się tutaj refleksja coacha.",
     coach_unlock_toast: "Działaj jeszcze przez 3 dni, aby odblokować refleksję coacha.",
     coach_budget_status: "Dziś wykorzystano {used} z {limit} próśb do trenera AI",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       { q: "Każde twoje działanie to głos za osobą, którą chcesz się stać.", a: "James Clear" },
       {
@@ -1260,6 +1272,10 @@ const T = {
     coach_unlock_note: "Depois de 3 dias registrados, sua reflexão vai aparecer aqui.",
     coach_unlock_toast: "Siga por mais 3 dias para desbloquear sua reflexão do coach.",
     coach_budget_status: "{used} / {limit} pedidos ao coach de IA usados hoje",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Cada ação que você realiza é um voto pelo tipo de pessoa que deseja se tornar.",
@@ -1577,6 +1593,10 @@ const T = {
     coach_unlock_note: "После 3 дней отслеживания здесь появится ваша рефлексия.",
     coach_unlock_toast: "Продолжайте ещё 3 дня, чтобы открыть свою рефлексию.",
     coach_budget_status: "Сегодня использовано {used} из {limit} запросов к ИИ-коучу",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Каждое действие, которое ты совершаешь, — это голос за того человека, которым ты хочешь стать.",
@@ -1898,6 +1918,10 @@ const T = {
     coach_unlock_note: "Après 3 jours suivis, votre réflexion apparaîtra ici.",
     coach_unlock_toast: "Continuez pendant 3 jours pour débloquer votre réflexion.",
     coach_budget_status: "{used} / {limit} demandes au coach IA utilisées aujourd'hui",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Chaque action que tu entreprends est un vote pour le type de personne que tu souhaites devenir.",
@@ -2217,6 +2241,10 @@ const T = {
     coach_unlock_note: "3 ट्रैक किए गए दिनों के बाद आपकी कोच समीक्षा यहाँ दिखेगी।",
     coach_unlock_toast: "3 ट्रैक किए गए दिन पूरे करें, फिर आपकी कोच समीक्षा खुल जाएगी।",
     coach_budget_status: "आज {used} / {limit} AI coach अनुरोध उपयोग किए गए",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "आप जो हर कदम उठाते हैं, वह उस व्यक्ति के लिए एक वोट है जो आप बनना चाहते हैं।",
@@ -2533,6 +2561,10 @@ const T = {
     coach_unlock_note: "Після 3 днів відстеження тут з’явиться ваша рефлексія.",
     coach_unlock_toast: "Продовжуйте ще 3 дні, щоб відкрити свою рефлексію.",
     coach_budget_status: "Сьогодні використано {used} з {limit} запитів до AI-коуча",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Кожна дія, яку ти здійснюєш, — це голос за людину, якою ти хочеш стати.",
@@ -2833,6 +2865,10 @@ const T = {
     coach_unlock_note: "بعد 3 أيام من التتبع ستظهر مراجعة المدرب هنا.",
     coach_unlock_toast: "استمر 3 أيام في التتبع لفتح مراجعة المدرب.",
     coach_budget_status: "تم استخدام {used} من {limit} من طلبات مدرب الذكاء الاصطناعي اليوم",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       { q: "كل فعل تقوم به هو تصويت للشخص الذي تريد أن تصبح.", a: "James Clear" },
       { q: "أنت لا ترتقي إلى مستوى أهدافك. أنت تنحدر إلى مستوى أنظمتك.", a: "James Clear" },
@@ -3143,6 +3179,10 @@ const T = {
     coach_unlock_note: "Pas 3 ditësh të regjistruara, reflektimi yt do të shfaqet këtu.",
     coach_unlock_toast: "Vazhdo edhe 3 ditë për të zhbllokuar reflektimin tënd.",
     coach_budget_status: "Sot janë përdorur {used} nga {limit} kërkesa për trajnerin AI",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Çdo veprim që ndërmerrni është një votë për llojin e personit që dëshironi të bëheni.",
@@ -3451,6 +3491,10 @@ const T = {
     coach_unlock_note: "После 3 дана праћења, твоја рефлексија ће се појавити овде.",
     coach_unlock_toast: "Настави још 3 дана да откључаш своју рефлексију.",
     coach_budget_status: "Данас је искоришћено {used} од {limit} захтева ка AI тренеру",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Свака радња коју предузимаш је глас за особу коју желиш да постанеш.",
@@ -3762,6 +3806,10 @@ const T = {
     coach_unlock_note: "Noch 3 getrackten Dog erscheint do deine Coach-Reflexion.",
     coach_unlock_toast: "Mach no 3 getrackte Dog, dann werd deine Coach-Reflexion freigschoid.",
     coach_budget_status: "{used} / {limit} KI-Coach-Anfragen heit gnutzt",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Jeda Schritt, wos'd machst, is a Stimm für de Person, de du wern wuist.",
@@ -4079,6 +4127,10 @@ const T = {
     coach_unlock_note: "Después de 3 días registrados, aquí aparecerá tu reflexión del coach.",
     coach_unlock_toast: "Sigue 3 días registrados para desbloquear tu reflexión del coach.",
     coach_budget_status: "Hoy se usaron {used} de {limit} solicitudes al coach de IA",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Cada acción que realizas es un voto por el tipo de persona en que deseas convertirte.",
@@ -4393,6 +4445,10 @@ const T = {
     coach_unlock_note: "Dopo 3 giorni tracciati, qui apparirà la tua riflessione del coach.",
     coach_unlock_toast: "Continua per 3 giorni tracciati per sbloccare la riflessione del coach.",
     coach_budget_status: "Oggi hai usato {used} di {limit} richieste al coach AI",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     quotes: [
       {
         q: "Ogni azione che compi è un voto per il tipo di persona che vuoi diventare.",
@@ -4499,6 +4555,10 @@ const T = {
     coach_reflection_placeholder: "Gânduri de azi…",
     coach_save: "Salvează",
     coach_budget_status: "Astăzi ai folosit {used} din {limit} cereri către coachul AI",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     coach_privacy_note:
       "Doar când ceri, habit.io partajează un scurt rezumat al progresului tău recent. Poți include și cele mai noi note din jurnal.",
     coach_focus_placeholder:
@@ -4863,6 +4923,10 @@ const T = {
     coach_reflection_placeholder: "Gedachten van vandaag…",
     coach_save: "Opslaan",
     coach_budget_status: "Vandaag zijn {used} van {limit} AI-coachverzoeken gebruikt",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     coach_privacy_note:
       "Alleen wanneer je daarom vraagt, deelt habit.io een korte samenvatting van je recente voortgang. Je kunt ook je nieuwste dagboeknotities opnemen.",
     coach_focus_placeholder:
@@ -5227,6 +5291,10 @@ const T = {
     coach_reflection_placeholder: "Bugünün düşünceleri…",
     coach_save: "Kaydet",
     coach_budget_status: "Bugün {used} / {limit} yapay zeka koçu isteği kullanıldı",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     coach_privacy_note:
       "Sadece sen istediğinde, habit.io son ilerlemenin kısa bir özetini paylaşır. Dilersen en son günlük notlarını da ekleyebilirsin.",
     coach_focus_placeholder:
@@ -5585,6 +5653,10 @@ const T = {
     coach_reflection_placeholder: "Σκέψεις σήμερα…",
     coach_save: "Αποθήκευση",
     coach_budget_status: "Σήμερα χρησιμοποιήθηκαν {used} από {limit} αιτήματα προς τον AI coach",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     coach_privacy_note:
       "Μόνο όταν το ζητήσεις, το habit.io μοιράζεται μια σύντομη εικόνα της πρόσφατης προόδου σου. Μπορείς επίσης να συμπεριλάβεις τις τελευταίες σημειώσεις ημερολογίου.",
     coach_focus_placeholder:
@@ -5954,6 +6026,10 @@ const T = {
     coach_reflection_placeholder: "Misli od danas…",
     coach_save: "Spremi",
     coach_budget_status: "Danas je iskorišteno {used} od {limit} zahtjeva za AI coach",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     coach_privacy_note:
       "Samo kada to zatražiš, habit.io dijeli kratki pregled tvog nedavnog napretka. Možeš uključiti i svoje najnovije bilješke iz dnevnika.",
     coach_focus_placeholder:
@@ -6318,6 +6394,10 @@ const T = {
     coach_reflection_placeholder: "Pensaments d'avui…",
     coach_save: "Desa",
     coach_budget_status: "Avui s'han utilitzat {used} de {limit} sol·licituds al coach d'IA",
+    update_checking: "Checking for updates…",
+    update_available: "Update available",
+    update_up_to_date: "Up to date",
+    update_now: "Update",
     coach_privacy_note:
       "Només quan ho demanes, habit.io comparteix un breu resum del teu progrés recent. També pots incloure les teves últimes notes del diari.",
     coach_focus_placeholder:
