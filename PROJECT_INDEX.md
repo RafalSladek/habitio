@@ -264,7 +264,7 @@ localStorage key: habitio_v9
 **Config:**
 - Model: `@cf/qwen/qwen3-30b-a3b-fp8`
 - Default budget: 5 requests/day, 4500 estimated tokens/day per device
-- CORS whitelist: `habitio.rafal-sladek.com`, `rafalsladek.github.io`, `localhost:3000`
+- CORS whitelist: `habitio.rafal-sladek.com`, `rafalsladek.github.io`, `localhost:5000`
 - Secrets: `GITHUB_TOKEN` (Cloudflare), `CLOUDFLARE_API_TOKEN` (GitHub repo secret for CI)
 
 **Manual deploy:** `cd worker && npx wrangler deploy`
@@ -273,7 +273,7 @@ localStorage key: habitio_v9
 
 ## Tests (Playwright)
 
-**Config:** `playwright.config.js` — baseURL `http://localhost:3000`, served via `npx serve`  
+**Config:** `playwright.config.js` — baseURL `http://localhost:5000`, served via `npx serve`  
 **Projects:** Desktop Chromium | Pixel 5 Chromium | Tablet Firefox | iPhone 12 Safari
 
 | Spec | Lines | Coverage |

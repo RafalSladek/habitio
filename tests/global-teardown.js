@@ -41,7 +41,7 @@ module.exports = async function globalTeardown() {
     /** @type {any[]} */
     const v8Entries = JSON.parse(fs.readFileSync(path.join(nycOutput, file), "utf8"));
     for (const entry of v8Entries) {
-      const fileName = entry.url.replace("http://localhost:3000/", "");
+      const fileName = entry.url.replace("http://localhost:5000/", "");
       if (!SOURCE_FILES.has(fileName)) continue;
       const absPath = path.join(process.cwd(), fileName);
       if (!fs.existsSync(absPath)) continue;

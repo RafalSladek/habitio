@@ -10,14 +10,14 @@ module.exports = defineConfig({
     : [["list"], ["json", { outputFile: "test-results-summary.json" }]],
   globalTeardown: "./tests/global-teardown.js",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:5000",
     headless: true,
     video: "retain-on-failure",
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npx serve . -p 3000 -s",
-    url: "http://localhost:3000",
+    command: "npx serve . -p 5000 -s",
+    url: "http://localhost:5000",
     reuseExistingServer: !process.env.CI,
     timeout: 10000,
   },

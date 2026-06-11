@@ -184,8 +184,8 @@ No build step needed — serve the files with any static server.
 **Option A — Node (recommended):**
 
 ```bash
-npx serve .
-# Open http://localhost:3000
+npx serve . -p 5000
+# Open http://localhost:5000
 ```
 
 **Option B — Python:**
@@ -280,7 +280,7 @@ npx wrangler secret put GITHUB_TOKEN
 
 | Script                             | Purpose                                                      | Requirements                            |
 | ---------------------------------- | ------------------------------------------------------------ | --------------------------------------- |
-| `node scripts/take-screenshots.js` | Regenerate all `docs/` screenshots (mobile, desktop, tablet) | Local server on `:3000` + Playwright    |
+| `node scripts/take-screenshots.js` | Regenerate all `docs/` screenshots (mobile, desktop, tablet) | Local server on `:5000` + Playwright    |
 | `node scripts/generate-gif.js`     | Create `docs/user-journey.gif` from mobile screenshots       | ffmpeg + screenshots already in `docs/` |
 | `node scripts/generate-badges.js`  | Update `badges/tests.json` with active test count            | —                                       |
 
@@ -290,7 +290,7 @@ When UI changes (layout, colours, new screens, copy), regenerate all screenshots
 
 ```bash
 # 1. Start the local server
-npx serve . -p 3000
+npx serve . -p 5000
 
 # 2. Regenerate all screenshots (mobile 393×852, desktop 1280×800, tablet 820×1180)
 node scripts/take-screenshots.js

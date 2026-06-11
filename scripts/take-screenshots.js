@@ -1,11 +1,11 @@
 // take-screenshots.js — generates all canonical docs/ screenshots for habit.io
 // Usage: node scripts/take-screenshots.js
-// Requires a running server at http://localhost:3000
+// Requires a running server at http://localhost:5000
 
 const { chromium } = require("playwright");
 const path = require("path");
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:5000";
 const DOCS_DIR = path.join(__dirname, "..", "docs");
 const STORAGE_VERSION = "habitio_v13";
 

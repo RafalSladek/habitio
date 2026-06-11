@@ -1,6 +1,6 @@
-# habit.io — AI Agent Instructions
+# CLAUDE.md
 
-This file provides guidance to AI coding assistants (Claude, Copilot, Cursor, etc.) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
@@ -8,7 +8,7 @@ This file provides guidance to AI coding assistants (Claude, Copilot, Cursor, et
 
 - **Live:** https://habitio.rafal-sladek.com/
 - **Deploy:** push `main` → GitHub Actions → GitHub Pages
-- **Version:** `v2.10` (localStorage key `habitio_v10`, SW cache `habitio_v10` — always in sync)
+- **Version:** `v2.12` (localStorage key `habitio_v12`, SW cache `habitio_v12` — always in sync)
 - **Languages:** 20 languages supported in i18n.js
 - **Full function/line reference:** `PROJECT_INDEX.md`
 
@@ -20,7 +20,7 @@ yarn install
 npx playwright install chromium
 
 # Local dev server
-npx serve . -p 3000
+npx serve . -p 5000
 
 # Tests — all 4 browser projects
 yarn test
@@ -48,7 +48,7 @@ node scripts/validate-i18n.js
 sonar-scanner
 
 # Regenerate docs screenshots / GIF / badges
-yarn screenshots        # node scripts/take-screenshots.js (requires local server on :3000)
+yarn screenshots        # node scripts/take-screenshots.js (requires local server on :5000)
 yarn gif                # node scripts/generate-gif.js (requires ffmpeg)
 yarn badges:generate    # node scripts/generate-badges.js
 
@@ -94,9 +94,9 @@ No transpilation, no bundling, no modules. All JS is vanilla ES6+ served directl
 | File | Lines | Purpose |
 |------|------:|---------|
 | `index.html` | 330 | App shell, `<picture>` hero, non-blocking font load |
-| `app.js` | 2814 | All application logic |
-| `styles.css` | 2300 | All styles |
-| `i18n.js` | 6289 | 20-language `T` object + `t()`, `DN()`, `MN()` helpers |
+| `app.js` | 3365 | All application logic |
+| `styles.css` | 2557 | All styles |
+| `i18n.js` | 6677 | 20-language `T` object + `t()`, `DN()`, `MN()` helpers |
 | `suggestions.js` | 138 | Habit suggestions with demographic scoring |
 | `sw.js` | 128 | Service worker — network-first app shell + offline fallback |
 | `worker/feedback.js` | — | Cloudflare Worker: feedback → GitHub Issues + AI coach proxy |
@@ -106,7 +106,7 @@ No transpilation, no bundling, no modules. All JS is vanilla ES6+ served directl
 ## Data Model
 
 ```
-localStorage key: habitio_v10
+localStorage key: habitio_v12
 {
   habits:            Habit[]
   checks:            { [YYYY-MM-DD]: { [habitId]: true } }
@@ -140,9 +140,9 @@ localStorage key: habitio_v10
 
 When `app.js`, `styles.css`, `suggestions.js`, `i18n.js`, or `index.html` changes:
 
-1. `STORAGE_VERSION` in `app.js` (e.g. `"habitio_v10"` → `"habitio_v11"`)
+1. `STORAGE_VERSION` in `app.js` (e.g. `"habitio_v12"` → `"habitio_v13"`)
 2. `CACHE` in `sw.js` (same value)
-3. `APP_VERSION` in `app.js` → `"v2.11"` (minor version = schema number)
+3. `APP_VERSION` in `app.js` → `"v2.13"` (minor version = schema number)
 
 **CRITICAL:** The SW cache name (`CACHE` in `sw.js`) MUST match `STORAGE_VERSION` in `app.js`.
 
@@ -163,7 +163,7 @@ grep -rn "STORAGE_VERSION" tests/ scripts/take-screenshots.js
 
 # Replace (PowerShell)
 foreach ($f in @('tests/test-helpers.js','tests/sw.spec.js','scripts/take-screenshots.js')) {
-  (Get-Content $f) -replace 'habitio_v10', 'habitio_v11' | Set-Content $f
+  (Get-Content $f) -replace 'habitio_v12', 'habitio_v13' | Set-Content $f
 }
 ```
 
@@ -197,7 +197,7 @@ Do not load GA4 script unconditionally or reintroduce GTM.
 - Routes: `POST /` (feedback → GitHub Issue), `POST /coach` (Cloudflare AI LLM proxy)
 - Coach budget: 5 req/day, 4500 estimated tokens/day per device (env-configurable)
 - Model: `@cf/qwen/qwen3-30b-a3b-fp8`
-- CORS whitelist: `habitio.rafal-sladek.com`, `rafalsladek.github.io`, `localhost:3000`
+- CORS whitelist: `habitio.rafal-sladek.com`, `rafalsladek.github.io`, `localhost:5000`, `127.0.0.1:5000`
 - Secrets: `GITHUB_TOKEN` in Cloudflare; `CLOUDFLARE_API_TOKEN` in GitHub repo secrets
 - **Test detection:** Worker automatically blocks Playwright test requests (via User-Agent + message patterns) to prevent creating GitHub issues during test runs
 
@@ -358,3 +358,13 @@ Tests run on 4 projects:
 5. **Skipping Quality Gate:** Do NOT push if SonarCloud fails
 6. **Wrong date format:** Always use `fmt(d)` for dates, not manual string formatting
 7. **Never force-push to `main`**
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

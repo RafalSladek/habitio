@@ -5,8 +5,8 @@ const VALID_TYPES = new Set(["bug", "wish", "feature"]);
 const ALLOWED_ORIGINS = new Set([
   "https://habitio.rafal-sladek.com",
   "https://rafalsladek.github.io",
-  "http://localhost:3000",
-  "http://127.0.0.1:3000",
+  "http://localhost:5000",
+  "http://127.0.0.1:5000",
 ]);
 const COACH_DEVICE_RE = /^[a-zA-Z0-9_-]{8,64}$/;
 const MODEL_DEFAULT = "@cf/qwen/qwen3-30b-a3b-fp8";
